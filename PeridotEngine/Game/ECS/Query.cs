@@ -1,0 +1,86 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using PeridotEngine.Game.ECS.Components;
+using SharpDX.Direct2D1.Effects;
+
+namespace PeridotEngine.Game.ECS
+{
+    internal class Query
+    {
+        private readonly Ecs ecs;
+
+        private readonly List<Archetype> matchingArchetypes;
+
+        public Query(Ecs ecs)
+        {
+            this.ecs = ecs;
+            matchingArchetypes = new List<Archetype>(ecs.Archetypes);
+        }
+
+        public Query Has<T>() where T : IComponent
+        {
+            matchingArchetypes.RemoveAll(a => !a.ComponentTypes.Contains(typeof(T)));
+            return this;
+        }
+
+        public Query HasNot<T>() where T : IComponent
+        {
+            matchingArchetypes.RemoveAll(a => a.ComponentTypes.Contains(typeof(T)));
+            return this;
+        }
+
+        public void ForEach(Action<Entity> action)
+        {
+            foreach (Archetype archetype in matchingArchetypes)
+            {
+                foreach (Entity entity in archetype.Entities())
+                {
+                    action.Invoke(entity);
+                }
+            }
+        }
+
+        public void ForEach<T>(Action<T> action) where T : IComponent
+        {
+            foreach (Archetype archetype in matchingArchetypes)
+            {
+                int componentIndex = Array.IndexOf(archetype.ComponentTypes, typeof(T));
+                foreach (T component in archetype.Components[componentIndex])
+                {
+                    action.Invoke(component);
+                }
+            }
+        }
+
+        public void ForEach<T1, T2>(Action<T1, T2> action) where T1 : IComponent where T2 : IComponent
+        {
+            foreach (Archetype archetype in matchingArchetypes)
+            {
+                int c1Index = Array.IndexOf(archetype.ComponentTypes, typeof(T1));
+                int c2Index = Array.IndexOf(archetype.ComponentTypes, typeof(T2));
+
+                for (int i = 0; i < archetype.EntityCount; i++)
+                {
+                    action.Invoke((T1)archetype.Components[c1Index][i], (T2)archetype.Components[c2Index][i]);
+                }
+            }
+        }
+
+        public void ForEach<T1, T2, T3>(Action<T1, T2, T3> action) where T1 : IComponent where T2 : IComponent
+        {
+            foreach (Archetype archetype in matchingArchetypes)
+            {
+                int c1Index = Array.IndexOf(archetype.ComponentTypes, typeof(T1));
+                int c2Index = Array.IndexOf(archetype.ComponentTypes, typeof(T2));
+                int c3Index = Array.IndexOf(archetype.ComponentTypes, typeof(T3));
+
+                for (int i = 0; i < archetype.EntityCount; i++)
+                {
+                    action.Invoke((T1)archetype.Components[c1Index][i], (T2)archetype.Components[c2Index][i], (T3)archetype.Components[c3Index][i]);
+                }
+            }
+        }
+    }
+}

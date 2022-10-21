@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using PeridotEngine.Graphics.Scenes;
+using PeridotEngine.Graphics;
 
 namespace PeridotEngine
 {
-    public class Main : Game
+    public class Main : Microsoft.Xna.Framework.Game
     {
         public Main()
         {
@@ -31,14 +31,14 @@ namespace PeridotEngine
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            SceneManager.CurrentScene.Update(gameTime);
+            ScreenManager.CurrentScreen.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            SceneManager.CurrentScene.Draw(gameTime);
+            ScreenManager.CurrentScreen.Draw(gameTime);
 
             base.Draw(gameTime);
         }

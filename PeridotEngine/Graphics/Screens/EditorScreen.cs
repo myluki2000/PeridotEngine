@@ -2,31 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
-using PeridotEngine.Game.ECS;
-using PeridotEngine.Graphics;
+using PeridotEngine.Scenes.Scene3D;
 
-namespace PeridotEngine.Scenes.Scene3D
+namespace PeridotEngine.Graphics.Screens
 {
-    internal class Scene3D : Scene
+    internal class EditorScreen : Screen
     {
-        public Ecs Ecs { get; } = new Ecs();
+        private readonly Scene3D scene = new();
 
         public override void Initialize()
         {
+            scene.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
-            
+            scene.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
-            
+            scene.Draw(gameTime);
         }
 
         public override void Deinitialize()
         {
+            scene.Deinitialize();
         }
     }
 }

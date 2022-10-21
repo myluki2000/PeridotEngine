@@ -11,18 +11,20 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Archetype.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\IComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\DiffuseTextureComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Ecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Query.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Scene.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\EditorScreen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\ScreenManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\Scene3D.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\SceneManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Graphics\" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="$(MSBuildThisFileDirectory)Content\Content.mgcb" />

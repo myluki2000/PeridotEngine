@@ -35,7 +35,14 @@ namespace PeridotWindows.EditorScreen.Forms
                 lvTextures.SmallImageList = imgList;
                 
                 imgList.Images.Add(Image.FromFile(texInfo.FilePath));
-                lvTextures.Items.Add(texInfo.FilePath, imgList.Images.Count - 1);
+
+                ListViewItem item = new();
+                item.Text = texInfo.FilePath;
+                item.ImageIndex = imgList.Images.Count - 1;
+                item.Tag = texInfo;
+
+
+                lvTextures.Items.Add(item);
             }
         }
 

@@ -12,16 +12,20 @@
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Archetype.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\IComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\DiffuseTextureComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\StaticMeshComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\StaticMeshGroupComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\StaticPositionRotationScaleComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Ecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Query.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\EditorScreen.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Mesh.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\ScreenManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\Scene3D.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\SceneResources.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Content\" />

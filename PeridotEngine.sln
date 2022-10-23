@@ -5,27 +5,27 @@ VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PeridotEngine", "PeridotEngine\PeridotEngine.shproj", "{A0CDBD0E-3A41-42B7-9425-A838BC2C7383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeridotWindows", "PeridotWindows\PeridotWindows.csproj", "{C097B1F0-D199-4F98-BDA9-8CD544B61FC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeridotWindows", "PeridotWindows\PeridotWindows.csproj", "{EBD1DC54-3AA3-441A-803D-B1E9018C3949}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		PeridotEngine\PeridotEngine.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
-		PeridotEngine\PeridotEngine.projitems*{c097b1f0-d199-4f98-bda9-8cd544b61fc1}*SharedItemsImports = 5
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C097B1F0-D199-4F98-BDA9-8CD544B61FC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C097B1F0-D199-4F98-BDA9-8CD544B61FC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C097B1F0-D199-4F98-BDA9-8CD544B61FC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C097B1F0-D199-4F98-BDA9-8CD544B61FC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBD1DC54-3AA3-441A-803D-B1E9018C3949}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBD1DC54-3AA3-441A-803D-B1E9018C3949}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBD1DC54-3AA3-441A-803D-B1E9018C3949}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBD1DC54-3AA3-441A-803D-B1E9018C3949}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBCC164B-78BD-48FB-A082-DBE7FC515B4D}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PeridotEngine\PeridotEngine.projitems*{a0cdbd0e-3a41-42b7-9425-a838bc2c7383}*SharedItemsImports = 13
+		PeridotEngine\PeridotEngine.projitems*{ebd1dc54-3aa3-441a-803d-b1e9018c3949}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

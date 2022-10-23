@@ -66,13 +66,17 @@ namespace PeridotEngine.Scenes.Scene3D
 
             // if we couldn't find a free spot we'll have to increase the size of the array
             int length = textures.Length;
-            Array.Resize(ref textures, length * 2);
+            Array.Resize(ref textures, (length * 2 > 0) ? (length * 2) : 1);
             textures[length] = texInfo;
         }
 
         private void GenerateAtlas()
         {
             List<(uint id, Bitmap bitmap)>[] bitmaps = new List<(uint id, Bitmap bitmap)>[16];
+            for (int i = 0; i < bitmaps.Length; i++)
+            {
+                bitmaps[i] = new List<(uint id, Bitmap bitmap)>();
+            }
 
             for (uint texId = 0; texId < textures.Length; texId++)
             {
@@ -127,6 +131,9 @@ namespace PeridotEngine.Scenes.Scene3D
                 for (int i = 0; i < bitmaps.Length; i++)
                 {
                     List<(uint id, Bitmap bitmap)> bin = bitmaps[i];
+
+                    if (bin.Count == 0) continue;
+
                     int textureHeight = (int)Math.Pow(2, i);
 
                     // calculate how much height the bin requires based on how many lines we need to split it up into
@@ -167,6 +174,9 @@ namespace PeridotEngine.Scenes.Scene3D
             for (int i = 0; i < bitmaps.Length; i++)
             {
                 List<(uint id, Bitmap bitmap)> bin = bitmaps[i];
+
+                if (bin.Count == 0) continue;
+
                 int textureHeight = (int)Math.Pow(2, i);
 
                 int currentX = 0;

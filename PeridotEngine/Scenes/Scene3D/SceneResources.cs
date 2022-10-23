@@ -49,12 +49,13 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private void AddTextureWithoutRefreshingAtlas(string filePath)
         {
-            TextureInfo texInfo = new TextureInfo(filePath);
+            TextureInfo texInfo = new(filePath);
             bool spotFound = false;
             for (int i = 0; i < textures.Length; i++)
             {
                 if (textures[i] == null)
                 {
+                    texInfo.TextureId = (uint)i;
                     textures[i] = texInfo;
                     spotFound = true;
                     break;
@@ -67,6 +68,7 @@ namespace PeridotEngine.Scenes.Scene3D
             // if we couldn't find a free spot we'll have to increase the size of the array
             int length = textures.Length;
             Array.Resize(ref textures, (length * 2 > 0) ? (length * 2) : 1);
+            texInfo.TextureId = (uint)length;
             textures[length] = texInfo;
         }
 
@@ -217,6 +219,7 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             public string FilePath;
             public RectangleF Bounds;
+            public uint TextureId;
 
             public TextureInfo(string filePath)
             {

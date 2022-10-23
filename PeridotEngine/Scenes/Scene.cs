@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace PeridotEngine.Scenes
 {
-    internal abstract class Scene
+    public abstract class Scene
     {
         public abstract void Initialize();
         public abstract void Update(GameTime gameTime);

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 
 namespace PeridotEngine.Graphics
 {
     internal static class ScreenManager
     {
-        private static Screen _currentScreen = null;
+        private static Screens.Screen? _currentScreen = null;
 
-        public static Screen CurrentScreen
+        public static Screens.Screen? CurrentScreen
         {
             get => _currentScreen;
             set

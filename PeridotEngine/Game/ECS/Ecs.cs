@@ -6,7 +6,7 @@ using PeridotEngine.Game.ECS.Components;
 
 namespace PeridotEngine.Game.ECS
 {
-    internal class Ecs
+    public class Ecs
     {
         public List<Archetype> Archetypes { get; } = new();
 
@@ -15,7 +15,7 @@ namespace PeridotEngine.Game.ECS
         {
             componentTypes = componentTypes.OrderBy(x => x.GetHashCode()).ToArray();
 
-            Archetype archetype = Archetypes.FirstOrDefault(x => x.ComponentTypes.SequenceEqual(componentTypes)));
+            Archetype? archetype = Archetypes.FirstOrDefault(x => x.ComponentTypes.SequenceEqual(componentTypes));
 
             if (archetype == null)
             {

@@ -10,7 +10,7 @@ using SharpDX.WIC;
 
 namespace PeridotEngine.Game.ECS
 {
-    internal class Archetype
+    public class Archetype
     {
         public Type[] ComponentTypes { get; }
 

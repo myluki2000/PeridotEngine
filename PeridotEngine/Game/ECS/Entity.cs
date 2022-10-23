@@ -5,7 +5,7 @@ using PeridotEngine.Game.ECS.Components;
 
 namespace PeridotEngine.Game.ECS
 {
-    internal class Entity
+    public class Entity
     {
         public Archetype Archetype { get; }
         public List<IComponent> Components { get; }

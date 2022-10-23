@@ -7,7 +7,7 @@ using SharpDX.Direct2D1.Effects;
 
 namespace PeridotEngine.Game.ECS
 {
-    internal class Query
+    public class Query
     {
         private readonly Ecs ecs;
 

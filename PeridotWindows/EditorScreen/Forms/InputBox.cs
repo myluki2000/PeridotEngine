@@ -17,7 +17,7 @@ namespace PeridotWindows.EditorScreen.Forms
             InitializeComponent();
         }
 
-        public static string? Show(string title, string text, string? defaultInputValue)
+        public static string? Show(string title, string text, string? defaultInputValue = null)
         {
             InputBox frm = new();
 

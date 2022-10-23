@@ -19,7 +19,7 @@ namespace PeridotWindows.EditorScreen
 
         public override void Initialize()
         {
-            frmResources = new();
+            frmResources = new(scene);
             frmResources.Show();
             frmToolbox = new();
             frmToolbox.Show();

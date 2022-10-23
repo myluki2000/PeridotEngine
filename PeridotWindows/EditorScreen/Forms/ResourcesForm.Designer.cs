@@ -29,15 +29,20 @@
         private void InitializeComponent()
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tpTextures = new System.Windows.Forms.TabPage();
+            this.lvTextures = new System.Windows.Forms.ListView();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.tpModels = new System.Windows.Forms.TabPage();
+            this.btnAddTexture = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
+            this.tpTextures.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tpTextures);
+            this.tabControl1.Controls.Add(this.tpModels);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
@@ -45,25 +50,55 @@
             this.tabControl1.Size = new System.Drawing.Size(307, 688);
             this.tabControl1.TabIndex = 0;
             // 
-            // tabPage1
+            // tpTextures
             // 
-            this.tabPage1.Location = new System.Drawing.Point(4, 24);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(299, 660);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tpTextures.Controls.Add(this.lvTextures);
+            this.tpTextures.Controls.Add(this.panel1);
+            this.tpTextures.Location = new System.Drawing.Point(4, 24);
+            this.tpTextures.Name = "tpTextures";
+            this.tpTextures.Padding = new System.Windows.Forms.Padding(3);
+            this.tpTextures.Size = new System.Drawing.Size(299, 660);
+            this.tpTextures.TabIndex = 0;
+            this.tpTextures.Text = "Textures";
+            this.tpTextures.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // lvTextures
             // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 24);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(192, 72);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.lvTextures.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvTextures.Location = new System.Drawing.Point(3, 3);
+            this.lvTextures.Name = "lvTextures";
+            this.lvTextures.Size = new System.Drawing.Size(293, 601);
+            this.lvTextures.TabIndex = 0;
+            this.lvTextures.UseCompatibleStateImageBehavior = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btnAddTexture);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(3, 604);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(293, 53);
+            this.panel1.TabIndex = 1;
+            // 
+            // tpModels
+            // 
+            this.tpModels.Location = new System.Drawing.Point(4, 24);
+            this.tpModels.Name = "tpModels";
+            this.tpModels.Padding = new System.Windows.Forms.Padding(3);
+            this.tpModels.Size = new System.Drawing.Size(299, 660);
+            this.tpModels.TabIndex = 1;
+            this.tpModels.Text = "Models";
+            this.tpModels.UseVisualStyleBackColor = true;
+            // 
+            // btnAddTexture
+            // 
+            this.btnAddTexture.Location = new System.Drawing.Point(3, 6);
+            this.btnAddTexture.Name = "btnAddTexture";
+            this.btnAddTexture.Size = new System.Drawing.Size(75, 42);
+            this.btnAddTexture.TabIndex = 0;
+            this.btnAddTexture.Text = "Add Texture";
+            this.btnAddTexture.UseVisualStyleBackColor = true;
+            this.btnAddTexture.Click += new System.EventHandler(this.btnAddTexture_Click);
             // 
             // ResourcesForm
             // 
@@ -74,6 +109,8 @@
             this.Name = "ResourcesForm";
             this.Text = "ResourcesForm";
             this.tabControl1.ResumeLayout(false);
+            this.tpTextures.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -81,7 +118,10 @@
         #endregion
 
         private TabControl tabControl1;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
+        private TabPage tpTextures;
+        private TabPage tpModels;
+        private ListView lvTextures;
+        private Panel panel1;
+        private Button btnAddTexture;
     }
 }

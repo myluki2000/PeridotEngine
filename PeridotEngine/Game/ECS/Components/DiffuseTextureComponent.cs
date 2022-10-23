@@ -5,8 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PeridotEngine.Game.ECS.Components
 {
-    internal class TextureComponent : IComponent
+    internal sealed class DiffuseTextureComponent : IComponent
     {
-        public Texture2D Texture;
+        public uint TextureId { get; set; }
     }
 }

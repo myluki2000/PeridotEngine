@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PeridotEngine.Game.ECS.Components
 {
-    internal interface IComponent
+    public interface IComponent
     {
     }
 }

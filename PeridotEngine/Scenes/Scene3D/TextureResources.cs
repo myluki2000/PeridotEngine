@@ -187,8 +187,7 @@ namespace PeridotEngine.Scenes.Scene3D
                     (uint texId, Bitmap bitmap) = bin[texIndex];
                     if (currentX + bitmap.Width <= atlasSize)
                     {
-                        graphics.DrawImage(bitmap, new Point(currentX, currentY));
-
+                        graphics.DrawImage(bitmap, currentX, currentY, bitmap.Width, bitmap.Height);
                         TextureInfo texInfo = textures[texId];
                         if (texInfo == null) throw new Exception();
 

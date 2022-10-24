@@ -31,7 +31,8 @@ namespace PeridotEngine.Game.ECS
             entityComponents = entityComponents.OrderBy(x => x.GetType().GetHashCode()).ToArray();
 
             // check that all components of the archetype were provided for the entity
-            Debug.Assert(entityComponents.Select(x => x.GetType()).SequenceEqual(ComponentTypes));
+            Debug.Assert(entityComponents.Select(x => x.GetType()).SequenceEqual(ComponentTypes),
+                "Not all required components were passed to the CreateEntity method when creating an entity of this specific archetype.");
 
             for (int i = 0; i < entityComponents.Length; i++)
             {

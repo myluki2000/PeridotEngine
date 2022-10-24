@@ -10,6 +10,7 @@ namespace PeridotEngine.Game.ECS
     {
         public List<Archetype> Archetypes { get; } = new();
 
+        public event EventHandler<IEnumerable<Archetype>>? ArchetypeListChanged;
 
         public Archetype Archetype(params Type[] componentTypes)
         {
@@ -21,6 +22,7 @@ namespace PeridotEngine.Game.ECS
             {
                 archetype = new Archetype(componentTypes);
                 Archetypes.Add(archetype);
+                ArchetypeListChanged?.Invoke(this, Archetypes);
             }
 
             return archetype;

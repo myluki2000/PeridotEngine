@@ -11,28 +11,57 @@ namespace PeridotEngine.Game.ECS
     {
         private readonly Ecs ecs;
 
-        private readonly List<Archetype> matchingArchetypes;
+        private List<Archetype> matchingArchetypes;
+        private bool archetypesOutdated = false;
+
+        private readonly List<Type> includeComponents = new();
+        private readonly List<Type> excludeComponents = new();
 
         public Query(Ecs ecs)
         {
             this.ecs = ecs;
             matchingArchetypes = new List<Archetype>(ecs.Archetypes);
+
+            // when the list of archetypes of the ECS changes we have to update our list of matching
+            // archetypes as well
+            this.ecs.ArchetypeListChanged += (_, _) => archetypesOutdated = true;
         }
 
         public Query Has<T>() where T : IComponent
         {
             matchingArchetypes.RemoveAll(a => !a.ComponentTypes.Contains(typeof(T)));
+            includeComponents.Add(typeof(T));
             return this;
         }
 
         public Query HasNot<T>() where T : IComponent
         {
             matchingArchetypes.RemoveAll(a => a.ComponentTypes.Contains(typeof(T)));
+            excludeComponents.Add(typeof(T));
             return this;
+        }
+
+        private void UpdateMatchingArchetypes()
+        {
+            matchingArchetypes = new List<Archetype>(ecs.Archetypes);
+            matchingArchetypes.RemoveAll(a =>
+            {
+                // if |includeComponents \ a.ComponentTypes| > 0 this archetype is missing
+                // some required components
+                if (includeComponents.Except(a.ComponentTypes).Any()) return true;
+
+                // if a component is included in both a.ComponentTypes and excludeComponents
+                // then the archetype has an excluded component
+                if (a.ComponentTypes.Intersect(excludeComponents).Any()) return true;
+
+                return false;
+            });
         }
 
         public void ForEach(Action<Entity> action)
         {
+            if(archetypesOutdated) UpdateMatchingArchetypes();
+
             foreach (Archetype archetype in matchingArchetypes)
             {
                 foreach (Entity entity in archetype.Entities())
@@ -44,6 +73,8 @@ namespace PeridotEngine.Game.ECS
 
         public void ForEach<T>(Action<T> action) where T : IComponent
         {
+            if (archetypesOutdated) UpdateMatchingArchetypes();
+
             foreach (Archetype archetype in matchingArchetypes)
             {
                 int componentIndex = Array.IndexOf(archetype.ComponentTypes, typeof(T));
@@ -56,6 +87,8 @@ namespace PeridotEngine.Game.ECS
 
         public void ForEach<T1, T2>(Action<T1, T2> action) where T1 : IComponent where T2 : IComponent
         {
+            if (archetypesOutdated) UpdateMatchingArchetypes();
+
             foreach (Archetype archetype in matchingArchetypes)
             {
                 int c1Index = Array.IndexOf(archetype.ComponentTypes, typeof(T1));
@@ -70,6 +103,8 @@ namespace PeridotEngine.Game.ECS
 
         public void ForEach<T1, T2, T3>(Action<T1, T2, T3> action) where T1 : IComponent where T2 : IComponent
         {
+            if (archetypesOutdated) UpdateMatchingArchetypes();
+
             foreach (Archetype archetype in matchingArchetypes)
             {
                 int c1Index = Array.IndexOf(archetype.ComponentTypes, typeof(T1));

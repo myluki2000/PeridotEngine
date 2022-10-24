@@ -8,6 +8,7 @@ using PeridotEngine.Game.ECS;
 using PeridotEngine.Game.ECS.Components;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Camera;
+using PeridotEngine.Graphics.Effects;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
@@ -67,7 +68,7 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 new StaticMeshComponent(Resources.MeshResources.GetAllMeshes().First()),
                 new StaticPositionRotationScaleComponent(),
-                new EffectComponent(new BasicEffect(Globals.Graphics.GraphicsDevice))
+                new EffectComponent(EffectPool.Effect<SimpleEffect>())
             };
 
             Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent))
@@ -86,17 +87,13 @@ namespace PeridotEngine.Scenes.Scene3D
 
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
             gd.RasterizerState = RasterizerState.CullNone;
+
             gd.Clear(Color.CornflowerBlue);
+
+            EffectPool.UpdateEffectMatrices(Matrix.Identity, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
 
             meshes!.ForEach((StaticMeshComponent meshC, StaticPositionRotationScaleComponent posC, EffectComponent effectC) =>
             {
-                BasicEffect be = (BasicEffect)effectC.Effect;
-                be.World = Matrix.Identity;
-                be.View = Camera.GetViewMatrix();
-                be.Projection = Camera.GetProjectionMatrix();
-                be.Alpha = 1;
-                be.VertexColorEnabled = true;
-
                 if (meshC.VertexBuffer == null)
                 {
                     meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionColorTexture),
@@ -106,11 +103,10 @@ namespace PeridotEngine.Scenes.Scene3D
 
                 gd.SetVertexBuffer(meshC.VertexBuffer);
 
-                foreach (EffectPass pass in be.CurrentTechnique.Passes)
+                foreach (EffectPass pass in effectC.Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    gd.DrawUserPrimitives(PrimitiveType.TriangleList, meshC.Mesh.Vertices, 0, meshC.Mesh.Vertices.Length / 3, VertexPositionColorTexture.VertexDeclaration);
-                    //gd.DrawPrimitives(PrimitiveType.TriangleList, 0, meshC.VertexBuffer.VertexCount / 3);
+                    gd.DrawPrimitives(PrimitiveType.TriangleList, 0, meshC.VertexBuffer.VertexCount / 3);
                 }
             });
         }

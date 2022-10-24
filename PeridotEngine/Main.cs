@@ -10,6 +10,7 @@ namespace PeridotEngine
         {
             Globals.GameMain = this;
             Globals.Graphics = new GraphicsDeviceManager(this);
+            Globals.Content = Content;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }

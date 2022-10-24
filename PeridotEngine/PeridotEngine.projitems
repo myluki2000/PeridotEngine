@@ -21,6 +21,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Query.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Camera\Camera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectPool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\SimpleEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Mesh.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\ScreenManager.cs" />

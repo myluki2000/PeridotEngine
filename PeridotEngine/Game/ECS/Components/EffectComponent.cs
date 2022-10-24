@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using PeridotEngine.Graphics.Effects;
 
 namespace PeridotEngine.Game.ECS.Components
 {
     public class EffectComponent : IComponent
     {
-        public Effect Effect { get; set; }
+        public EffectBase Effect { get; set; }
 
-        public EffectComponent(Effect effect)
+        public EffectComponent(EffectBase effect)
         {
             Effect = effect;
         }

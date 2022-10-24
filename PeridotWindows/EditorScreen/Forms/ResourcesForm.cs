@@ -28,9 +28,10 @@ namespace PeridotWindows.EditorScreen.Forms
         {
             lvTextures.Items.Clear();
 
+            ImageList imgList = new();
+
             foreach (TextureResources.TextureInfo texInfo in textureInfos)
             {
-                ImageList imgList = new();
                 lvTextures.LargeImageList = imgList;
                 lvTextures.SmallImageList = imgList;
                 
@@ -48,9 +49,13 @@ namespace PeridotWindows.EditorScreen.Forms
 
         private void btnAddTexture_Click(object sender, EventArgs e)
         {
-            string? path = InputBox.Show("Add Texture", "Path to texture file:");
+            OpenFileDialog ofd = new();
+            ofd.Multiselect = true;
+            ofd.Filter = "Image files (*.png, *.jpg, *.jpeg)|*.png;*.jpg;*.jpeg";
 
-            if (!string.IsNullOrEmpty(path))
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            foreach (string path in ofd.FileNames)
             {
                 scene.Resources.TextureResources.AddTexture(path);
             }

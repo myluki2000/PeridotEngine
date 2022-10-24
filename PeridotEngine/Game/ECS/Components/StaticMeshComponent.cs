@@ -9,6 +9,11 @@ namespace PeridotEngine.Game.ECS.Components
     internal sealed class StaticMeshComponent : IComponent
     {
         public Mesh Mesh { get; set; }
-        public VertexBuffer VertexBuffer { get; set; }
+        public VertexBuffer? VertexBuffer { get; set; }
+
+        public StaticMeshComponent(Mesh mesh)
+        {
+            Mesh = mesh;
+        }
     }
 }

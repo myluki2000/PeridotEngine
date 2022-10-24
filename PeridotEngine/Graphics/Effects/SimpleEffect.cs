@@ -6,13 +6,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public class SimpleEffect : EffectBase
+    public class SimpleEffect : EffectBase, IEffectTexture
     {
         private readonly EffectParameter worldViewProjParam;
+        private readonly EffectParameter textureParam;
 
         public SimpleEffect() : base(Globals.Content.Load<Effect>("Effects/SimpleEffect"))
         {
             worldViewProjParam = Parameters["WorldViewProjection"];
+            textureParam = Parameters["Texture"];
         }
 
         private Matrix worldViewProj;
@@ -24,6 +26,12 @@ namespace PeridotEngine.Graphics.Effects
                 worldViewProj = value;
                 worldViewProjParam.SetValue(value);
             }
+        }
+
+        public Texture2D Texture
+        {
+            get => textureParam.GetValueTexture2D();
+            set => textureParam.SetValue(value);
         }
     }
 }

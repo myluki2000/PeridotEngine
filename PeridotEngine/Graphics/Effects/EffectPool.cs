@@ -20,6 +20,14 @@ namespace PeridotEngine.Graphics.Effects
             }
         }
 
+        public static void UpdateEffectTextures(Texture2D texture)
+        {
+            foreach (IEffectTexture effect in effects.Values.OfType<IEffectTexture>())
+            {
+                effect.Texture = texture;
+            }
+        }
+
         public static T Effect<T>() where T : EffectBase, new()
         {
             if (effects.TryGetValue(typeof(T), out EffectBase? value))

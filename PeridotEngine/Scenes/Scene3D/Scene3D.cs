@@ -93,10 +93,13 @@ namespace PeridotEngine.Scenes.Scene3D
 
             EffectPool.UpdateEffectMatrices(Matrix.Identity, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
 
+            if (Resources.TextureResources.TextureAtlas != null)
+            {
+                EffectPool.UpdateEffectTextures(Resources.TextureResources.TextureAtlas);
+            }
+
             meshes!.ForEach((StaticMeshComponent meshC, StaticPositionRotationScaleComponent posC, EffectComponent effectC) =>
             {
-                effectC.Effect.Parameters["Texture"].SetValue(Resources.TextureResources.TextureAtlas);
-
                 if (meshC.VertexBuffer == null)
                 {
                     meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionColorTexture),

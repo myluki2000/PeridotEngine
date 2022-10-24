@@ -20,9 +20,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Query.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Camera\Camera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Mesh.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\ScreenManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\MeshResources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\Scene3D.cs" />

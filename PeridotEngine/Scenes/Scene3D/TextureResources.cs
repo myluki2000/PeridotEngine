@@ -12,7 +12,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private TextureInfo?[] textures = new TextureInfo[] { };
 
-        public event EventHandler<IEnumerable<TextureInfo>> TextureListChanged;
+        public event EventHandler<IEnumerable<TextureInfo>>? TextureListChanged;
 
         public RectangleF GetTextureBoundsInAtlas(uint textureId)
         {
@@ -31,7 +31,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             GenerateAtlas();
 
-            TextureListChanged.Invoke(this, GetAllTextures());
+            TextureListChanged?.Invoke(this, GetAllTextures());
         }
 
         public void AddTextures(IEnumerable<string> filePaths)
@@ -43,7 +43,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             GenerateAtlas();
 
-            TextureListChanged.Invoke(this, GetAllTextures());
+            TextureListChanged?.Invoke(this, GetAllTextures());
         }
 
         private void AddTextureWithoutRefreshingAtlas(string filePath)

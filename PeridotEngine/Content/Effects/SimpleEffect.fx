@@ -7,18 +7,24 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
+#include "Macros.fxh"
+
+DECLARE_TEXTURE(Texture, 0);
+
 matrix WorldViewProjection;
 
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
 	float4 Color : COLOR0;
+    float2 TexCoord : TEXCOORD0;
 };
 
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float4 Color : COLOR0;
+    float2 TexCoord : TEXCOORD0;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -27,13 +33,14 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 	output.Position = mul(input.Position, WorldViewProjection);
 	output.Color = input.Color;
+    output.TexCoord = input.TexCoord;
 
 	return output;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-	return input.Color;
+	return SAMPLE_TEXTURE(Texture, input.TexCoord) * input.Color;
 }
 
 technique

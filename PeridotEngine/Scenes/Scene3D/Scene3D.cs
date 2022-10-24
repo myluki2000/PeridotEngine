@@ -49,11 +49,11 @@ namespace PeridotEngine.Scenes.Scene3D
                 Camera.MoveRight((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
-            if (keyState.IsKeyDown(Keys.LeftShift))
+            if (keyState.IsKeyDown(Keys.Space))
             {
                 Camera.MoveUp((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            else if (keyState.IsKeyDown(Keys.LeftControl))
+            else if (keyState.IsKeyDown(Keys.LeftShift))
             {
                 Camera.MoveDown((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
@@ -62,6 +62,8 @@ namespace PeridotEngine.Scenes.Scene3D
         private bool firstDraw = true;
         private void BeforeFirstDraw()
         {
+            Globals.Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+
             Resources.MeshResources.CreateQuad("quad");
 
             IComponent[] components = new IComponent[]
@@ -86,7 +88,6 @@ namespace PeridotEngine.Scenes.Scene3D
             }
 
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
-            gd.RasterizerState = RasterizerState.CullNone;
 
             gd.Clear(Color.CornflowerBlue);
 
@@ -94,6 +95,8 @@ namespace PeridotEngine.Scenes.Scene3D
 
             meshes!.ForEach((StaticMeshComponent meshC, StaticPositionRotationScaleComponent posC, EffectComponent effectC) =>
             {
+                effectC.Effect.Parameters["Texture"].SetValue(Resources.TextureResources.TextureAtlas);
+
                 if (meshC.VertexBuffer == null)
                 {
                     meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionColorTexture),

@@ -19,16 +19,16 @@ namespace PeridotWindows.EditorScreen.Forms
         {
             this.scene = scene;
 
-            scene.Resources.TextureListChanged += OnTextureListChanged;
+            scene.Resources.TextureResources.TextureListChanged += OnTextureListChanged;
 
             InitializeComponent();
         }
 
-        private void OnTextureListChanged(object? sender, IEnumerable<SceneResources.TextureInfo> textureInfos)
+        private void OnTextureListChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
         {
             lvTextures.Items.Clear();
 
-            foreach (SceneResources.TextureInfo texInfo in textureInfos)
+            foreach (TextureResources.TextureInfo texInfo in textureInfos)
             {
                 ImageList imgList = new();
                 lvTextures.LargeImageList = imgList;
@@ -52,7 +52,7 @@ namespace PeridotWindows.EditorScreen.Forms
 
             if (!string.IsNullOrEmpty(path))
             {
-                scene.Resources.AddTexture(path);
+                scene.Resources.TextureResources.AddTexture(path);
             }
         }
     }

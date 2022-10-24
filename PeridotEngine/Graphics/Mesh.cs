@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PeridotEngine.Graphics
 {
-    internal class Mesh
+    public class Mesh
     {
         public VertexPositionColorTexture[] Vertices { get; set; }
         public uint TextureId { get; set; }

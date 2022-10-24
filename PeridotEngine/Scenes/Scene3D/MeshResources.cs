@@ -23,12 +23,12 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 Vertices = new VertexPositionColorTexture[6]
                 {
-                    new (new Vector3(-0.5f, 0, 0.5f), Color.White, new Vector2(0, 0)),
-                    new (new Vector3(0.5f, 0, 0.5f), Color.White, new Vector2(1, 0)),
-                    new (new Vector3(0.5f, 0, -0.5f), Color.White, new Vector2(0, 1)),
+                    new (new Vector3(-0.5f, 0, 0.5f), Color.White, new Vector2(0, 1)),
+                    new (new Vector3(0.5f, 0, 0.5f), Color.White, new Vector2(1, 1)),
+                    new (new Vector3(0.5f, 0, -0.5f), Color.White, new Vector2(1, 0)),
 
                     new (new Vector3(0.5f, 0, -0.5f), Color.White, new Vector2(1, 0)),
-                    new (new Vector3(-0.5f, 0, -0.5f), Color.White, new Vector2(1, 1)),
+                    new (new Vector3(-0.5f, 0, -0.5f), Color.White, new Vector2(0, 0)),
                     new (new Vector3(-0.5f, 0, 0.5f), Color.White, new Vector2(0, 1)),
                 }
             };

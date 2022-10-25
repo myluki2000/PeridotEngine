@@ -12,42 +12,112 @@
 DECLARE_TEXTURE(Texture, 0);
 
 matrix WorldViewProjection;
+float4 MixColor;
+float2 TexturePosition;
+float2 TextureSize;
 
-struct VertexShaderInput
+struct VertexInNone
 {
 	float4 Position : POSITION0;
-	float4 Color : COLOR0;
-    float2 TexCoord : TEXCOORD0;
 };
 
-struct VertexShaderOutput
+struct PixelInNone
 {
 	float4 Position : SV_POSITION;
-	float4 Color : COLOR0;
-    float2 TexCoord : TEXCOORD0;
 };
 
-VertexShaderOutput MainVS(in VertexShaderInput input)
+PixelInNone VS_None(in VertexInNone input)
 {
-	VertexShaderOutput output = (VertexShaderOutput)0;
+    PixelInNone output = (PixelInNone) 0;
 
 	output.Position = mul(input.Position, WorldViewProjection);
-	output.Color = input.Color;
-    output.TexCoord = input.TexCoord;
 
 	return output;
 }
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 PS_None(PixelInNone input) : COLOR
 {
-	return SAMPLE_TEXTURE(Texture, input.TexCoord) * input.Color;
+	return MixColor;
 }
+
+struct VertexInColor
+{
+    float4 Position : POSITION0;
+    float4 Color : COLOR0;
+};
+
+struct PixelInColor
+{
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR0;
+};
+
+PixelInColor VS_Color(in VertexInColor input)
+{
+    PixelInColor output = (PixelInColor) 0;
+
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.Color = input.Color;
+
+    return output;
+}
+
+float4 PS_Color(PixelInColor input) : COLOR
+{
+    return input.Color * MixColor;
+}
+
+struct VertexInTexture
+{
+    float4 Position : POSITION0;
+    float2 TexCoord : TEXCOORD0;
+};
+
+struct PixelInTexture
+{
+    float4 Position : SV_POSITION;
+    float2 TexCoord : TEXCOORD0;
+};
+
+PixelInTexture VS_Texture(in VertexInTexture input)
+{
+    PixelInTexture output = (PixelInTexture) 0;
+
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.TexCoord = input.TexCoord;
+
+    return output;
+}
+
+float4 PS_Texture(PixelInTexture input) : COLOR
+{
+    return SAMPLE_TEXTURE(Texture, input.TexCoord) * MixColor;
+}
+
+// appearance "none" (just solid white)
+technique
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL VS_None();
+		PixelShader = compile PS_SHADERMODEL PS_None();
+	}
+};
 
 technique
 {
 	pass P0
 	{
-		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL MainPS();
-	}
+        VertexShader = compile VS_SHADERMODEL VS_Color();
+        PixelShader = compile PS_SHADERMODEL PS_Color();
+    }
 };
+
+technique
+{
+	pass P0
+	{
+        VertexShader = compile VS_SHADERMODEL VS_Texture();
+        PixelShader = compile PS_SHADERMODEL PS_Texture();
+    }
+}

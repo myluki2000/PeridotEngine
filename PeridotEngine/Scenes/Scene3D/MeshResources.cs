@@ -20,14 +20,14 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void CreateQuad(string name)
         {
-            Mesh mesh = new(new Vector3[6] {
-                    new Vector3(-0.5f, 0, 0.5f),
-                    new Vector3(0.5f, 0, 0.5f),
-                    new Vector3(0.5f, 0, -0.5f),
+            Mesh mesh = new Mesh<VertexPositionTexture>(new VertexPositionTexture[6] {
+                    new(new Vector3(-0.5f, 0,  0.5f), new Vector2(0, 1)),
+                    new(new Vector3( 0.5f, 0,  0.5f), new Vector2(1, 1)),
+                    new(new Vector3( 0.5f, 0, -0.5f), new Vector2(1, 0)),
 
-                    new Vector3(0.5f, 0, -0.5f),
-                    new Vector3(-0.5f, 0, -0.5f),
-                    new Vector3(-0.5f, 0, 0.5f),
+                    new(new Vector3( 0.5f, 0, -0.5f), new Vector2(1, 0)),
+                    new(new Vector3(-0.5f, 0, -0.5f), new Vector2(0, 0)),
+                    new(new Vector3(-0.5f, 0,  0.5f), new Vector2(0, 1)),
                 });
 
             meshes.Add(new MeshInfo(name, mesh));

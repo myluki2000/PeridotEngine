@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,6 +11,7 @@ using PeridotEngine.Game.ECS.Components;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Camera;
 using PeridotEngine.Graphics.Effects;
+using PeridotEngine.Graphics.Geometry;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
@@ -68,19 +71,20 @@ namespace PeridotEngine.Scenes.Scene3D
 
             IComponent[] components = new IComponent[]
             {
-                new StaticMeshComponent(Resources.MeshResources.GetAllMeshes().First()),
-                new SolidColorAppearanceComponent(Color.Red),
+                new StaticMeshComponent(Resources.MeshResources.GetAllMeshes().First())
+                {
+                    Appearance = StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE,
+                },
                 new StaticPositionRotationScaleComponent(),
                 new EffectComponent(EffectPool.Effect<SimpleEffect>())
             };
 
-            Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent), typeof(MeshAppearanceComponent))
+            Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent))
                 .CreateEntity(components);
 
             meshes = Ecs.Query()
                 .Has<StaticPositionRotationScaleComponent>()
                 .Has<StaticMeshComponent>()
-                .Has<MeshAppearanceComponent>()
                 .Has<EffectComponent>();
         }
 
@@ -98,6 +102,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             EffectPool.UpdateEffectMatrices(Matrix.Identity, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
 
+            // TODO: Only update effect textures if texture atlas changes
             if (Resources.TextureResources.TextureAtlas != null)
             {
                 EffectPool.UpdateEffectTextures(Resources.TextureResources.TextureAtlas);
@@ -105,33 +110,55 @@ namespace PeridotEngine.Scenes.Scene3D
 
             meshes!.ForEach((StaticMeshComponent meshC, StaticPositionRotationScaleComponent posC, EffectComponent effectC) =>
             {
-                if (meshC.VertexBuffer == null)
+                if (meshC.Mesh.VertexBuffer == null)
                 {
-                    switch(meshC.Appearance)
-                    {
-                        case StaticMeshComponent.MeshAppearance.SolidColor:
-                            meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionColor),
-                            meshC.Mesh.Vertices.Length, BufferUsage.WriteOnly);
-                            meshC.VertexBuffer.SetData(meshC.Mesh.Vertices.Select(x => new VertexPositionColor(x, meshC.Color)).ToArray());
-                            break;
-                        case StaticMeshComponent.MeshAppearance.DiffuseTexture:
-                            meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionTexture),
-                            meshC.Mesh.Vertices.Length, BufferUsage.WriteOnly);
-                            meshC.VertexBuffer.SetData(meshC.Mesh.Vertices.Select(x => new VertexPositionTexture(x, )).ToArray());
-                            break;
-                    }
+                    IVertexType[] verts = meshC.Mesh.GetVerticesBase();
+                    meshC.Mesh.VertexBuffer = new VertexBuffer(gd, meshC.Mesh.GetVertexType(),
+                        verts.Length, BufferUsage.WriteOnly);
 
-                    meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionColorTexture),
-                        meshC.Mesh.Vertices.Length, BufferUsage.WriteOnly);
-                    meshC.VertexBuffer.SetData(meshC.Mesh.Vertices);
+                    object vertsObj = meshC.Mesh.GetType().GetMethod("GetVertices")
+                        .Invoke(meshC.Mesh, new object[] { });
+
+                    typeof(VertexBuffer).GetMethods().First(x => x.Name == "SetData" && x.GetParameters().Length == 1)
+                        .MakeGenericMethod(meshC.Mesh.GetVertexType()).Invoke(meshC.Mesh.VertexBuffer, new[] {vertsObj});
                 }
 
-                gd.SetVertexBuffer(meshC.VertexBuffer);
+                gd.SetVertexBuffer(meshC.Mesh.VertexBuffer);
+
+                if (meshC.Mesh.GetVertexType() == typeof(VertexPosition))
+                {
+                    effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[0];
+                }
+                else if (meshC.Mesh.GetVertexType() == typeof(VertexPositionColor))
+                {
+                    effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[1];
+                }
+                else if (meshC.Mesh.GetVertexType() == typeof(VertexPositionTexture))
+                {
+                    if (meshC.Appearance.HasFlag(StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE))
+                    {
+                        effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[2];
+                        
+                    }
+                    else
+                    {
+                        effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[0];
+                    }
+                }
+
+                if (meshC.Appearance.HasFlag(StaticMeshComponent.MeshAppearance.MIX_COLOR))
+                {
+                    effectC.Effect.MixColor = meshC.Color;
+                }
+                else
+                {
+                    effectC.Effect.MixColor = Color.White;
+                }
 
                 foreach (EffectPass pass in effectC.Effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-                    gd.DrawPrimitives(PrimitiveType.TriangleList, 0, meshC.VertexBuffer.VertexCount / 3);
+                    gd.DrawPrimitives(PrimitiveType.TriangleList, 0, meshC.Mesh.VertexBuffer.VertexCount / 3);
                 }
             });
         }

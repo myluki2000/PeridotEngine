@@ -6,13 +6,38 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PeridotEngine.Graphics.Geometry
 {
-    public class Mesh
+    public class Mesh<T> : Mesh where T : IVertexType
     {
-        public VertexPositionColorNormalTexture[] Vertices { get; set; }
+        private readonly T[] vertices;
 
-        public Mesh(Vector3[] vertices)
+        public override IVertexType[] GetVerticesBase()
         {
-            this.Vertices = vertices;
+            return Array.ConvertAll(vertices, x => (IVertexType)x);
         }
+
+        public T[] GetVertices()
+        {
+            return vertices;
+        }
+
+
+        public Mesh(T[] vertices)
+        {
+            this.vertices = vertices;
+        }
+
+        public override Type GetVertexType()
+        {
+            return typeof(T);
+        }
+    }
+
+    public abstract class Mesh
+    {
+        public VertexBuffer? VertexBuffer { get; set; }
+
+        public abstract IVertexType[] GetVerticesBase();
+
+        public abstract Type GetVertexType();
     }
 }

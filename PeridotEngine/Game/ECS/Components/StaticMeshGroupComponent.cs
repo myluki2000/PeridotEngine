@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics;
+using PeridotEngine.Graphics.Geometry;
 
 namespace PeridotEngine.Game.ECS.Components
 {

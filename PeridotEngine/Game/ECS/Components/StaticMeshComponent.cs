@@ -12,11 +12,9 @@ namespace PeridotEngine.Game.ECS.Components
     {
         public Mesh Mesh { get; set; }
 
-        public MeshAppearance Appearance { get; set; } = MeshAppearance.None;
+        public MeshAppearance Appearance { get; set; } = MeshAppearance.NONE;
         public Color Color { get; set; }
         public RectangleF DiffuseTexture { get; set; }
-
-        public VertexBuffer? VertexBuffer { get; set; }
 
         public StaticMeshComponent(Mesh mesh)
         {
@@ -26,9 +24,9 @@ namespace PeridotEngine.Game.ECS.Components
         [Flags]
         public enum MeshAppearance
         {
-            None = 0,
-            SolidColor = 1,
-            DiffuseTexture = 2,
+            NONE = 0,
+            MIX_COLOR = 1,
+            DIFFUSE_TEXTURE = 2,
         }
     }
 }

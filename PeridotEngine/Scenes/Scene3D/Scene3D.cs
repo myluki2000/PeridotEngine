@@ -69,14 +69,19 @@ namespace PeridotEngine.Scenes.Scene3D
             IComponent[] components = new IComponent[]
             {
                 new StaticMeshComponent(Resources.MeshResources.GetAllMeshes().First()),
+                new SolidColorAppearanceComponent(Color.Red),
                 new StaticPositionRotationScaleComponent(),
                 new EffectComponent(EffectPool.Effect<SimpleEffect>())
             };
 
-            Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent))
+            Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent), typeof(MeshAppearanceComponent))
                 .CreateEntity(components);
 
-            meshes = Ecs.Query().Has<StaticMeshComponent>().Has<StaticPositionRotationScaleComponent>().Has<EffectComponent>();
+            meshes = Ecs.Query()
+                .Has<StaticPositionRotationScaleComponent>()
+                .Has<StaticMeshComponent>()
+                .Has<MeshAppearanceComponent>()
+                .Has<EffectComponent>();
         }
 
         public override void Draw(GameTime gameTime)
@@ -102,6 +107,20 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 if (meshC.VertexBuffer == null)
                 {
+                    switch(meshC.Appearance)
+                    {
+                        case StaticMeshComponent.MeshAppearance.SolidColor:
+                            meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionColor),
+                            meshC.Mesh.Vertices.Length, BufferUsage.WriteOnly);
+                            meshC.VertexBuffer.SetData(meshC.Mesh.Vertices.Select(x => new VertexPositionColor(x, meshC.Color)).ToArray());
+                            break;
+                        case StaticMeshComponent.MeshAppearance.DiffuseTexture:
+                            meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionTexture),
+                            meshC.Mesh.Vertices.Length, BufferUsage.WriteOnly);
+                            meshC.VertexBuffer.SetData(meshC.Mesh.Vertices.Select(x => new VertexPositionTexture(x, )).ToArray());
+                            break;
+                    }
+
                     meshC.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionColorTexture),
                         meshC.Mesh.Vertices.Length, BufferUsage.WriteOnly);
                     meshC.VertexBuffer.SetData(meshC.Mesh.Vertices);

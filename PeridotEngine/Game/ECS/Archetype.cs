@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using PeridotEngine.Game.ECS.Components;
 using SharpDX.Direct3D11;
@@ -31,9 +32,13 @@ namespace PeridotEngine.Game.ECS
             entityComponents = entityComponents.OrderBy(x => x.GetType().GetHashCode()).ToArray();
 
             // check that all components of the archetype were provided for the entity
-            Debug.Assert(entityComponents.Select(x => x.GetType()).SequenceEqual(ComponentTypes),
-                "Not all required components were passed to the CreateEntity method when creating an entity of this specific archetype.");
-
+            if (entityComponents.Length != Components.Count) throw new Exception("Not all required components were passed to the CreateEntity method when creating an entity of this specific archetype.");
+            foreach(Type componentType in ComponentTypes)
+            {
+                if(!entityComponents.Any(e => componentType.IsInstanceOfType(e)))
+                    throw new Exception("Not all required components were passed to the CreateEntity method when creating an entity of this specific archetype.");
+            }
+     
             for (int i = 0; i < entityComponents.Length; i++)
             {
                 Components[i].Add(entityComponents[i]);

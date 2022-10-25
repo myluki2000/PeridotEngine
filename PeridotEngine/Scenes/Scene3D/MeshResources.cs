@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics;
+using PeridotEngine.Graphics.Geometry;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotEngine.Scenes.Scene3D
@@ -19,19 +20,15 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void CreateQuad(string name)
         {
-            Mesh mesh = new()
-            {
-                Vertices = new VertexPositionColorTexture[6]
-                {
-                    new (new Vector3(-0.5f, 0, 0.5f), Color.White, new Vector2(0, 1)),
-                    new (new Vector3(0.5f, 0, 0.5f), Color.White, new Vector2(1, 1)),
-                    new (new Vector3(0.5f, 0, -0.5f), Color.White, new Vector2(1, 0)),
+            Mesh mesh = new(new Vector3[6] {
+                    new Vector3(-0.5f, 0, 0.5f),
+                    new Vector3(0.5f, 0, 0.5f),
+                    new Vector3(0.5f, 0, -0.5f),
 
-                    new (new Vector3(0.5f, 0, -0.5f), Color.White, new Vector2(1, 0)),
-                    new (new Vector3(-0.5f, 0, -0.5f), Color.White, new Vector2(0, 0)),
-                    new (new Vector3(-0.5f, 0, 0.5f), Color.White, new Vector2(0, 1)),
-                }
-            };
+                    new Vector3(0.5f, 0, -0.5f),
+                    new Vector3(-0.5f, 0, -0.5f),
+                    new Vector3(-0.5f, 0, 0.5f),
+                });
 
             meshes.Add(new MeshInfo(name, mesh));
         }

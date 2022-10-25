@@ -101,7 +101,7 @@ namespace PeridotEngine.Game.ECS
             }
         }
 
-        public void ForEach<T1, T2, T3>(Action<T1, T2, T3> action) where T1 : IComponent where T2 : IComponent
+        public void ForEach<T1, T2, T3>(Action<T1, T2, T3> action) where T1 : IComponent where T2 : IComponent where T3 : IComponent
         {
             if (archetypesOutdated) UpdateMatchingArchetypes();
 
@@ -114,6 +114,50 @@ namespace PeridotEngine.Game.ECS
                 for (int i = 0; i < archetype.EntityCount; i++)
                 {
                     action.Invoke((T1)archetype.Components[c1Index][i], (T2)archetype.Components[c2Index][i], (T3)archetype.Components[c3Index][i]);
+                }
+            }
+        }
+
+        public void ForEach<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action) where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
+        {
+            if (archetypesOutdated) UpdateMatchingArchetypes();
+
+            foreach (Archetype archetype in matchingArchetypes)
+            {
+                int c1Index = Array.IndexOf(archetype.ComponentTypes, typeof(T1));
+                int c2Index = Array.IndexOf(archetype.ComponentTypes, typeof(T2));
+                int c3Index = Array.IndexOf(archetype.ComponentTypes, typeof(T3));
+                int c4Index = Array.IndexOf(archetype.ComponentTypes, typeof(T4));
+
+                for (int i = 0; i < archetype.EntityCount; i++)
+                {
+                    action.Invoke((T1)archetype.Components[c1Index][i],
+                        (T2)archetype.Components[c2Index][i],
+                        (T3)archetype.Components[c3Index][i],
+                        (T4)archetype.Components[c4Index][i]);
+                }
+            }
+        }
+
+        public void ForEach<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> action) where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
+        {
+            if (archetypesOutdated) UpdateMatchingArchetypes();
+
+            foreach (Archetype archetype in matchingArchetypes)
+            {
+                int c1Index = Array.IndexOf(archetype.ComponentTypes, typeof(T1));
+                int c2Index = Array.IndexOf(archetype.ComponentTypes, typeof(T2));
+                int c3Index = Array.IndexOf(archetype.ComponentTypes, typeof(T3));
+                int c4Index = Array.IndexOf(archetype.ComponentTypes, typeof(T4));
+                int c5Index = Array.IndexOf(archetype.ComponentTypes, typeof(T5));
+
+                for (int i = 0; i < archetype.EntityCount; i++)
+                {
+                    action.Invoke((T1)archetype.Components[c1Index][i],
+                        (T2)archetype.Components[c2Index][i],
+                        (T3)archetype.Components[c3Index][i],
+                        (T4)archetype.Components[c4Index][i],
+                        (T5)archetype.Components[c5Index][i]);
                 }
             }
         }

@@ -95,6 +95,37 @@ float4 PS_Texture(PixelInTexture input) : COLOR
     return SAMPLE_TEXTURE(Texture, texCoord) * MixColor;
 }
 
+struct VertexInColorTexture
+{
+    float4 Position : POSITION0;
+    float4 Color : COLOR0;
+    float2 TexCoord : TEXCOORD0;
+};
+
+struct PixelInColorTexture
+{
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR0;
+    float2 TexCoord : TEXCOORD0;
+};
+
+PixelInColorTexture VS_ColorTexture(in VertexInColorTexture input)
+{
+    PixelInColorTexture output = (PixelInColorTexture) 0;
+
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.TexCoord = input.TexCoord;
+    output.Color = input.Color;
+
+    return output;
+}
+
+float4 PS_ColorTexture(PixelInColorTexture input) : COLOR
+{
+    float2 texCoord = TexturePosition + input.TexCoord * TextureSize;
+    return SAMPLE_TEXTURE(Texture, texCoord) * input.Color * MixColor;
+}
+
 // appearance "none" (just solid white)
 technique
 {
@@ -116,9 +147,18 @@ technique
 
 technique
 {
-	pass P0
-	{
+    pass P0
+    {
         VertexShader = compile VS_SHADERMODEL VS_Texture();
         PixelShader = compile PS_SHADERMODEL PS_Texture();
     }
-}
+};
+
+technique
+{
+    pass P0
+    {
+        VertexShader = compile VS_SHADERMODEL VS_ColorTexture();
+        PixelShader = compile PS_SHADERMODEL PS_ColorTexture();
+    }
+};

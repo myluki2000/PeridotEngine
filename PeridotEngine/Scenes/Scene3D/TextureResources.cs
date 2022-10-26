@@ -16,6 +16,8 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public RectangleF GetTextureBoundsInAtlas(uint textureId)
         {
+            if (textureId >= textures.Length) return RectangleF.Empty;
+
             TextureInfo? tex = textures[textureId];
             return tex?.Bounds ?? RectangleF.Empty;
         }
@@ -191,7 +193,8 @@ namespace PeridotEngine.Scenes.Scene3D
                         TextureInfo texInfo = textures[texId];
                         if (texInfo == null) throw new Exception();
 
-                        texInfo.Bounds = new RectangleF(currentX, currentY, bitmap.Width, bitmap.Height);
+                        texInfo.Bounds = new RectangleF(currentX / (float)atlasSize, currentY / (float)atlasSize,
+                            bitmap.Width / (float)atlasSize, bitmap.Height / (float)atlasSize);
                         currentX += bitmap.Width;
                         texIndex++;
                     }

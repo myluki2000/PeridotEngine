@@ -91,7 +91,8 @@ PixelInTexture VS_Texture(in VertexInTexture input)
 
 float4 PS_Texture(PixelInTexture input) : COLOR
 {
-    return SAMPLE_TEXTURE(Texture, input.TexCoord) * MixColor;
+    float2 texCoord = TexturePosition + input.TexCoord * TextureSize;
+    return SAMPLE_TEXTURE(Texture, texCoord) * MixColor;
 }
 
 // appearance "none" (just solid white)

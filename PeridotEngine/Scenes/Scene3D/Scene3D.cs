@@ -110,6 +110,8 @@ namespace PeridotEngine.Scenes.Scene3D
 
             meshes!.ForEach((StaticMeshComponent meshC, StaticPositionRotationScaleComponent posC, EffectComponent effectC) =>
             {
+                meshC.DiffuseTexture = Resources.TextureResources.GetTextureBoundsInAtlas(0);
+
                 if (meshC.Mesh.VertexBuffer == null)
                 {
                     IVertexType[] verts = meshC.Mesh.GetVerticesBase();
@@ -138,7 +140,10 @@ namespace PeridotEngine.Scenes.Scene3D
                     if (meshC.Appearance.HasFlag(StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE))
                     {
                         effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[2];
-                        
+
+                        IEffectTexture texEffect = (IEffectTexture)effectC.Effect;
+                        texEffect.TexturePosition = meshC.DiffuseTexture.Location.ToVector2();
+                        texEffect.TextureSize = meshC.DiffuseTexture.Size.ToVector2();
                     }
                     else
                     {

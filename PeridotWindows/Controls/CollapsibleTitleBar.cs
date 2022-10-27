@@ -18,10 +18,11 @@ namespace PeridotWindows.Controls
         }
 
         [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override string Text
         {
             get => lblTitle.Text;
-            set => lblTitle.Text = value;
+            set => lblTitle.Text = base.Text = value;
         }
 
         [Browsable(true)]

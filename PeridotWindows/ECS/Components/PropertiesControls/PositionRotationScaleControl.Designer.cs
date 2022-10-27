@@ -64,6 +64,7 @@
             this.titleBar.Name = "titleBar";
             this.titleBar.Size = new System.Drawing.Size(552, 28);
             this.titleBar.TabIndex = 2;
+            this.titleBar.Text = "Position Rotation Scale";
             this.titleBar.CollapseToggled += new System.EventHandler<bool>(this.titleBar_CollapseToggled);
             // 
             // PositionRotationScaleControl

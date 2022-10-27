@@ -43,6 +43,7 @@
             this.titleBar.Name = "titleBar";
             this.titleBar.Size = new System.Drawing.Size(550, 28);
             this.titleBar.TabIndex = 3;
+            this.titleBar.Text = "Static Mesh";
             // 
             // StaticMeshControl
             // 

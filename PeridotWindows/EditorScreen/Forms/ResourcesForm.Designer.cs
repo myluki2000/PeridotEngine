@@ -32,8 +32,8 @@
             this.tpTextures = new System.Windows.Forms.TabPage();
             this.lvTextures = new System.Windows.Forms.ListView();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.tpModels = new System.Windows.Forms.TabPage();
             this.btnAddTexture = new System.Windows.Forms.Button();
+            this.tpModels = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
             this.tpTextures.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -47,7 +47,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(307, 688);
+            this.tabControl1.Size = new System.Drawing.Size(911, 227);
             this.tabControl1.TabIndex = 0;
             // 
             // tpTextures
@@ -57,7 +57,7 @@
             this.tpTextures.Location = new System.Drawing.Point(4, 24);
             this.tpTextures.Name = "tpTextures";
             this.tpTextures.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTextures.Size = new System.Drawing.Size(299, 660);
+            this.tpTextures.Size = new System.Drawing.Size(903, 199);
             this.tpTextures.TabIndex = 0;
             this.tpTextures.Text = "Textures";
             this.tpTextures.UseVisualStyleBackColor = true;
@@ -67,7 +67,7 @@
             this.lvTextures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvTextures.Location = new System.Drawing.Point(3, 3);
             this.lvTextures.Name = "lvTextures";
-            this.lvTextures.Size = new System.Drawing.Size(293, 601);
+            this.lvTextures.Size = new System.Drawing.Size(897, 140);
             this.lvTextures.TabIndex = 0;
             this.lvTextures.UseCompatibleStateImageBehavior = false;
             // 
@@ -75,20 +75,10 @@
             // 
             this.panel1.Controls.Add(this.btnAddTexture);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 604);
+            this.panel1.Location = new System.Drawing.Point(3, 143);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(293, 53);
+            this.panel1.Size = new System.Drawing.Size(897, 53);
             this.panel1.TabIndex = 1;
-            // 
-            // tpModels
-            // 
-            this.tpModels.Location = new System.Drawing.Point(4, 24);
-            this.tpModels.Name = "tpModels";
-            this.tpModels.Padding = new System.Windows.Forms.Padding(3);
-            this.tpModels.Size = new System.Drawing.Size(299, 660);
-            this.tpModels.TabIndex = 1;
-            this.tpModels.Text = "Models";
-            this.tpModels.UseVisualStyleBackColor = true;
             // 
             // btnAddTexture
             // 
@@ -100,11 +90,21 @@
             this.btnAddTexture.UseVisualStyleBackColor = true;
             this.btnAddTexture.Click += new System.EventHandler(this.btnAddTexture_Click);
             // 
+            // tpModels
+            // 
+            this.tpModels.Location = new System.Drawing.Point(4, 24);
+            this.tpModels.Name = "tpModels";
+            this.tpModels.Padding = new System.Windows.Forms.Padding(3);
+            this.tpModels.Size = new System.Drawing.Size(299, 660);
+            this.tpModels.TabIndex = 1;
+            this.tpModels.Text = "Models";
+            this.tpModels.UseVisualStyleBackColor = true;
+            // 
             // ResourcesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(307, 688);
+            this.ClientSize = new System.Drawing.Size(911, 227);
             this.Controls.Add(this.tabControl1);
             this.Name = "ResourcesForm";
             this.Text = "ResourcesForm";

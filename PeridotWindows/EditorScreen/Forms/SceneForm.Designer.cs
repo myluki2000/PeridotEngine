@@ -1,6 +1,6 @@
 ﻿namespace PeridotWindows.EditorScreen.Forms
 {
-    partial class EntityForm
+    partial class SceneForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,32 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.flpComponents = new System.Windows.Forms.FlowLayoutPanel();
+            this.lvScene = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
-            // flpComponents
+            // lvScene
             // 
-            this.flpComponents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpComponents.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpComponents.Location = new System.Drawing.Point(0, 0);
-            this.flpComponents.Name = "flpComponents";
-            this.flpComponents.Size = new System.Drawing.Size(296, 594);
-            this.flpComponents.TabIndex = 0;
+            this.lvScene.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvScene.Location = new System.Drawing.Point(0, 0);
+            this.lvScene.MultiSelect = false;
+            this.lvScene.Name = "lvScene";
+            this.lvScene.Size = new System.Drawing.Size(308, 525);
+            this.lvScene.TabIndex = 0;
+            this.lvScene.UseCompatibleStateImageBehavior = false;
+            this.lvScene.View = System.Windows.Forms.View.List;
+            this.lvScene.SelectedIndexChanged += new System.EventHandler(this.lvScene_SelectedIndexChanged);
             // 
-            // EntityForm
+            // SceneForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(296, 594);
-            this.Controls.Add(this.flpComponents);
-            this.Name = "EntityForm";
-            this.Text = "EntityForm";
+            this.ClientSize = new System.Drawing.Size(308, 525);
+            this.Controls.Add(this.lvScene);
+            this.Name = "SceneForm";
+            this.Text = "SceneForm";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private FlowLayoutPanel flpComponents;
+        private ListView lvScene;
     }
 }

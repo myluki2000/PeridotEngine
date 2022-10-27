@@ -2,7 +2,7 @@
 
 namespace PeridotWindows.ECS.Components
 {
-    internal sealed class PositionRotationScaleComponent : IComponent
+    internal sealed partial class PositionRotationScaleComponent : IComponent
     {
         public Vector3 Position
         {

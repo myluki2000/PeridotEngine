@@ -46,7 +46,7 @@ namespace PeridotWindows.ECS
         {
             for (int i = 0; i < EntityCount; i++)
             {
-                List<IComponent> c = new(ComponentTypes.Length);
+                IComponent[] c = new IComponent[ComponentTypes.Length];
                 for (int j = 0; j < ComponentTypes.Length; j++)
                 {
                     c[j] = (IComponent)Components[j][i];

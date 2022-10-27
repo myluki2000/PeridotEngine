@@ -3,7 +3,7 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotWindows.ECS.Components
 {
-    internal sealed class StaticMeshComponent : IComponent
+    internal sealed partial class StaticMeshComponent : IComponent
     {
         public Mesh Mesh { get; set; }
 

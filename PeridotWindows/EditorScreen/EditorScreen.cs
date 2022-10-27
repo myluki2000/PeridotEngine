@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using PeridotEngine;
 using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Scenes.Scene3D;
+using PeridotWindows.ECS;
 using PeridotWindows.EditorScreen.Forms;
 
 namespace PeridotWindows.EditorScreen
@@ -16,6 +17,9 @@ namespace PeridotWindows.EditorScreen
         private ResourcesForm? frmResources;
         private ToolboxForm? frmToolbox;
         private EntityForm? frmEntity;
+        private SceneForm? frmScene;
+
+        private Entity? selectedEntity = null;
 
         public override void Initialize()
         {
@@ -25,8 +29,19 @@ namespace PeridotWindows.EditorScreen
             frmToolbox.Show();
             frmEntity = new();
             frmEntity.Show();
+            frmScene = new(scene);
+            frmScene.Show();
+
+            frmScene.SelectedEntityChanged += FrmScene_OnSelectedEntityChanged;
 
             scene.Initialize();
+        }
+
+        private void FrmScene_OnSelectedEntityChanged(object? sender, Entity? e)
+        {
+            selectedEntity = e;
+
+            if (frmEntity != null) frmEntity.Entity = e;
         }
 
         public override void Update(GameTime gameTime)

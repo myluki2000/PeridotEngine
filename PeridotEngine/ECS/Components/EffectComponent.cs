@@ -2,7 +2,7 @@
 
 namespace PeridotWindows.ECS.Components
 {
-    public class EffectComponent : IComponent
+    public partial class EffectComponent : IComponent
     {
         public EffectBase Effect { get; set; }
 

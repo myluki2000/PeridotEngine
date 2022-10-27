@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using PeridotEngine.Graphics;
-using PeridotEngine.Graphics.Geometry;
+﻿using PeridotEngine.Graphics.Geometry;
 using Color = Microsoft.Xna.Framework.Color;
 
-namespace PeridotEngine.Game.ECS.Components
+namespace PeridotWindows.ECS.Components
 {
     internal sealed class StaticMeshComponent : IComponent
     {

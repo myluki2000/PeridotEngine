@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using PeridotEngine.Graphics.Effects;
+﻿using PeridotEngine.Graphics.Effects;
 
-namespace PeridotEngine.Game.ECS.Components
+namespace PeridotWindows.ECS.Components
 {
     public class EffectComponent : IComponent
     {

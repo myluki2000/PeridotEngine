@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using PeridotEngine.Game.ECS.Components;
-
-namespace PeridotEngine.Game.ECS
+﻿namespace PeridotWindows.ECS
 {
     public class Ecs
     {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PeridotEngine.Game.ECS.Components;
+﻿using PeridotWindows.ECS.Components;
 
-namespace PeridotEngine.Game.ECS
+namespace PeridotWindows.ECS
 {
     public class Entity
     {

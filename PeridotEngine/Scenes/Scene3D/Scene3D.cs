@@ -6,12 +6,12 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using PeridotEngine.Game.ECS;
-using PeridotEngine.Game.ECS.Components;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Camera;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
+using PeridotWindows.ECS;
+using PeridotWindows.ECS.Components;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 

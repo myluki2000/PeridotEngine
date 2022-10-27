@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using PeridotEngine.Game.ECS.Components;
-using SharpDX.Direct3D11;
-using SharpDX.WIC;
+﻿using System.Collections;
+using PeridotWindows.ECS.Components;
 
-namespace PeridotEngine.Game.ECS
+namespace PeridotWindows.ECS
 {
     public class Archetype
     {

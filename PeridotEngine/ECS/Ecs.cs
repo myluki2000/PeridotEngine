@@ -5,6 +5,7 @@
         public List<Archetype> Archetypes { get; } = new();
 
         public event EventHandler<IEnumerable<Archetype>>? ArchetypeListChanged;
+        public event EventHandler<Archetype>? EntityListChanged; 
 
         public Archetype Archetype(params Type[] componentTypes)
         {
@@ -15,6 +16,7 @@
             if (archetype == null)
             {
                 archetype = new Archetype(componentTypes);
+                archetype.EntityListChanged += () => EntityListChanged?.Invoke(this, archetype);
                 Archetypes.Add(archetype);
                 ArchetypeListChanged?.Invoke(this, Archetypes);
             }

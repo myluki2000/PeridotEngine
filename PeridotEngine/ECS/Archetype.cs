@@ -9,6 +9,8 @@ namespace PeridotWindows.ECS
 
         public List<IList> Components { get; } = new();
 
+        public event Action? EntityListChanged;
+
         public Archetype(Type[] componentTypes)
         {
             ComponentTypes = componentTypes.OrderBy(x => x.GetHashCode()).ToArray();
@@ -35,6 +37,8 @@ namespace PeridotWindows.ECS
             {
                 Components[i].Add(entityComponents[i]);
             }
+
+            EntityListChanged?.Invoke();
         }
 
 

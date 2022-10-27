@@ -37,19 +37,26 @@ namespace PeridotEngine.Graphics.Camera
         private float _pitch;
         private float _yaw;
 
+        private Matrix projectionMatrix;
+
         public Matrix GetViewMatrix()
         {
             return Matrix.CreateTranslation(-Position) * Matrix.CreateRotationY(Yaw) * Matrix.CreateRotationX(-Pitch) * Matrix.CreateRotationZ(Roll);
         }
 
-        public Matrix GetProjectionMatrix()
+        public void UpdateProjectionMatrix()
         {
-            return Matrix.CreatePerspectiveFieldOfView(
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.PiOver2,
                 Globals.Graphics.GraphicsDevice.DisplayMode.AspectRatio,
                 0.1f,
                 100
             );
+        }
+
+        public Matrix GetProjectionMatrix()
+        {
+            return projectionMatrix;
         }
 
         public Matrix GetLookAtMatrix(Vector3 target)

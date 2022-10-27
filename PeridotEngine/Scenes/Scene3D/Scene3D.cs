@@ -29,6 +29,9 @@ namespace PeridotEngine.Scenes.Scene3D
         public override void Initialize()
         {
             Camera.Position = new Vector3(0, 1, 1);
+
+            Globals.GameMain.Window.ClientSizeChanged += (sender, args) => Camera.UpdateProjectionMatrix();
+            Camera.UpdateProjectionMatrix();
         }
 
         public override void Update(GameTime gameTime)

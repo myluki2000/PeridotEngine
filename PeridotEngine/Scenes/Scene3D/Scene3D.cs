@@ -35,6 +35,14 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Globals.Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
 
+            Resources.TextureResources.TextureAtlasChanged += (_, _) =>
+            {
+                if (Resources.TextureResources.TextureAtlas != null)
+                {
+                    EffectPool.UpdateEffectTextures(Resources.TextureResources.TextureAtlas);
+                }
+            };
+
             Resources.MeshResources.CreateQuad("quad");
 
             IComponent[] components = new IComponent[]
@@ -96,12 +104,6 @@ namespace PeridotEngine.Scenes.Scene3D
             gd.Clear(Color.CornflowerBlue);
 
             EffectPool.UpdateEffectMatrices(Matrix.Identity, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
-
-            // TODO: Only update effect textures if texture atlas changes
-            if (Resources.TextureResources.TextureAtlas != null)
-            {
-                EffectPool.UpdateEffectTextures(Resources.TextureResources.TextureAtlas);
-            }
 
             meshes!.ForEach((StaticMeshComponent meshC, StaticPositionRotationScaleComponent posC, EffectComponent effectC) =>
             {

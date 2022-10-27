@@ -9,11 +9,21 @@ namespace PeridotEngine.Graphics.Effects
 {
     public abstract class EffectBase : Effect
     {
-        public abstract Matrix WorldViewProjectionMatrix { get; set; }
+        public Matrix World { get; set; } = Matrix.Identity;
+        public Matrix ViewProjection { get; set; }
         public abstract Color MixColor { get; set; }
+
+        protected readonly EffectParameter WorldViewProjParam;
 
         protected EffectBase(Effect cloneSource) : base(cloneSource)
         {
+            WorldViewProjParam = Parameters["WorldViewProjection"];
+        }
+
+        protected override void OnApply()
+        {
+            Matrix worldViewProjection = World * ViewProjection;
+            WorldViewProjParam.SetValue(worldViewProjection);
         }
     }
 }

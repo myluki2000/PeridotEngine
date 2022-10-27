@@ -51,7 +51,11 @@ namespace PeridotEngine.Scenes.Scene3D
                 {
                     Appearance = StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE,
                 },
-                new PositionRotationScaleComponent() { Rotation = new Vector3(1, 1, 1) },
+                new PositionRotationScaleComponent()
+                {
+                    Position = new Vector3(0, 0, 0),
+                    Rotation = new Vector3(0, 0, 0)
+                },
                 new EffectComponent(EffectPool.Effect<SimpleEffect>())
             };
 
@@ -103,11 +107,13 @@ namespace PeridotEngine.Scenes.Scene3D
 
             gd.Clear(Color.CornflowerBlue);
 
-            EffectPool.UpdateEffectMatrices(Matrix.Identity, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
+            EffectPool.UpdateEffectViewProjection(Camera.GetViewMatrix() * Camera.GetProjectionMatrix());
 
             meshes!.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC, EffectComponent effectC) =>
             {
                 meshC.DiffuseTexture = Resources.TextureResources.GetTextureBoundsInAtlas(0);
+
+                effectC.Effect.World = posC.Transformation;
 
                 if (meshC.Mesh.VertexBuffer == null)
                 {

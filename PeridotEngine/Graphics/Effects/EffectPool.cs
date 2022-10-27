@@ -10,13 +10,11 @@ namespace PeridotEngine.Graphics.Effects
     {
         private static readonly Dictionary<Type, EffectBase> effects = new();
 
-        public static void UpdateEffectMatrices(Matrix world, Matrix view, Matrix projection)
+        public static void UpdateEffectViewProjection(Matrix viewProjection)
         {
-            Matrix worldViewProj = world * view * projection;
-
             foreach (EffectBase effect in effects.Values)
             {
-                effect.WorldViewProjectionMatrix = worldViewProj;
+                effect.ViewProjection = viewProjection;
             }
         }
 

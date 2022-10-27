@@ -9,7 +9,6 @@ namespace PeridotEngine.Graphics.Effects
 {
     public class SimpleEffect : EffectBase, IEffectTexture
     {
-        private readonly EffectParameter worldViewProjParam;
         private readonly EffectParameter textureParam;
         private readonly EffectParameter mixColorParam;
         private readonly EffectParameter texturePositionParam;
@@ -17,23 +16,10 @@ namespace PeridotEngine.Graphics.Effects
 
         public SimpleEffect() : base(Globals.Content.Load<Effect>("Effects/SimpleEffect"))
         {
-            worldViewProjParam = Parameters["WorldViewProjection"];
             textureParam = Parameters["Texture"];
             mixColorParam = Parameters["MixColor"];
             texturePositionParam = Parameters["TexturePosition"];
             textureSizeParam = Parameters["TextureSize"];
-        }
-
-        private Matrix worldViewProj;
-        public override Matrix WorldViewProjectionMatrix
-        {
-            get => worldViewProj;
-            set
-            {
-                if (value == worldViewProj) return;
-                worldViewProj = value;
-                worldViewProjParam.SetValue(value);
-            }
         }
 
         public override Color MixColor

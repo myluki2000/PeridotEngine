@@ -51,15 +51,15 @@ namespace PeridotEngine.Scenes.Scene3D
                 {
                     Appearance = StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE,
                 },
-                new StaticPositionRotationScaleComponent(),
+                new PositionRotationScaleComponent() { Rotation = new Vector3(1, 1, 1) },
                 new EffectComponent(EffectPool.Effect<SimpleEffect>())
             };
 
-            Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent))
+            Ecs.Archetype(typeof(StaticMeshComponent), typeof(PositionRotationScaleComponent), typeof(EffectComponent))
                 .CreateEntity(components);
 
             meshes = Ecs.Query()
-                .Has<StaticPositionRotationScaleComponent>()
+                .Has<PositionRotationScaleComponent>()
                 .Has<StaticMeshComponent>()
                 .Has<EffectComponent>();
         }
@@ -105,7 +105,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             EffectPool.UpdateEffectMatrices(Matrix.Identity, Camera.GetViewMatrix(), Camera.GetProjectionMatrix());
 
-            meshes!.ForEach((StaticMeshComponent meshC, StaticPositionRotationScaleComponent posC, EffectComponent effectC) =>
+            meshes!.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC, EffectComponent effectC) =>
             {
                 meshC.DiffuseTexture = Resources.TextureResources.GetTextureBoundsInAtlas(0);
 

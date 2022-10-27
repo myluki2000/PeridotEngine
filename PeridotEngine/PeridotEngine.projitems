@@ -14,7 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\IComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\StaticMeshComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\StaticMeshGroupComponent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\StaticPositionRotationScaleComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Components\PositionRotationScaleComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Ecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Game\ECS\Query.cs" />

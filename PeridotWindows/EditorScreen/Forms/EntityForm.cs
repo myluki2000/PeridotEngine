@@ -24,14 +24,18 @@ namespace PeridotWindows.EditorScreen.Forms
 
         private void Populate()
         {
-            flpComponents.Controls.Clear();
+            pnlComponents.Controls.Clear();
 
             if (entity == null) return;
 
-            foreach (IComponent component in entity.Components)
+            foreach (IComponent component in entity.Components.Reverse())
             {
                 UserControl control = component.PropertiesControl;
-                if(control != null) flpComponents.Controls.Add(control);
+                
+                if (control == null) continue;
+
+                control.Dock = DockStyle.Top;
+                pnlComponents.Controls.Add(control);
             }
         }
     }

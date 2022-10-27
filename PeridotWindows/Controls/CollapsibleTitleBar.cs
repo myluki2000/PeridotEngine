@@ -39,10 +39,26 @@ namespace PeridotWindows.Controls
         public event EventHandler<bool>? CollapseToggled;
 
         private bool collapsed = false;
+        private bool parentAutoSize;
+        private int parentHeight;
 
         private void btnCollapse_Click(object sender, EventArgs e)
         {
-            collapsed = !collapsed;
+            Collapsed = !Collapsed;
+
+            if (collapsed)
+            {
+                parentAutoSize = Parent.AutoSize;
+                parentHeight = Parent.Height;
+                Parent.AutoSize = false;
+                Parent.Height = Height;
+            }
+            else
+            {
+                Parent.AutoSize = parentAutoSize;
+                Parent.Height = parentHeight;
+            }
+
             CollapseToggled?.Invoke(this, collapsed);
         }
     }

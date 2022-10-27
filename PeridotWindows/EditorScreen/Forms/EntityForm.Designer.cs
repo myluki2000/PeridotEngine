@@ -28,24 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.flpComponents = new System.Windows.Forms.FlowLayoutPanel();
+            this.pnlComponents = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
-            // flpComponents
+            // pnlComponents
             // 
-            this.flpComponents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpComponents.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpComponents.Location = new System.Drawing.Point(0, 0);
-            this.flpComponents.Name = "flpComponents";
-            this.flpComponents.Size = new System.Drawing.Size(296, 594);
-            this.flpComponents.TabIndex = 0;
+            this.pnlComponents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlComponents.Location = new System.Drawing.Point(0, 0);
+            this.pnlComponents.Name = "pnlComponents";
+            this.pnlComponents.Size = new System.Drawing.Size(296, 594);
+            this.pnlComponents.TabIndex = 0;
             // 
             // EntityForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(296, 594);
-            this.Controls.Add(this.flpComponents);
+            this.Controls.Add(this.pnlComponents);
             this.Name = "EntityForm";
             this.Text = "EntityForm";
             this.ResumeLayout(false);
@@ -54,6 +53,6 @@
 
         #endregion
 
-        private FlowLayoutPanel flpComponents;
+        private Panel pnlComponents;
     }
 }

@@ -33,14 +33,14 @@ namespace PeridotEngine
                 || Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
                 Exit();
 
-            ScreenManager.CurrentScreen?.Update(gameTime);
+            ScreenManager.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            ScreenManager.CurrentScreen?.Draw(gameTime);
+            ScreenManager.Draw(gameTime);
 
             base.Draw(gameTime);
         }

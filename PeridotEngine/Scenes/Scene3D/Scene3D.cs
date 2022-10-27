@@ -30,8 +30,30 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             Camera.Position = new Vector3(0, 1, 1);
 
-            Globals.GameMain.Window.ClientSizeChanged += (sender, args) => Camera.UpdateProjectionMatrix();
+            Globals.GameMain.Window.ClientSizeChanged += (_, _) => Camera.UpdateProjectionMatrix();
             Camera.UpdateProjectionMatrix();
+
+            Globals.Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
+
+            Resources.MeshResources.CreateQuad("quad");
+
+            IComponent[] components = new IComponent[]
+            {
+                new StaticMeshComponent(Resources.MeshResources.GetAllMeshes().First())
+                {
+                    Appearance = StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE,
+                },
+                new StaticPositionRotationScaleComponent(),
+                new EffectComponent(EffectPool.Effect<SimpleEffect>())
+            };
+
+            Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent))
+                .CreateEntity(components);
+
+            meshes = Ecs.Query()
+                .Has<StaticPositionRotationScaleComponent>()
+                .Has<StaticMeshComponent>()
+                .Has<EffectComponent>();
         }
 
         public override void Update(GameTime gameTime)
@@ -65,40 +87,10 @@ namespace PeridotEngine.Scenes.Scene3D
             }
         }
 
-        private bool firstDraw = true;
-        private void BeforeFirstDraw()
-        {
-            Globals.Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-
-            Resources.MeshResources.CreateQuad("quad");
-
-            IComponent[] components = new IComponent[]
-            {
-                new StaticMeshComponent(Resources.MeshResources.GetAllMeshes().First())
-                {
-                    Appearance = StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE,
-                },
-                new StaticPositionRotationScaleComponent(),
-                new EffectComponent(EffectPool.Effect<SimpleEffect>())
-            };
-
-            Ecs.Archetype(typeof(StaticMeshComponent), typeof(StaticPositionRotationScaleComponent), typeof(EffectComponent))
-                .CreateEntity(components);
-
-            meshes = Ecs.Query()
-                .Has<StaticPositionRotationScaleComponent>()
-                .Has<StaticMeshComponent>()
-                .Has<EffectComponent>();
-        }
+ 
 
         public override void Draw(GameTime gameTime)
         {
-            if (firstDraw)
-            {
-                firstDraw = false;
-                BeforeFirstDraw();
-            }
-
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
             gd.Clear(Color.CornflowerBlue);

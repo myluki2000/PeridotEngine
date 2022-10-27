@@ -19,12 +19,12 @@ namespace PeridotWindows.EditorScreen.Forms
         {
             this.scene = scene;
 
-            scene.Resources.TextureResources.TextureListChanged += OnTextureListChanged;
+            scene.Resources.TextureResources.TextureAtlasChanged += OnTextureAtlasChanged;
 
             InitializeComponent();
         }
 
-        private void OnTextureListChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
+        private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
         {
             lvTextures.Items.Clear();
 

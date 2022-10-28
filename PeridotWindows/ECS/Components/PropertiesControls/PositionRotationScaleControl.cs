@@ -7,19 +7,74 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Xna.Framework;
 
 namespace PeridotWindows.ECS.Components.PropertiesControls
 {
     public partial class PositionRotationScaleControl : UserControl
     {
-        public PositionRotationScaleControl()
+        private readonly PositionRotationScaleComponent component;
+
+        public PositionRotationScaleControl(PositionRotationScaleComponent component)
         {
             InitializeComponent();
+
+            this.component = component;
+
+            nudPositionX.Value = (decimal)component.Position.X;
+            nudPositionY.Value = (decimal)component.Position.Y;
+            nudPositionZ.Value = (decimal)component.Position.Z;
+
+            nudRotationX.Value = (decimal)component.Rotation.X;
+            nudRotationY.Value = (decimal)component.Rotation.Y;
+            nudRotationZ.Value = (decimal)component.Rotation.Z;
+
+            nudScaleX.Value = (decimal)component.Scale.X;
+            nudScaleY.Value = (decimal)component.Scale.Y;
+            nudScaleZ.Value = (decimal)component.Scale.Z;
+
+
+            nudPositionX.ValueChanged += NudPosition_ValueChanged;
+            nudPositionY.ValueChanged += NudPosition_ValueChanged;
+            nudPositionZ.ValueChanged += NudPosition_ValueChanged;
+
+            nudRotationX.ValueChanged += NudRotation_ValueChanged;
+            nudRotationY.ValueChanged += NudRotation_ValueChanged;
+            nudRotationZ.ValueChanged += NudRotation_ValueChanged;
+
+            nudScaleX.ValueChanged += NudScale_ValueChanged;
+            nudScaleY.ValueChanged += NudScale_ValueChanged;
+            nudScaleZ.ValueChanged += NudScale_ValueChanged;
+
+
         }
 
-        private void titleBar_CollapseToggled(object sender, bool e)
+        private void NudPosition_ValueChanged(object? sender, EventArgs eventArgs)
         {
+            component.Position = new Vector3((float)nudPositionX.Value,
+                                             (float)nudPositionY.Value,
+                                             (float)nudPositionZ.Value);
+        }
 
+        private void NudRotation_ValueChanged(object? sender, EventArgs eventArgs)
+        {
+            component.Rotation = new Vector3((float)nudRotationX.Value,
+                                             (float)nudRotationY.Value,
+                                             (float)nudRotationZ.Value);
+        }
+
+        private void NudScale_ValueChanged(object? sender, EventArgs eventArgs)
+        {
+            component.Scale = new Vector3((float)nudScaleX.Value,
+                                          (float)nudScaleY.Value,
+                                          (float)nudScaleZ.Value);
+        }
+
+        private void PositionRotationScaleControl_ClientSizeChanged(object sender, EventArgs e)
+        {
+            flpPosition.MaximumSize = new Size(ClientSize.Width, flpPosition.MaximumSize.Height);
+            flpRotation.MaximumSize = new Size(ClientSize.Width, flpRotation.MaximumSize.Height);
+            flpScale.MaximumSize = new Size(ClientSize.Width, flpScale.MaximumSize.Height);
         }
     }
 }

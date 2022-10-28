@@ -7,8 +7,13 @@ using PeridotWindows.ECS.Components.PropertiesControls;
 
 namespace PeridotWindows.ECS.Components
 {
-    internal sealed partial class PositionRotationScaleComponent
+    public sealed partial class PositionRotationScaleComponent
     {
-        public UserControl? PropertiesControl { get; } = new PositionRotationScaleControl();
+        public UserControl? PropertiesControl { get; }
+
+        public PositionRotationScaleComponent()
+        {
+            PropertiesControl = new PositionRotationScaleControl(this);
+        }
     }
 }

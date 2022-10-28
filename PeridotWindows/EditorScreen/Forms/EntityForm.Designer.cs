@@ -36,14 +36,14 @@
             this.pnlComponents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlComponents.Location = new System.Drawing.Point(0, 0);
             this.pnlComponents.Name = "pnlComponents";
-            this.pnlComponents.Size = new System.Drawing.Size(296, 594);
+            this.pnlComponents.Size = new System.Drawing.Size(353, 594);
             this.pnlComponents.TabIndex = 0;
             // 
             // EntityForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(296, 594);
+            this.ClientSize = new System.Drawing.Size(353, 594);
             this.Controls.Add(this.pnlComponents);
             this.Name = "EntityForm";
             this.Text = "EntityForm";

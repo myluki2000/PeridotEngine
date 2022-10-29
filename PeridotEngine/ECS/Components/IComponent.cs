@@ -2,6 +2,6 @@
 {
     public partial interface IComponent
     {
-        public UserControl? PropertiesControl { get; }
+        
     }
 }

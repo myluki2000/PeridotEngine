@@ -13,9 +13,9 @@ namespace PeridotEngine.Scenes.Scene3D
     {
         private readonly List<MeshInfo> meshes = new();
 
-        public IEnumerable<Mesh> GetAllMeshes()
+        public IEnumerable<MeshInfo> GetAllMeshes()
         {
-            return meshes.Select(x => x.Mesh);
+            return meshes;
         }
 
         public void CreateQuad(string name)

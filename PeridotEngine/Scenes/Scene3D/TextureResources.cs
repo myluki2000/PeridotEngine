@@ -204,7 +204,11 @@ namespace PeridotEngine.Scenes.Scene3D
                         currentY += textureHeight;
                     }
 
-                    if (texIndex >= bin.Count) break;
+                    if (texIndex >= bin.Count)
+                    {
+                        currentY += textureHeight;
+                        break;
+                    }
                 }
             }
 

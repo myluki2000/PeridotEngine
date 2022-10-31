@@ -67,24 +67,26 @@
             this.lvTextures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvTextures.Location = new System.Drawing.Point(3, 3);
             this.lvTextures.Name = "lvTextures";
-            this.lvTextures.Size = new System.Drawing.Size(897, 140);
+            this.lvTextures.Size = new System.Drawing.Size(830, 193);
             this.lvTextures.TabIndex = 0;
             this.lvTextures.UseCompatibleStateImageBehavior = false;
             // 
             // panel1
             // 
             this.panel1.Controls.Add(this.btnAddTexture);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 143);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel1.Location = new System.Drawing.Point(833, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(897, 53);
+            this.panel1.Size = new System.Drawing.Size(67, 193);
             this.panel1.TabIndex = 1;
             // 
             // btnAddTexture
             // 
-            this.btnAddTexture.Location = new System.Drawing.Point(3, 6);
+            this.btnAddTexture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAddTexture.Location = new System.Drawing.Point(3, 3);
             this.btnAddTexture.Name = "btnAddTexture";
-            this.btnAddTexture.Size = new System.Drawing.Size(75, 42);
+            this.btnAddTexture.Size = new System.Drawing.Size(61, 42);
             this.btnAddTexture.TabIndex = 0;
             this.btnAddTexture.Text = "Add Texture";
             this.btnAddTexture.UseVisualStyleBackColor = true;
@@ -95,7 +97,7 @@
             this.tpModels.Location = new System.Drawing.Point(4, 24);
             this.tpModels.Name = "tpModels";
             this.tpModels.Padding = new System.Windows.Forms.Padding(3);
-            this.tpModels.Size = new System.Drawing.Size(299, 660);
+            this.tpModels.Size = new System.Drawing.Size(903, 199);
             this.tpModels.TabIndex = 1;
             this.tpModels.Text = "Models";
             this.tpModels.UseVisualStyleBackColor = true;

@@ -45,6 +45,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(353, 594);
             this.Controls.Add(this.pnlComponents);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "EntityForm";
             this.Text = "EntityForm";
             this.ResumeLayout(false);

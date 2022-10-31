@@ -6,9 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PeridotEngine.Graphics.Geometry
 {
-    public class Mesh<T> : Mesh where T : IVertexType
+    public class Mesh<T> : Mesh where T : IVertexType, new()
     {
         private readonly T[] vertices;
+        private VertexDeclaration vertexDeclaration;
 
         public override IVertexType[] GetVerticesBase()
         {
@@ -24,11 +25,17 @@ namespace PeridotEngine.Graphics.Geometry
         public Mesh(T[] vertices)
         {
             this.vertices = vertices;
+            vertexDeclaration = new T().VertexDeclaration;
         }
 
         public override Type GetVertexType()
         {
             return typeof(T);
+        }
+
+        public override VertexDeclaration GetVertexDeclaration()
+        {
+            return vertexDeclaration;
         }
     }
 
@@ -39,5 +46,7 @@ namespace PeridotEngine.Graphics.Geometry
         public abstract IVertexType[] GetVerticesBase();
 
         public abstract Type GetVertexType();
+
+        public abstract VertexDeclaration GetVertexDeclaration();
     }
 }

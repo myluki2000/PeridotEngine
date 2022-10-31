@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotEngine.Graphics.Effects
 {
     internal interface IEffectTexture
     {
-        public Texture2D Texture { get; set; }
-        public Vector2 TexturePosition { get; set; }
-        public Vector2 TextureSize { get; set; }
+        public TextureResources? TextureResources { get; set; }
     }
 }

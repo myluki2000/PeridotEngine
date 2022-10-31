@@ -1,27 +1,15 @@
-﻿using PeridotEngine.Graphics.Geometry;
+﻿using PeridotEngine.Graphics.Effects;
+using PeridotEngine.Graphics.Geometry;
+using PeridotEngine.Scenes.Scene3D;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotWindows.ECS.Components
 {
-    internal sealed partial class StaticMeshComponent : IComponent
+    public sealed partial class StaticMeshComponent : IComponent
     {
         public Mesh Mesh { get; set; }
-
-        public MeshAppearance Appearance { get; set; } = MeshAppearance.NONE;
-        public Color Color { get; set; }
-        public RectangleF DiffuseTexture { get; set; }
-
-        public StaticMeshComponent(Mesh mesh)
-        {
-            Mesh = mesh;
-        }
-
-        [Flags]
-        public enum MeshAppearance
-        {
-            NONE = 0,
-            MIX_COLOR = 1,
-            DIFFUSE_TEXTURE = 2,
-        }
+        public EffectBase.EffectProperties EffectProperties { get; set; }
+        
+        public Scene3D Scene { get; }
     }
 }

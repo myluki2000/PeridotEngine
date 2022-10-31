@@ -20,11 +20,16 @@ namespace PeridotEngine.Scenes.Scene3D
     public class Scene3D : Scene
     {
         public Ecs Ecs { get; } = new Ecs();
-        public SceneResources Resources { get; } = new();
+        public SceneResources Resources { get; }
 
         public Camera Camera { get; } = new();
 
         private Query? meshes;
+
+        public Scene3D()
+        {
+            Resources = new SceneResources(this);
+        }
 
         public override void Initialize()
         {
@@ -35,37 +40,28 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Globals.Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
 
-            Resources.TextureResources.TextureAtlasChanged += (_, _) =>
-            {
-                if (Resources.TextureResources.TextureAtlas != null)
-                {
-                    EffectPool.UpdateEffectTextures(Resources.TextureResources.TextureAtlas);
-                }
-            };
-
             Resources.MeshResources.CreateQuad("quad");
+            Resources.MeshResources.CreateTriangle("tri");
 
             IComponent[] components = new IComponent[]
             {
-                new StaticMeshComponent(Resources.MeshResources.GetAllMeshes().First())
+                new StaticMeshComponent(this, Resources.MeshResources.GetAllMeshes().First().Mesh, Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
                 {
-                    Appearance = StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE,
+                    
                 },
-                new PositionRotationScaleComponent()
+                new PositionRotationScaleComponent(this)
                 {
                     Position = new Vector3(0, 0, 0),
                     Rotation = new Vector3(0, 0, 0)
-                },
-                new EffectComponent(EffectPool.Effect<SimpleEffect>())
+                }
             };
 
-            Ecs.Archetype(typeof(StaticMeshComponent), typeof(PositionRotationScaleComponent), typeof(EffectComponent))
+            Ecs.Archetype(typeof(StaticMeshComponent), typeof(PositionRotationScaleComponent))
                 .CreateEntity(components);
 
             meshes = Ecs.Query()
                 .Has<PositionRotationScaleComponent>()
-                .Has<StaticMeshComponent>()
-                .Has<EffectComponent>();
+                .Has<StaticMeshComponent>();
         }
 
         public override void Update(GameTime gameTime)
@@ -107,13 +103,11 @@ namespace PeridotEngine.Scenes.Scene3D
 
             gd.Clear(Color.CornflowerBlue);
 
-            EffectPool.UpdateEffectViewProjection(Camera.GetViewMatrix() * Camera.GetProjectionMatrix());
+            Resources.EffectPool.UpdateEffectViewProjection(Camera.GetViewMatrix() * Camera.GetProjectionMatrix());
 
-            meshes!.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC, EffectComponent effectC) =>
+            meshes!.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
             {
-                meshC.DiffuseTexture = Resources.TextureResources.GetTextureBoundsInAtlas(0);
-
-                effectC.Effect.World = posC.Transformation;
+                meshC.EffectProperties.Effect.World = posC.Transformation;
 
                 if (meshC.Mesh.VertexBuffer == null)
                 {
@@ -130,40 +124,8 @@ namespace PeridotEngine.Scenes.Scene3D
 
                 gd.SetVertexBuffer(meshC.Mesh.VertexBuffer);
 
-                if (meshC.Mesh.GetVertexType() == typeof(VertexPosition))
-                {
-                    effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[0];
-                }
-                else if (meshC.Mesh.GetVertexType() == typeof(VertexPositionColor))
-                {
-                    effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[1];
-                }
-                else if (meshC.Mesh.GetVertexType() == typeof(VertexPositionTexture))
-                {
-                    if (meshC.Appearance.HasFlag(StaticMeshComponent.MeshAppearance.DIFFUSE_TEXTURE))
-                    {
-                        effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[2];
-
-                        IEffectTexture texEffect = (IEffectTexture)effectC.Effect;
-                        texEffect.TexturePosition = meshC.DiffuseTexture.Location.ToVector2();
-                        texEffect.TextureSize = meshC.DiffuseTexture.Size.ToVector2();
-                    }
-                    else
-                    {
-                        effectC.Effect.CurrentTechnique = effectC.Effect.Techniques[0];
-                    }
-                }
-
-                if (meshC.Appearance.HasFlag(StaticMeshComponent.MeshAppearance.MIX_COLOR))
-                {
-                    effectC.Effect.MixColor = meshC.Color;
-                }
-                else
-                {
-                    effectC.Effect.MixColor = Color.White;
-                }
-
-                foreach (EffectPass pass in effectC.Effect.CurrentTechnique.Passes)
+                meshC.EffectProperties.Apply(meshC.Mesh);
+                foreach (EffectPass pass in meshC.EffectProperties.Technique!.Passes)
                 {
                     pass.Apply();
                     gd.DrawPrimitives(PrimitiveType.TriangleList, 0, meshC.Mesh.VertexBuffer.VertexCount / 3);

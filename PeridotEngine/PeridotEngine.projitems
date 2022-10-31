@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Archetype.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\EffectComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\IComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticMeshComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticMeshGroupComponent.cs" />

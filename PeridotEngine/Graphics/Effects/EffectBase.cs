@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PeridotEngine.Graphics.Geometry;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public abstract class EffectBase : Effect
+    public abstract partial class EffectBase : Effect
     {
         public Matrix World { get; set; } = Matrix.Identity;
         public Matrix ViewProjection { get; set; }
-        public abstract Color MixColor { get; set; }
 
         protected readonly EffectParameter WorldViewProjParam;
 
@@ -20,10 +20,19 @@ namespace PeridotEngine.Graphics.Effects
             WorldViewProjParam = Parameters["WorldViewProjection"];
         }
 
-        protected override void OnApply()
+        public abstract EffectProperties CreatePropertiesBase();
+
+        public abstract partial class EffectProperties
         {
-            Matrix worldViewProjection = World * ViewProjection;
-            WorldViewProjParam.SetValue(worldViewProjection);
+            public virtual void Apply(Mesh mesh)
+            {
+                Matrix worldViewProjection = Effect.World * Effect.ViewProjection;
+                Effect.WorldViewProjParam.SetValue(worldViewProjection);
+            }
+
+            public abstract EffectBase Effect { get; }
+
+            public EffectTechnique? Technique { get; protected set; }
         }
     }
 }

@@ -11,6 +11,8 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class MeshResources
     {
+        public event EventHandler<IEnumerable<MeshInfo>>? MeshListChanged; 
+
         private readonly List<MeshInfo> meshes = new();
 
         public IEnumerable<MeshInfo> GetAllMeshes()
@@ -30,7 +32,25 @@ namespace PeridotEngine.Scenes.Scene3D
                     new(new Vector3(-0.5f, 0,  0.5f), new Vector2(0, 1)),
                 });
 
-            meshes.Add(new MeshInfo(name, mesh));
+            AddMesh(new MeshInfo(name, mesh));
+        }
+
+        public void CreateTriangle(string name)
+        {
+            Mesh mesh = new Mesh<VertexPositionTexture>(new VertexPositionTexture[3]
+            {
+                new(new Vector3(0, 0, 0.5f), new Vector2(0.5f, 1)),
+                new(new Vector3(0.5f, 0, -0.5f), new Vector2(1, 0)),
+                new(new Vector3(-0.5f, 0, -0.5f), new Vector2(0, 0)),
+            });
+
+            AddMesh(new MeshInfo(name, mesh));
+        }
+
+        private void AddMesh(MeshInfo mesh)
+        {
+            meshes.Add(mesh);
+            MeshListChanged?.Invoke(this, meshes);
         }
 
         public class MeshInfo
@@ -41,8 +61,13 @@ namespace PeridotEngine.Scenes.Scene3D
                 Mesh = mesh;
             }
 
-            public Mesh Mesh;
-            public string Name;
+            public readonly Mesh Mesh;
+            public readonly string Name;
+
+            public override string ToString()
+            {
+                return Name;
+            }
         }
     }
 }

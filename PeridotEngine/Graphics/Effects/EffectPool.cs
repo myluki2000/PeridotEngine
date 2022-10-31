@@ -3,38 +3,80 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public static class EffectPool
+    public class EffectPool
     {
-        private static readonly Dictionary<Type, EffectBase> effects = new();
+        private readonly Dictionary<Type, WeakReference<EffectBase>> effects = new();
+        private static readonly List<Type> effectTypes = new();
 
-        public static void UpdateEffectViewProjection(Matrix viewProjection)
+        private readonly Scene3D scene;
+
+        public EffectPool(Scene3D scene)
         {
-            foreach (EffectBase effect in effects.Values)
+            this.scene = scene;
+        }
+
+        public static void RegisterEffectType<T>()
+        {
+            effectTypes.Add(typeof(T));
+        }
+
+        public static IEnumerable<Type> GetRegisteredEffectTypes()
+        {
+            return effectTypes;
+        }
+
+        public void UpdateEffectViewProjection(Matrix viewProjection)
+        {
+            foreach (WeakReference<EffectBase> effectRef in effects.Values)
             {
-                effect.ViewProjection = viewProjection;
+                if(effectRef.TryGetTarget(out EffectBase? effect))
+                    effect.ViewProjection = viewProjection;
             }
         }
 
-        public static void UpdateEffectTextures(Texture2D texture)
+        public EffectBase Effect(Type effectType)
         {
-            foreach (IEffectTexture effect in effects.Values.OfType<IEffectTexture>())
+            if (!effectType.IsAssignableTo(typeof(EffectBase)))
+                throw new ArgumentException("EffectPool.Effect(Type) expects to be passed the type " +
+                                            "of an effect (which inherits from EffectBase)");
+
+            if (effects.TryGetValue(effectType, out WeakReference<EffectBase>? effectRef))
             {
-                effect.Texture = texture;
+                if (effectRef.TryGetTarget(out EffectBase? effect))
+                    return effect;
             }
+
+            EffectBase newEffect = (EffectBase)Activator.CreateInstance(effectType)!;
+
+            if (newEffect is IEffectTexture effectTexture)
+            {
+                effectTexture.TextureResources = scene.Resources.TextureResources;
+            }
+
+            effects.Add(effectType, new WeakReference<EffectBase>(newEffect));
+            return newEffect;
         }
 
-        public static T Effect<T>() where T : EffectBase, new()
+        public T Effect<T>() where T : EffectBase, new()
         {
-            if (effects.TryGetValue(typeof(T), out EffectBase? value))
+            if (effects.TryGetValue(typeof(T), out WeakReference<EffectBase>? effectRef))
             {
-                return (T)value;
+                if (effectRef.TryGetTarget(out EffectBase? effect))
+                    return (T)effect;
             }
 
             T newEffect = new();
-            effects.Add(typeof(T), newEffect);
+
+            if (newEffect is IEffectTexture effectTexture)
+            {
+                effectTexture.TextureResources = scene.Resources.TextureResources;
+            }
+
+            effects.Add(typeof(T), new WeakReference<EffectBase>(newEffect));
             return newEffect;
         }
     }

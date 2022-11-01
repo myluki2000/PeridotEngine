@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using PeridotEngine;
 using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
 using PeridotWindows.EditorScreen.Forms;
+using Keys = Microsoft.Xna.Framework.Input.Keys;
 using Point = System.Drawing.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
 using Timer = System.Timers.Timer;
@@ -32,16 +34,18 @@ namespace PeridotWindows.EditorScreen
         public override void Initialize()
         {
             Globals.GameMain.Window.AllowUserResizing = true;
-            
-            frmResources = new(scene);
-            frmResources.Show();
-            frmToolbox = new();
-            frmToolbox.Show();
-            frmEntity = new();
-            frmEntity.Show();
-            frmScene = new(scene);
-            frmScene.Show();
 
+            Control mainWindowControl = Control.FromHandle(Globals.GameMain.Window.Handle);
+
+            frmResources = new(scene);
+            frmResources.Show(mainWindowControl);
+            frmToolbox = new();
+            frmToolbox.Show(mainWindowControl);
+            frmEntity = new();
+            frmEntity.Show(mainWindowControl);
+            frmScene = new(scene);
+            frmScene.Show(mainWindowControl);
+            
             frmScene.SelectedEntityChanged += FrmScene_OnSelectedEntityChanged;
 
             windowTimer.Start();
@@ -64,7 +68,7 @@ namespace PeridotWindows.EditorScreen
 
                         frmScene.Location = new Point(bounds.Left - frmScene.Width - 3, frmToolbox.Top);
                         frmScene.Height = frmResources.Bottom - frmToolbox.Top;
-                        
+
                         frmEntity.Location = new Point(bounds.Right + 3, frmToolbox.Top);
                         frmEntity.Height = frmResources.Bottom - frmToolbox.Top;
                     }
@@ -72,16 +76,6 @@ namespace PeridotWindows.EditorScreen
                     windowLastBounds = bounds;
                 });
             };
-
-            // TODO: Need to refocus the game window afterwards
-            /*Globals.GameMain.Activated += (sender, args) =>
-            {
-                frmToolbox.Focus();
-                frmResources.Focus();
-                frmScene.Focus();
-                frmEntity.Focus();
-                
-            };*/
 
             scene.Initialize();
         }
@@ -93,9 +87,19 @@ namespace PeridotWindows.EditorScreen
             if (frmEntity != null) frmEntity.Entity = e;
         }
 
+        private KeyboardState lastKeyboardState;
         public override void Update(GameTime gameTime)
         {
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            if (lastKeyboardState.IsKeyUp(Keys.J) && keyboardState.IsKeyDown(Keys.J))
+            {
+                ((Form)Control.FromHandle(Globals.GameMain.Window.Handle)).Activate();
+            }
+
             scene.Update(gameTime);
+
+            lastKeyboardState = keyboardState;
         }
 
         public override void Draw(GameTime gameTime)

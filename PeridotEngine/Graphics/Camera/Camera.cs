@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Microsoft.Xna.Framework;
 using PeridotEngine.Misc;
@@ -46,9 +47,10 @@ namespace PeridotEngine.Graphics.Camera
 
         public void UpdateProjectionMatrix()
         {
+            Debug.WriteLine(Globals.Graphics.GraphicsDevice.DisplayMode.AspectRatio);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.PiOver2,
-                Globals.Graphics.GraphicsDevice.DisplayMode.AspectRatio,
+                MathHelper.ToRadians(80),
+                (float)Globals.Graphics.PreferredBackBufferWidth / Globals.Graphics.PreferredBackBufferHeight,
                 0.1f,
                 100
             );

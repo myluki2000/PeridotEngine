@@ -51,6 +51,7 @@
             this.Controls.Add(this.lvScene);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "SceneForm";
+            this.ShowInTaskbar = false;
             this.Text = "SceneForm";
             this.ResumeLayout(false);
 

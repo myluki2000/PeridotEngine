@@ -48,6 +48,7 @@
             this.Controls.Add(this.toolStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ToolboxForm";
+            this.ShowInTaskbar = false;
             this.Text = "ToolboxForm";
             this.ResumeLayout(false);
             this.PerformLayout();

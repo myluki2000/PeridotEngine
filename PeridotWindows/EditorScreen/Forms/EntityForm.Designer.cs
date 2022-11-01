@@ -47,6 +47,7 @@
             this.Controls.Add(this.pnlComponents);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "EntityForm";
+            this.ShowInTaskbar = false;
             this.Text = "EntityForm";
             this.ResumeLayout(false);
 

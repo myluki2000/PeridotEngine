@@ -110,6 +110,7 @@
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ResourcesForm";
+            this.ShowInTaskbar = false;
             this.Text = "ResourcesForm";
             this.tabControl1.ResumeLayout(false);
             this.tpTextures.ResumeLayout(false);

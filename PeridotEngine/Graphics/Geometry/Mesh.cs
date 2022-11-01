@@ -13,14 +13,14 @@ namespace PeridotEngine.Graphics.Geometry
 
         private VertexDeclaration vertexDeclaration;
 
-        public override IVertexType[] GetVerticesBase()
-        {
-            return Array.ConvertAll(vertices, x => (IVertexType)x);
-        }
-
         public T[] GetVertices()
         {
             return vertices;
+        }
+
+        public override int GetVertexCount()
+        {
+            return vertices.Length;
         }
 
         public override uint[] GetIndices()
@@ -46,12 +46,47 @@ namespace PeridotEngine.Graphics.Geometry
         }
     }
 
+    public class ModelMesh : Mesh
+    {
+        public ModelMesh(VertexBuffer vertexBuffer, IndexBuffer indexBuffer)
+        {
+            VertexBuffer = vertexBuffer;
+            IndexBuffer = indexBuffer;
+        }
+
+        public override int GetVertexCount()
+        {
+            if (VertexBuffer == null)
+                throw new Exception("VertexBuffer should never be NULL for a ModelMesh.");
+
+            return VertexBuffer.VertexCount;
+        }
+
+        public override uint[] GetIndices()
+        {
+            throw new NotImplementedException("You should never need to get the indices of ModelMesh. Instead use the provided IndexBuffer directly.");
+        }
+
+        public override Type GetVertexType()
+        {
+            throw new NotImplementedException("You should never need to get the VertexType of ModelMesh. Instead use the provided VertexBuffer directly.");
+        }
+
+        public override VertexDeclaration GetVertexDeclaration()
+        {
+            if (VertexBuffer == null)
+                throw new Exception("VertexBuffer should never be NULL for a ModelMesh.");
+
+            return VertexBuffer.VertexDeclaration;
+        }
+    }
+
     public abstract class Mesh
     {
         public VertexBuffer? VertexBuffer { get; set; }
         public IndexBuffer? IndexBuffer { get; set; }
 
-        public abstract IVertexType[] GetVerticesBase();
+        public abstract int GetVertexCount();
         public abstract uint[] GetIndices();
 
         public abstract Type GetVertexType();

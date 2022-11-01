@@ -108,13 +108,12 @@ namespace PeridotEngine.Scenes.Scene3D
 
                 if (meshC.Mesh.VertexBuffer == null)
                 {
-                    IVertexType[] verts = meshC.Mesh.GetVerticesBase();
-                    meshC.Mesh.VertexBuffer = new VertexBuffer(gd, meshC.Mesh.GetVertexType(),
-                        verts.Length, BufferUsage.WriteOnly);
+                    meshC.Mesh.VertexBuffer = new VertexBuffer(gd, meshC.Mesh.GetVertexDeclaration(),
+                        meshC.Mesh.GetVertexCount(), BufferUsage.WriteOnly);
 
                     object vertsObj = meshC.Mesh.GetType().GetMethod("GetVertices")
                         .Invoke(meshC.Mesh, new object[] { });
-
+                    
                     typeof(VertexBuffer).GetMethods().First(x => x.Name == "SetData" && x.GetParameters().Length == 1)
                         .MakeGenericMethod(meshC.Mesh.GetVertexType()).Invoke(meshC.Mesh.VertexBuffer, new[] {vertsObj});
                 }

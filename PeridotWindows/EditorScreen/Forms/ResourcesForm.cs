@@ -61,7 +61,7 @@ namespace PeridotWindows.EditorScreen.Forms
 
             if (ofd.ShowDialog() != DialogResult.OK) return;
 
-            if (ofd.FileNames.Any(x => !x.StartsWith(rootPath)))
+            if (ofd.FileNames.Any(x => !x.StartsWith(contentPath)))
             {
                 MessageBox.Show("Could not import asset. Asset files need to be contained within the 'Content' directory of the game.");
                 return;
@@ -74,6 +74,36 @@ namespace PeridotWindows.EditorScreen.Forms
                 if (trimmedPath.StartsWith("/"))
                     trimmedPath = trimmedPath.Substring(1);
                 scene.Resources.TextureResources.AddTexture(trimmedPath);
+            }
+        }
+
+        private void btnAddModel_Click(object sender, EventArgs e)
+        {
+            string rootPath = Path.GetDirectoryName(Application.ExecutablePath)!;
+            string contentPath = Path.Combine(rootPath, Globals.Content.RootDirectory);
+
+            OpenFileDialog ofd = new();
+            ofd.Filter = "Models (*.xnb)|*.xnb";
+
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            if (ofd.FileNames.Any(x => !x.StartsWith(contentPath)))
+            {
+                MessageBox.Show("Could not import asset. Asset files need to be contained within the 'Content' directory of the game.");
+                return;
+            }
+
+            foreach (string path in ofd.FileNames)
+            {
+                string trimmedPath = path.Substring(contentPath.Length);
+                trimmedPath = trimmedPath.Replace("\\", "/");
+                if (trimmedPath.StartsWith("/"))
+                    trimmedPath = trimmedPath.Substring(1);
+                
+                // remove ".xnb" extension
+                trimmedPath = trimmedPath.Substring(0, trimmedPath.Length - 4);
+
+                scene.Resources.MeshResources.LoadModel(trimmedPath);
             }
         }
     }

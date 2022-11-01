@@ -25,18 +25,26 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
             this.component = component;
 
-            foreach (MeshResources.MeshInfo meshInfo in component.Scene.Resources.MeshResources.GetAllMeshes())
-            {
-                cmbMesh.Items.Add(meshInfo);
-
-                if (meshInfo.Mesh == component.Mesh) cmbMesh.SelectedItem = meshInfo;
-            }
+            component.Scene.Resources.MeshResources.MeshListChanged += (_, _) => UpdateMeshList();
+            UpdateMeshList();
 
             foreach (Type effectType in EffectPool.GetRegisteredEffectTypes())
             {
                 cmbEffect.Items.Add(effectType);
 
                 if (effectType == component.EffectProperties.Effect.GetType()) cmbEffect.SelectedItem = effectType;
+            }
+        }
+
+        private void UpdateMeshList()
+        {
+            cmbMesh.Items.Clear();
+
+            foreach (MeshResources.MeshInfo meshInfo in component.Scene.Resources.MeshResources.GetAllMeshes())
+            {
+                cmbMesh.Items.Add(meshInfo);
+
+                if (meshInfo.Mesh == component.Mesh) cmbMesh.SelectedItem = meshInfo;
             }
         }
 

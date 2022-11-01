@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Geometry;
 using Color = Microsoft.Xna.Framework.Color;
+using ModelMesh = PeridotEngine.Graphics.Geometry.ModelMesh;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -60,6 +61,18 @@ namespace PeridotEngine.Scenes.Scene3D
                 });
 
             AddMesh(new MeshInfo(name, mesh));
+        }
+
+        public void LoadModel(string contentPath)
+        {
+            Model model = Globals.Content.Load<Model>(contentPath);
+
+            ModelMesh mesh = new(model.Meshes[0].MeshParts[0].VertexBuffer,
+                                 model.Meshes[0].MeshParts[0].IndexBuffer);
+
+            AddMesh(new MeshInfo(contentPath, mesh));
+
+            Globals.Content.UnloadAsset(contentPath);
         }
 
         private void AddMesh(MeshInfo mesh)

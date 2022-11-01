@@ -12,7 +12,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Archetype.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\IComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticMeshComponent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticMeshGroupComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\PositionRotationScaleComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Ecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Entity.cs" />

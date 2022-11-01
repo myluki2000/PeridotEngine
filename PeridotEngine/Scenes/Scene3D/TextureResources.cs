@@ -86,7 +86,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 TextureInfo? texInfo = textures[texId];
                 if (texInfo == null) continue;
 
-                Bitmap bitmap = new Bitmap(texInfo.FilePath);
+                Bitmap bitmap = new Bitmap(Globals.Content.RootDirectory + "/" + texInfo.FilePath);
 
                 // k is chosen such that k is the smallest value possible for which 2^k > bitmap.Height is true 
                 int k = (int)Math.Ceiling(Math.Log2(bitmap.Height));

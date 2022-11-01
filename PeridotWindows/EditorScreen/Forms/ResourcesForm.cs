@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PeridotEngine;
 using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotWindows.EditorScreen.Forms
@@ -35,7 +38,7 @@ namespace PeridotWindows.EditorScreen.Forms
                 lvTextures.LargeImageList = imgList;
                 lvTextures.SmallImageList = imgList;
                 
-                imgList.Images.Add(Image.FromFile(texInfo.FilePath));
+                imgList.Images.Add(Image.FromFile(Globals.Content.RootDirectory + "/" + texInfo.FilePath));
 
                 ListViewItem item = new();
                 item.Text = texInfo.FilePath;
@@ -49,15 +52,29 @@ namespace PeridotWindows.EditorScreen.Forms
 
         private void btnAddTexture_Click(object sender, EventArgs e)
         {
+            string rootPath = Path.GetDirectoryName(Application.ExecutablePath)!;
+            string contentPath = Path.Combine(rootPath, Globals.Content.RootDirectory);
+
             OpenFileDialog ofd = new();
+            ofd.InitialDirectory = contentPath;
             ofd.Multiselect = true;
             ofd.Filter = "Image files (*.png, *.jpg, *.jpeg)|*.png;*.jpg;*.jpeg";
 
             if (ofd.ShowDialog() != DialogResult.OK) return;
 
+            if (ofd.FileNames.Any(x => !x.StartsWith(rootPath)))
+            {
+                MessageBox.Show("Could not import asset. Asset files need to be contained within the 'Content' directory of the game.");
+                return;
+            }
+
             foreach (string path in ofd.FileNames)
             {
-                scene.Resources.TextureResources.AddTexture(path);
+                string trimmedPath = path.Substring(contentPath.Length);
+                trimmedPath = trimmedPath.Replace("\\", "/");
+                if (trimmedPath.StartsWith("/"))
+                    trimmedPath = trimmedPath.Substring(1);
+                scene.Resources.TextureResources.AddTexture(trimmedPath);
             }
         }
     }

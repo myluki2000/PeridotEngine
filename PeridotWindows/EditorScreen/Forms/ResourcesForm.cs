@@ -56,7 +56,6 @@ namespace PeridotWindows.EditorScreen.Forms
             string contentPath = Path.Combine(rootPath, Globals.Content.RootDirectory);
 
             OpenFileDialog ofd = new();
-            ofd.InitialDirectory = contentPath;
             ofd.Multiselect = true;
             ofd.Filter = "Image files (*.png, *.jpg, *.jpeg)|*.png;*.jpg;*.jpeg";
 

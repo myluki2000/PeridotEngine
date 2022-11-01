@@ -15,6 +15,12 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private readonly List<MeshInfo> meshes = new();
 
+        public MeshResources()
+        {
+            CreateQuad("quad");
+            CreateTriangle("tri");
+        }
+
         public IEnumerable<MeshInfo> GetAllMeshes()
         {
             return meshes;

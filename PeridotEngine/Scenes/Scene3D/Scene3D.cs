@@ -40,9 +40,6 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Globals.Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
 
-            Resources.MeshResources.CreateQuad("quad");
-            Resources.MeshResources.CreateTriangle("tri");
-
             IComponent[] components = new IComponent[]
             {
                 new StaticMeshComponent(this, Resources.MeshResources.GetAllMeshes().First().Mesh, Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())

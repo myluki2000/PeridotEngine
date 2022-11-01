@@ -38,8 +38,6 @@ namespace PeridotEngine.Scenes.Scene3D
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => Camera.UpdateProjectionMatrix();
             Camera.UpdateProjectionMatrix();
 
-            Globals.Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-
             IComponent[] components = new IComponent[]
             {
                 new StaticMeshComponent(this, Resources.MeshResources.GetAllMeshes().First().Mesh, Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())

@@ -39,8 +39,8 @@ namespace PeridotEngine.Scenes.Scene3D
                 },
                 new uint[]
                 {
-                    0, 1, 2,
-                    2, 3, 0,
+                    2, 1, 0,
+                    0, 3, 2
                 });
 
             AddMesh(new MeshInfo(name, mesh));
@@ -57,7 +57,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 },
                 new uint[]
                 {
-                    0, 1, 2
+                    2, 1, 0
                 });
 
             AddMesh(new MeshInfo(name, mesh));

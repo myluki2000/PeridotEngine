@@ -33,6 +33,8 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public override void Initialize()
         {
+            Globals.Graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+
             Camera.Position = new Vector3(0, 1, 1);
 
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => Camera.UpdateProjectionMatrix();

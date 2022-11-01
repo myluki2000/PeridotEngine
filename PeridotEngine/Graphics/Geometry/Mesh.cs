@@ -9,6 +9,8 @@ namespace PeridotEngine.Graphics.Geometry
     public class Mesh<T> : Mesh where T : IVertexType, new()
     {
         private readonly T[] vertices;
+        private readonly uint[] indices;
+
         private VertexDeclaration vertexDeclaration;
 
         public override IVertexType[] GetVerticesBase()
@@ -21,10 +23,15 @@ namespace PeridotEngine.Graphics.Geometry
             return vertices;
         }
 
+        public override uint[] GetIndices()
+        {
+            return indices;
+        }
 
-        public Mesh(T[] vertices)
+        public Mesh(T[] vertices, uint[] indices)
         {
             this.vertices = vertices;
+            this.indices = indices;
             vertexDeclaration = new T().VertexDeclaration;
         }
 
@@ -42,8 +49,10 @@ namespace PeridotEngine.Graphics.Geometry
     public abstract class Mesh
     {
         public VertexBuffer? VertexBuffer { get; set; }
+        public IndexBuffer? IndexBuffer { get; set; }
 
         public abstract IVertexType[] GetVerticesBase();
+        public abstract uint[] GetIndices();
 
         public abstract Type GetVertexType();
 

@@ -122,13 +122,22 @@ namespace PeridotEngine.Scenes.Scene3D
                         .MakeGenericMethod(meshC.Mesh.GetVertexType()).Invoke(meshC.Mesh.VertexBuffer, new[] {vertsObj});
                 }
 
+                if (meshC.Mesh.IndexBuffer == null)
+                {
+                    uint[] indices = meshC.Mesh.GetIndices();
+                    meshC.Mesh.IndexBuffer = new IndexBuffer(gd, IndexElementSize.ThirtyTwoBits, indices.Length,
+                        BufferUsage.WriteOnly);
+                    meshC.Mesh.IndexBuffer.SetData(indices);
+                }
+
                 gd.SetVertexBuffer(meshC.Mesh.VertexBuffer);
+                gd.Indices = meshC.Mesh.IndexBuffer;
 
                 meshC.EffectProperties.Apply(meshC.Mesh);
                 foreach (EffectPass pass in meshC.EffectProperties.Technique!.Passes)
                 {
                     pass.Apply();
-                    gd.DrawPrimitives(PrimitiveType.TriangleList, 0, meshC.Mesh.VertexBuffer.VertexCount / 3);
+                    gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshC.Mesh.IndexBuffer.IndexCount / 3);
                 }
             });
         }

@@ -9,6 +9,7 @@ using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
 using PeridotWindows.EditorScreen.Forms;
+using PeridotWindows.Graphics.Camera;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 using Point = System.Drawing.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -33,6 +34,8 @@ namespace PeridotWindows.EditorScreen
 
         public override void Initialize()
         {
+            scene.Camera = new EditorCamera();
+
             Globals.GameMain.Window.AllowUserResizing = true;
 
             Control mainWindowControl = Control.FromHandle(Globals.GameMain.Window.Handle);

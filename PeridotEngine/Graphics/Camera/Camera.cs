@@ -40,6 +40,8 @@ namespace PeridotEngine.Graphics.Camera
 
         private Matrix projectionMatrix;
 
+        public virtual void Update(GameTime gameTime) {}
+
         public Matrix GetViewMatrix()
         {
             return Matrix.CreateTranslation(-Position) * Matrix.CreateRotationY(Yaw) * Matrix.CreateRotationX(-Pitch) * Matrix.CreateRotationZ(Roll);

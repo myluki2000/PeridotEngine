@@ -22,7 +22,7 @@ namespace PeridotEngine.Scenes.Scene3D
         public Ecs Ecs { get; } = new Ecs();
         public SceneResources Resources { get; }
 
-        public Camera Camera { get; } = new();
+        public Camera Camera { get; set; } = new();
 
         private Query? meshes;
 
@@ -63,33 +63,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public override void Update(GameTime gameTime)
         {
-            KeyboardState keyState = Keyboard.GetState();
-            if (keyState.IsKeyDown(Keys.W))
-            {
-                Camera.MoveForward((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            else if (keyState.IsKeyDown(Keys.S))
-            {
-                Camera.MoveBackward((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-
-            if (keyState.IsKeyDown(Keys.A))
-            {
-                Camera.MoveLeft((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            else if (keyState.IsKeyDown(Keys.D))
-            {
-                Camera.MoveRight((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-
-            if (keyState.IsKeyDown(Keys.Space))
-            {
-                Camera.MoveUp((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
-            else if (keyState.IsKeyDown(Keys.LeftShift))
-            {
-                Camera.MoveDown((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
+            Camera.Update(gameTime);
         }
 
  

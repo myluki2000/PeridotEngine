@@ -28,7 +28,6 @@ namespace PeridotWindows.EditorScreen
 
         private Entity? selectedEntity = null;
 
-        private readonly Timer windowTimer = new(50);
         private Rectangle windowLastBounds;
 
 
@@ -51,36 +50,32 @@ namespace PeridotWindows.EditorScreen
             
             frmScene.SelectedEntityChanged += FrmScene_OnSelectedEntityChanged;
 
-            windowTimer.Start();
-            windowTimer.Elapsed += (sender, args) =>
-            {
-                frmToolbox.Invoke(() =>
-                {
-                    int titleHeight = frmToolbox.RectangleToScreen(frmToolbox.ClientRectangle).Top - frmToolbox.Top;
-
-                    Rectangle bounds = Globals.GameMain.Window.ClientBounds;
-
-                    if (bounds != windowLastBounds)
-                    {
-
-                        frmToolbox.Location = new Point(bounds.Left, bounds.Top - titleHeight - 3 - frmToolbox.Height);
-                        frmToolbox.Width = bounds.Width;
-
-                        frmResources.Location = new Point(bounds.Left, bounds.Bottom + 3);
-                        frmResources.Width = bounds.Width;
-
-                        frmScene.Location = new Point(bounds.Left - frmScene.Width - 3, frmToolbox.Top);
-                        frmScene.Height = frmResources.Bottom - frmToolbox.Top;
-
-                        frmEntity.Location = new Point(bounds.Right + 3, frmToolbox.Top);
-                        frmEntity.Height = frmResources.Bottom - frmToolbox.Top;
-                    }
-
-                    windowLastBounds = bounds;
-                });
-            };
-
             scene.Initialize();
+        }
+
+        private void UpdateWindowLocations()
+        {
+            int titleHeight = frmToolbox.RectangleToScreen(frmToolbox.ClientRectangle).Top - frmToolbox.Top;
+
+            Rectangle bounds = Globals.GameMain.Window.ClientBounds;
+
+            if (bounds != windowLastBounds)
+            {
+
+                frmToolbox.Location = new Point(bounds.Left, bounds.Top - titleHeight - 3 - frmToolbox.Height);
+                frmToolbox.Width = bounds.Width;
+
+                frmResources.Location = new Point(bounds.Left, bounds.Bottom + 3);
+                frmResources.Width = bounds.Width;
+
+                frmScene.Location = new Point(bounds.Left - frmScene.Width - 3, frmToolbox.Top);
+                frmScene.Height = frmResources.Bottom - frmToolbox.Top;
+
+                frmEntity.Location = new Point(bounds.Right + 3, frmToolbox.Top);
+                frmEntity.Height = frmResources.Bottom - frmToolbox.Top;
+            }
+
+            windowLastBounds = bounds;
         }
 
         private void FrmScene_OnSelectedEntityChanged(object? sender, Entity? e)
@@ -102,6 +97,8 @@ namespace PeridotWindows.EditorScreen
 
             scene.Update(gameTime);
 
+            UpdateWindowLocations();
+
             lastKeyboardState = keyboardState;
         }
 
@@ -112,14 +109,16 @@ namespace PeridotWindows.EditorScreen
 
         public override void Deinitialize()
         {
+            scene.Deinitialize();
+
             frmResources?.Dispose();
             frmResources = null;
             frmToolbox?.Dispose();
             frmToolbox = null;
             frmEntity?.Dispose();
             frmEntity = null;
-
-            scene.Deinitialize();
+            frmScene?.Dispose();
+            frmScene = null;
         }
     }
 }

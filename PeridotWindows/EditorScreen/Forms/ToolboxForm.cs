@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PeridotEngine.Graphics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,13 @@ namespace PeridotWindows.EditorScreen.Forms
         public ToolboxForm()
         {
             InitializeComponent();
+        }
+
+        private void tsmiNewScene_Click(object sender, EventArgs e)
+        {
+            EditorScreen screen = new EditorScreen();
+
+            ScreenManager.CurrentScreen = screen;
         }
     }
 }

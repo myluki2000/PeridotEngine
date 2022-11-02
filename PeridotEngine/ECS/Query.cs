@@ -22,14 +22,14 @@ namespace PeridotWindows.ECS
             this.ecs.ArchetypeListChanged += (_, _) => archetypesOutdated = true;
         }
 
-        public Query Has<T>() where T : IComponent
+        public Query Has<T>() where T : ComponentBase
         {
             matchingArchetypes.RemoveAll(a => !a.ComponentTypes.Contains(typeof(T)));
             includeComponents.Add(typeof(T));
             return this;
         }
 
-        public Query HasNot<T>() where T : IComponent
+        public Query HasNot<T>() where T : ComponentBase
         {
             matchingArchetypes.RemoveAll(a => a.ComponentTypes.Contains(typeof(T)));
             excludeComponents.Add(typeof(T));
@@ -66,7 +66,7 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public void ForEach<T>(Action<T> action) where T : IComponent
+        public void ForEach<T>(Action<T> action) where T : ComponentBase
         {
             if (archetypesOutdated) UpdateMatchingArchetypes();
 
@@ -80,7 +80,7 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public void ForEach<T1, T2>(Action<T1, T2> action) where T1 : IComponent where T2 : IComponent
+        public void ForEach<T1, T2>(Action<T1, T2> action) where T1 : ComponentBase where T2 : ComponentBase
         {
             if (archetypesOutdated) UpdateMatchingArchetypes();
 
@@ -96,7 +96,7 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public void ForEach<T1, T2, T3>(Action<T1, T2, T3> action) where T1 : IComponent where T2 : IComponent where T3 : IComponent
+        public void ForEach<T1, T2, T3>(Action<T1, T2, T3> action) where T1 : ComponentBase where T2 : ComponentBase where T3 : ComponentBase
         {
             if (archetypesOutdated) UpdateMatchingArchetypes();
 
@@ -113,7 +113,7 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public void ForEach<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action) where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent
+        public void ForEach<T1, T2, T3, T4>(Action<T1, T2, T3, T4> action) where T1 : ComponentBase where T2 : ComponentBase where T3 : ComponentBase where T4 : ComponentBase
         {
             if (archetypesOutdated) UpdateMatchingArchetypes();
 
@@ -134,7 +134,7 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public void ForEach<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> action) where T1 : IComponent where T2 : IComponent where T3 : IComponent where T4 : IComponent where T5 : IComponent
+        public void ForEach<T1, T2, T3, T4, T5>(Action<T1, T2, T3, T4, T5> action) where T1 : ComponentBase where T2 : ComponentBase where T3 : ComponentBase where T4 : ComponentBase where T5 : ComponentBase
         {
             if (archetypesOutdated) UpdateMatchingArchetypes();
 

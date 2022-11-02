@@ -40,7 +40,7 @@ namespace PeridotEngine.Scenes.Scene3D
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => Camera.UpdateProjectionMatrix();
             Camera.UpdateProjectionMatrix();
 
-            IComponent[] components = new IComponent[]
+            ComponentBase[] components = new ComponentBase[]
             {
                 new StaticMeshComponent(this, Resources.MeshResources.GetAllMeshes().First().Mesh, Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
                 {

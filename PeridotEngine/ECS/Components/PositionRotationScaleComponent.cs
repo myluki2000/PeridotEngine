@@ -3,7 +3,7 @@ using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotWindows.ECS.Components
 {
-    public sealed partial class PositionRotationScaleComponent : IComponent
+    public sealed partial class PositionRotationScaleComponent : ComponentBase
     {
         public Vector3 Position
         {
@@ -51,8 +51,6 @@ namespace PeridotWindows.ECS.Components
                 return transformation;
             }
         }
-
-        public Scene3D Scene { get; }
 
         private Vector3 position;
         private Vector3 rotation;

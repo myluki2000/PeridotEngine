@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Archetype.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\IComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\ComponentBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticMeshComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\PositionRotationScaleComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Ecs.cs" />

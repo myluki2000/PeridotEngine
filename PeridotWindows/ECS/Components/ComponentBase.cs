@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotWindows.ECS.Components
 {
-    public partial interface IComponent
+    public abstract partial class ComponentBase
     {
-        public UserControl? PropertiesControl { get; }
+        [JsonIgnore]
+        public UserControl? PropertiesControl { get; protected set; }
     }
 }

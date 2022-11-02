@@ -41,7 +41,7 @@ namespace PeridotWindows.EditorScreen
 
             frmResources = new(scene);
             frmResources.Show(mainWindowControl);
-            frmToolbox = new();
+            frmToolbox = new(scene);
             frmToolbox.Show(mainWindowControl);
             frmEntity = new();
             frmEntity.Show(mainWindowControl);

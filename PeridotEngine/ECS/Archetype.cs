@@ -1,10 +1,12 @@
 ﻿using System.Collections;
+using System.Text.Json.Serialization;
 using PeridotWindows.ECS.Components;
 
 namespace PeridotWindows.ECS
 {
     public class Archetype
     {
+        [JsonIgnore]
         public Type[] ComponentTypes { get; }
 
         public List<string?> Names { get; } = new();
@@ -22,12 +24,12 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public void CreateEntity(params IComponent[] entityComponents)
+        public void CreateEntity(params ComponentBase[] entityComponents)
         {
             CreateEntity(null, entityComponents);
         }
 
-        public void CreateEntity(string? name, params IComponent[] entityComponents)
+        public void CreateEntity(string? name, params ComponentBase[] entityComponents)
         {
             entityComponents = entityComponents.OrderBy(x => x.GetType().GetHashCode()).ToArray();
 
@@ -54,10 +56,10 @@ namespace PeridotWindows.ECS
         {
             for (int i = 0; i < EntityCount; i++)
             {
-                IComponent[] c = new IComponent[ComponentTypes.Length];
+                ComponentBase[] c = new ComponentBase[ComponentTypes.Length];
                 for (int j = 0; j < ComponentTypes.Length; j++)
                 {
-                    c[j] = (IComponent)Components[j][i];
+                    c[j] = (ComponentBase)Components[j][i];
                 }
                 yield return new Entity(Names[i], this, c);
             }

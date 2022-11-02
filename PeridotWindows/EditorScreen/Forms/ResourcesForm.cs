@@ -13,7 +13,6 @@ using PeridotEngine;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS.Components;
-using IComponent = PeridotWindows.ECS.Components.IComponent;
 
 namespace PeridotWindows.EditorScreen.Forms
 {
@@ -131,7 +130,7 @@ namespace PeridotWindows.EditorScreen.Forms
         {
             if (lvMeshes.SelectedItems == null || lvMeshes.SelectedItems.Count == 0) return;
 
-            IComponent[] components = new IComponent[]
+            ComponentBase[] components = new ComponentBase[]
             {
                 new PositionRotationScaleComponent(scene),
                 new StaticMeshComponent(scene, ((MeshResources.MeshInfo)lvMeshes.SelectedItems[0].Tag).Mesh, scene.Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())

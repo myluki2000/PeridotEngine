@@ -28,7 +28,7 @@ namespace PeridotWindows.EditorScreen.Forms
 
             if (entity == null) return;
 
-            foreach (IComponent component in entity.Components.Reverse())
+            foreach (ComponentBase component in entity.Components.Reverse())
             {
                 UserControl control = component.PropertiesControl;
                 

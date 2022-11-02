@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics.Geometry;
@@ -13,6 +14,7 @@ namespace PeridotEngine.Graphics.Effects
         public Matrix World { get; set; } = Matrix.Identity;
         public Matrix ViewProjection { get; set; }
 
+        [JsonIgnore]
         protected readonly EffectParameter WorldViewProjParam;
 
         protected EffectBase(Effect cloneSource) : base(cloneSource)

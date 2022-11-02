@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -83,7 +84,9 @@ namespace PeridotEngine.Graphics.Geometry
 
     public abstract class Mesh
     {
+        [JsonIgnore]
         public VertexBuffer? VertexBuffer { get; set; }
+        [JsonIgnore]
         public IndexBuffer? IndexBuffer { get; set; }
 
         public abstract int GetVertexCount();

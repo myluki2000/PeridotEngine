@@ -10,7 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PeridotEngine;
+using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Scenes.Scene3D;
+using PeridotWindows.ECS.Components;
+using IComponent = PeridotWindows.ECS.Components.IComponent;
 
 namespace PeridotWindows.EditorScreen.Forms
 {
@@ -20,11 +23,28 @@ namespace PeridotWindows.EditorScreen.Forms
 
         public ResourcesForm(Scene3D scene)
         {
+            InitializeComponent();
+
             this.scene = scene;
 
             scene.Resources.TextureResources.TextureAtlasChanged += OnTextureAtlasChanged;
+            scene.Resources.MeshResources.MeshListChanged += OnMeshListChanged;
 
-            InitializeComponent();
+            OnTextureAtlasChanged(null, scene.Resources.TextureResources.GetAllTextures());
+            OnMeshListChanged(null, scene.Resources.MeshResources.GetAllMeshes());
+        }
+
+        private void OnMeshListChanged(object? sender, IEnumerable<MeshResources.MeshInfo> meshInfos)
+        {
+            lvMeshes.Items.Clear();
+
+            foreach(MeshResources.MeshInfo meshInfo in meshInfos)
+            {
+                ListViewItem item = new(meshInfo.Name);
+                item.Tag = meshInfo;
+
+                lvMeshes.Items.Add(item);
+            }
         }
 
         private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
@@ -105,6 +125,19 @@ namespace PeridotWindows.EditorScreen.Forms
 
                 scene.Resources.MeshResources.LoadModel(trimmedPath);
             }
+        }
+
+        private void lvMeshes_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvMeshes.SelectedItems == null || lvMeshes.SelectedItems.Count == 0) return;
+
+            IComponent[] components = new IComponent[]
+            {
+                new PositionRotationScaleComponent(scene),
+                new StaticMeshComponent(scene, ((MeshResources.MeshInfo)lvMeshes.SelectedItems[0].Tag).Mesh, scene.Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
+            };
+
+            scene.Ecs.Archetype(typeof(PositionRotationScaleComponent), typeof(StaticMeshComponent)).CreateEntity(components);
         }
     }
 }

@@ -53,6 +53,16 @@ namespace PeridotWindows.ECS
             });
         }
 
+        public int EntityCount
+        {
+            get
+            {
+                if (archetypesOutdated) UpdateMatchingArchetypes();
+
+                return matchingArchetypes.Sum(x => x.EntityCount);
+            }
+        }
+
         public void ForEach(Action<Entity> action)
         {
             if(archetypesOutdated) UpdateMatchingArchetypes();

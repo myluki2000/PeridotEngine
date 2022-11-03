@@ -1,23 +1,28 @@
-﻿namespace PeridotWindows.ECS
+﻿using Newtonsoft.Json;
+
+namespace PeridotWindows.ECS
 {
     public class Ecs
     {
-        private List<Archetype> archetypes = new();
-        public List<Archetype> Archetypes
-        {
-            get => archetypes;
-            private set
-            {
-                archetypes = value;
-                foreach (Archetype archetype in archetypes)
-                {
-                    archetype.EntityListChanged += () => EntityListChanged?.Invoke(this, archetype);
-                }
-            }
-        }
+        public List<Archetype> Archetypes { get; } = new();
 
         public event EventHandler<IEnumerable<Archetype>>? ArchetypeListChanged;
         public event EventHandler<Archetype>? EntityListChanged;
+
+        public Ecs()
+        {
+        }
+
+        [JsonConstructor]
+        public Ecs(List<Archetype> archetypes)
+        {
+            Archetypes = archetypes;
+
+            foreach (Archetype archetype in Archetypes)
+            {
+                archetype.EntityListChanged += () => EntityListChanged?.Invoke(this, archetype);
+            }
+        }
 
         public Archetype Archetype(params Type[] componentTypes)
         {

@@ -22,29 +22,29 @@ namespace PeridotWindows.Graphics.Camera
 
             if (keyState.IsKeyDown(Keys.W))
             {
-                MoveForward((float)gameTime.ElapsedGameTime.TotalSeconds);
+                MoveForward((float)gameTime.ElapsedGameTime.TotalSeconds * 2);
             }
             else if (keyState.IsKeyDown(Keys.S))
             {
-                MoveBackward((float)gameTime.ElapsedGameTime.TotalSeconds);
+                MoveBackward((float)gameTime.ElapsedGameTime.TotalSeconds * 2);
             }
 
             if (keyState.IsKeyDown(Keys.A))
             {
-                MoveLeft((float)gameTime.ElapsedGameTime.TotalSeconds);
+                MoveLeft((float)gameTime.ElapsedGameTime.TotalSeconds * 2);
             }
             else if (keyState.IsKeyDown(Keys.D))
             {
-                MoveRight((float)gameTime.ElapsedGameTime.TotalSeconds);
+                MoveRight((float)gameTime.ElapsedGameTime.TotalSeconds * 2);
             }
 
             if (keyState.IsKeyDown(Keys.Space))
             {
-                MoveUp((float)gameTime.ElapsedGameTime.TotalSeconds);
+                MoveUp((float)gameTime.ElapsedGameTime.TotalSeconds * 2);
             }
             else if (keyState.IsKeyDown(Keys.LeftShift))
             {
-                MoveDown((float)gameTime.ElapsedGameTime.TotalSeconds);
+                MoveDown((float)gameTime.ElapsedGameTime.TotalSeconds * 2);
             }
 
             if (mouseState.RightButton == ButtonState.Pressed)

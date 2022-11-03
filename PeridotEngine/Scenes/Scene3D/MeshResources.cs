@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Geometry;
+using static PeridotEngine.Scenes.Scene3D.MeshResources;
 using Color = Microsoft.Xna.Framework.Color;
 using ModelMesh = PeridotEngine.Graphics.Geometry.ModelMesh;
 
@@ -46,7 +47,7 @@ namespace PeridotEngine.Scenes.Scene3D
                     0, 3, 2
                 });
 
-            AddDefaultMesh(new MeshInfo(name, mesh));
+            AddDefaultMesh(new MeshInfo(name, null, mesh));
         }
 
         public void CreateTriangle(string name)
@@ -63,20 +64,25 @@ namespace PeridotEngine.Scenes.Scene3D
                     2, 1, 0
                 });
 
-            AddDefaultMesh(new MeshInfo(name, mesh));
+            AddDefaultMesh(new MeshInfo(name, null, mesh));
         }
 
         public void LoadModel(string contentPath)
         {
-            Model model = Globals.Content.Load<Model>(contentPath);
-
-            ModelMesh mesh = new(model.Meshes[0].MeshParts[0].VertexBuffer,
-                                 model.Meshes[0].MeshParts[0].IndexBuffer);
-
-            AddCustomMesh(new MeshInfo(contentPath, mesh));
-
-            Globals.Content.UnloadAsset(contentPath);
+            MeshInfo meshInfo = new MeshInfo(contentPath, contentPath, null);
+            LoadModel(meshInfo);
+            AddCustomMesh(meshInfo);
         }
+
+        public void LoadModel(MeshInfo meshInfo)
+        {
+            Model model = Globals.Content.Load<Model>(meshInfo.FilePath);
+
+            meshInfo.Mesh = new ModelMesh(model.Meshes[0].MeshParts[0].VertexBuffer,
+                model.Meshes[0].MeshParts[0].IndexBuffer);
+
+            Globals.Content.UnloadAsset(meshInfo.FilePath);
+        } 
 
         private void AddCustomMesh(MeshInfo mesh)
         {
@@ -92,14 +98,17 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public class MeshInfo
         {
-            public MeshInfo(string name, Mesh mesh)
+            public MeshInfo(string name, string? filePath, Mesh? mesh)
             {
                 Name = name;
+                FilePath = filePath;
                 Mesh = mesh;
             }
 
-            public readonly Mesh Mesh;
-            public readonly string Name;
+            [JsonIgnore]
+            public Mesh? Mesh { get; set; }
+            public string Name { get; set; }
+            public string? FilePath { get; set; }
 
             public override string ToString()
             {

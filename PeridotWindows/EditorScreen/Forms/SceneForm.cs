@@ -16,17 +16,18 @@ namespace PeridotWindows.EditorScreen.Forms
     {
         public event EventHandler<Entity?>? SelectedEntityChanged;
 
-        private Scene3D scene;
+        private readonly Scene3D scene;
 
         public SceneForm(Scene3D scene)
         {
             InitializeComponent();
 
             this.scene = scene;
-            scene.Ecs.EntityListChanged += Scene_EntityListChanged;
+            scene.Ecs.EntityListChanged += (_, _) => Scene_EntityListChanged();
+            Scene_EntityListChanged();
         }
 
-        private void Scene_EntityListChanged(object? sender, Archetype archetype)
+        private void Scene_EntityListChanged()
         {
             List<ListViewItem> items = new();
             scene.Ecs.Query().ForEach((Entity entity) =>

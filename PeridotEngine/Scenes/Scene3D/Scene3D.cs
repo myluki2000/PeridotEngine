@@ -6,10 +6,13 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Camera;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
+using PeridotEngine.IO.JsonConverters;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 using Color = Microsoft.Xna.Framework.Color;
@@ -19,16 +22,44 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class Scene3D : Scene
     {
-        public Ecs Ecs { get; } = new Ecs();
+        public Ecs Ecs { get; }
         public SceneResources Resources { get; }
 
-        public Camera Camera { get; set; } = new();
+        public Camera Camera { get; set; }
 
         private Query? meshes;
 
         public Scene3D()
         {
             Resources = new SceneResources(this);
+            Ecs = new Ecs();
+            Camera = new Camera();
+        }
+
+        public Scene3D(string json)
+        {
+            JToken root = JToken.Parse(json);
+            JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings()
+            {
+                Converters =
+                {
+                    new StaticMeshComponentJsonConverter(this),
+                    new EffectPropertiesJsonConverter(this),
+                    new ArchetypeJsonConverter(),
+                    new SceneResourcesJsonConverter(this)
+                }
+            });
+
+            Resources = (SceneResources)root["Resources"].ToObject(typeof(SceneResources), serializer);
+            Camera = root["Camera"].ToObject<Camera>();
+            Ecs = (Ecs)root["Ecs"].ToObject(typeof(Ecs), serializer);
+        }
+
+        public Scene3D(SceneResources resources, Ecs ecs, Camera camera)
+        {
+            Resources = resources;
+            Ecs = ecs;
+            Camera = camera;
         }
 
         public override void Initialize()
@@ -39,22 +70,6 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => Camera.UpdateProjectionMatrix();
             Camera.UpdateProjectionMatrix();
-
-            ComponentBase[] components = new ComponentBase[]
-            {
-                new StaticMeshComponent(this, Resources.MeshResources.GetAllMeshes().First(), Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
-                {
-                    
-                },
-                new PositionRotationScaleComponent(this)
-                {
-                    Position = new Vector3(0, 0, 0),
-                    Rotation = new Vector3(0, 0, 0)
-                }
-            };
-
-            Ecs.Archetype(typeof(StaticMeshComponent), typeof(PositionRotationScaleComponent))
-                .CreateEntity(components);
 
             meshes = Ecs.Query()
                 .Has<PositionRotationScaleComponent>()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using PeridotEngine.Scenes.Scene3D;
 using SharpDX.Direct3D9;
 using Color = Microsoft.Xna.Framework.Color;
@@ -20,11 +21,6 @@ namespace PeridotEngine.Graphics.Effects
         private readonly EffectParameter texturePositionParam;
         private readonly EffectParameter textureSizeParam;
         private TextureResources? textureResources;
-
-        static SimpleEffect()
-        {
-            EffectPool.RegisterEffectType<SimpleEffect>();
-        }
 
         public SimpleEffect() : base(Globals.Content.Load<Effect>("Effects/SimpleEffect"))
         {
@@ -45,7 +41,10 @@ namespace PeridotEngine.Graphics.Effects
                 textureResources = value;
 
                 if (textureResources != null)
+                {
                     textureResources.TextureAtlasChanged += TextureAtlasChanged;
+                    TextureAtlasChanged(null, textureResources.GetAllTextures());
+                }
             }
         }
 
@@ -57,6 +56,11 @@ namespace PeridotEngine.Graphics.Effects
         public override EffectProperties CreatePropertiesBase()
         {
             return CreateProperties();
+        }
+
+        public override Type GetPropertiesType()
+        {
+            return typeof(SimpleEffectProperties);
         }
 
         public SimpleEffectProperties CreateProperties()
@@ -92,20 +96,20 @@ namespace PeridotEngine.Graphics.Effects
 
             public SimpleEffectProperties(SimpleEffect effect)
             {
-                this.effect = effect;
+                Effect = effect;
             }
 
             public override void Apply(Mesh mesh)
             {
                 base.Apply(mesh);
 
-                effect.mixColorParam.SetValue(MixColor.ToVector4());
+                SimpleEffect.mixColorParam.SetValue(MixColor.ToVector4());
 
                 if (TextureEnabled)
                 {
-                    RectangleF bounds = effect.TextureResources.GetTextureBoundsInAtlas(TextureId);
-                    effect.texturePositionParam.SetValue(bounds.Location.ToVector2());
-                    effect.textureSizeParam.SetValue(bounds.Size.ToVector2());
+                    RectangleF bounds = SimpleEffect.TextureResources.GetTextureBoundsInAtlas(TextureId);
+                    SimpleEffect.texturePositionParam.SetValue(bounds.Location.ToVector2());
+                    SimpleEffect.textureSizeParam.SetValue(bounds.Size.ToVector2());
                 }
 
                 if (Technique == null)
@@ -114,9 +118,8 @@ namespace PeridotEngine.Graphics.Effects
                 }
             }
 
-            public override EffectBase Effect => effect;
+            private SimpleEffect SimpleEffect => (SimpleEffect)Effect;
 
-            private readonly SimpleEffect effect;
             private bool textureEnabled;
             private bool vertexColorEnabled;
 
@@ -147,7 +150,7 @@ namespace PeridotEngine.Graphics.Effects
                     techniqueIndex += 2;
                 }
 
-                Technique = effect.Techniques[techniqueIndex];
+                Technique = Effect.Techniques[techniqueIndex];
             }
         }
     }

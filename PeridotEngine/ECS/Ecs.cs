@@ -2,10 +2,22 @@
 {
     public class Ecs
     {
-        public List<Archetype> Archetypes { get; } = new();
+        private List<Archetype> archetypes = new();
+        public List<Archetype> Archetypes
+        {
+            get => archetypes;
+            private set
+            {
+                archetypes = value;
+                foreach (Archetype archetype in archetypes)
+                {
+                    archetype.EntityListChanged += () => EntityListChanged?.Invoke(this, archetype);
+                }
+            }
+        }
 
         public event EventHandler<IEnumerable<Archetype>>? ArchetypeListChanged;
-        public event EventHandler<Archetype>? EntityListChanged; 
+        public event EventHandler<Archetype>? EntityListChanged;
 
         public Archetype Archetype(params Type[] componentTypes)
         {

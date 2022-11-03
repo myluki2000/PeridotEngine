@@ -6,7 +6,6 @@ namespace PeridotWindows.ECS
 {
     public class Archetype
     {
-        [JsonIgnore]
         public Type[] ComponentTypes { get; }
 
         public List<string?> Names { get; } = new();
@@ -14,14 +13,15 @@ namespace PeridotWindows.ECS
 
         public event Action? EntityListChanged;
 
+        public Archetype(Type[] componentTypes, List<string?> names, List<IList> components) : this(componentTypes)
+        {
+            Names = names;
+            Components = components;
+        }
+
         public Archetype(Type[] componentTypes)
         {
-            ComponentTypes = componentTypes.OrderBy(x => x.GetHashCode()).ToArray();
-
-            foreach (Type componentType in ComponentTypes)
-            {
-                Components.Add(new ArrayList());
-            }
+            ComponentTypes = componentTypes.OrderBy(x => x.FullName).ToArray();
         }
 
         public void CreateEntity(params ComponentBase[] entityComponents)
@@ -31,7 +31,10 @@ namespace PeridotWindows.ECS
 
         public void CreateEntity(string? name, params ComponentBase[] entityComponents)
         {
-            entityComponents = entityComponents.OrderBy(x => x.GetType().GetHashCode()).ToArray();
+            while (Components.Count < ComponentTypes.Length)
+                Components.Add(new ArrayList());
+
+            entityComponents = entityComponents.OrderBy(x => x.GetType().FullName).ToArray();
 
             // check that all components of the archetype were provided for the entity
             if (entityComponents.Length != Components.Count) throw new Exception("Not all required components were passed to the CreateEntity method when creating an entity of this specific archetype.");

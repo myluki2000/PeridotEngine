@@ -26,7 +26,6 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             this.component = component;
 
             component.Scene.Resources.MeshResources.MeshListChanged += (_, _) => UpdateMeshList();
-            UpdateMeshList();
 
             foreach (Type effectType in EffectPool.GetRegisteredEffectTypes())
             {
@@ -34,6 +33,13 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
                 if (effectType == component.EffectProperties.Effect.GetType()) cmbEffect.SelectedItem = effectType;
             }
+
+            cmbEffect.SelectedIndexChanged += cmbEffect_SelectedIndexChanged;
+        }
+
+        private void Populate()
+        {
+            UpdateMeshList();
         }
 
         private void UpdateMeshList()
@@ -53,7 +59,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             component.Mesh = (MeshResources.MeshInfo)cmbMesh.SelectedItem;
         }
 
-        private void cmbEffect_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbEffect_SelectedIndexChanged(object? sender, EventArgs e)
         {
             Type effectType = (Type)cmbEffect.SelectedItem;
             component.EffectProperties = component.Scene.Resources.EffectPool.Effect(effectType).CreatePropertiesBase();

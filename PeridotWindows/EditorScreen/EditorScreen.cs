@@ -19,7 +19,7 @@ namespace PeridotWindows.EditorScreen
 {
     internal class EditorScreen : PeridotEngine.Graphics.Screens.Screen
     {
-        private readonly Scene3D scene = new();
+        private readonly Scene3D scene;
 
         private ResourcesForm? frmResources;
         private ToolboxForm? frmToolbox;
@@ -30,6 +30,15 @@ namespace PeridotWindows.EditorScreen
 
         private Rectangle windowLastBounds;
 
+        public EditorScreen()
+        {
+            scene = new();
+        }
+
+        public EditorScreen(Scene3D scene)
+        {
+            this.scene = scene;
+        }
 
         public override void Initialize()
         {

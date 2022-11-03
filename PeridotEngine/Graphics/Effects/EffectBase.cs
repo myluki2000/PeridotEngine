@@ -23,6 +23,7 @@ namespace PeridotEngine.Graphics.Effects
         }
 
         public abstract EffectProperties CreatePropertiesBase();
+        public abstract Type GetPropertiesType();
 
         public abstract partial class EffectProperties
         {
@@ -33,7 +34,7 @@ namespace PeridotEngine.Graphics.Effects
             }
 
             [JsonIgnore]
-            public abstract EffectBase Effect { get; }
+            public EffectBase Effect { get; protected set; }
 
             [JsonIgnore]
             public EffectTechnique? Technique { get; protected set; }

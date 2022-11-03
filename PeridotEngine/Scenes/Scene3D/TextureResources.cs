@@ -35,8 +35,6 @@ namespace PeridotEngine.Scenes.Scene3D
             AddTextureWithoutRefreshingAtlas(filePath);
 
             GenerateAtlas();
-
-            TextureAtlasChanged?.Invoke(this, GetAllTextures());
         }
 
         public void AddTextures(IEnumerable<string> filePaths)
@@ -47,8 +45,6 @@ namespace PeridotEngine.Scenes.Scene3D
             }
 
             GenerateAtlas();
-
-            TextureAtlasChanged?.Invoke(this, GetAllTextures());
         }
 
         private void AddTextureWithoutRefreshingAtlas(string filePath)
@@ -76,7 +72,7 @@ namespace PeridotEngine.Scenes.Scene3D
             textures[length] = texInfo;
         }
 
-        private void GenerateAtlas()
+        public void GenerateAtlas()
         {
             List<(uint id, Bitmap bitmap)>[] bitmaps = new List<(uint id, Bitmap bitmap)>[16];
             for (int i = 0; i < bitmaps.Length; i++)
@@ -221,6 +217,9 @@ namespace PeridotEngine.Scenes.Scene3D
                 ms.Seek(0, SeekOrigin.Begin);
                 TextureAtlas = Texture2D.FromStream(Globals.Graphics.GraphicsDevice, ms);
             }
+
+
+            TextureAtlasChanged?.Invoke(this, GetAllTextures());
         }
 
         public class TextureInfo
@@ -234,12 +233,6 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 this.FilePath = filePath;
                 this.Bounds = RectangleF.Empty;
-            }
-
-            public TextureInfo(string filePath, RectangleF bounds)
-            {
-                this.FilePath = filePath;
-                this.Bounds = bounds;
             }
         }
     }

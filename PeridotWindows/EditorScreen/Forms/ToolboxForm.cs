@@ -4,7 +4,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PeridotEngine.Graphics.Camera;
 using PeridotEngine.IO.JsonConverters;
+using PeridotWindows.ECS;
 
 namespace PeridotWindows.EditorScreen.Forms
 {
@@ -32,8 +35,21 @@ namespace PeridotWindows.EditorScreen.Forms
 
             if (sfd.ShowDialog() != DialogResult.OK) return;
 
-            string json = JsonConvert.SerializeObject(scene, new StaticMeshComponentJsonConverter(), new EffectPropertiesJsonConverter());
+            string json = JsonConvert.SerializeObject(scene, new StaticMeshComponentJsonConverter(scene), new EffectPropertiesJsonConverter(scene), new ArchetypeJsonConverter());
             File.WriteAllText(sfd.FileName, json);
+        }
+
+        private void tsmiLoadScene_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new();
+
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            string json = File.ReadAllText(ofd.FileName);
+
+            Scene3D newScene = new Scene3D(json);
+
+            ScreenManager.CurrentScreen = new EditorScreen(newScene);
         }
     }
 }

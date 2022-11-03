@@ -14,6 +14,11 @@ namespace PeridotEngine.Graphics.Effects
 
         private readonly Scene3D scene;
 
+        static EffectPool()
+        {
+            RegisterEffectType<SimpleEffect>();
+        }
+
         public EffectPool(Scene3D scene)
         {
             this.scene = scene;

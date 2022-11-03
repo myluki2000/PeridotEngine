@@ -33,6 +33,7 @@
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.tsmiNewScene = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSaveScene = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiLoadScene = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,6 +53,7 @@
             this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiNewScene,
+            this.tsmiLoadScene,
             this.tsmiSaveScene});
             this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
             this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -72,6 +74,13 @@
             this.tsmiSaveScene.Size = new System.Drawing.Size(180, 22);
             this.tsmiSaveScene.Text = "Save Scene";
             this.tsmiSaveScene.Click += new System.EventHandler(this.tsmiSaveScene_Click);
+            // 
+            // tsmiLoadScene
+            // 
+            this.tsmiLoadScene.Name = "tsmiLoadScene";
+            this.tsmiLoadScene.Size = new System.Drawing.Size(180, 22);
+            this.tsmiLoadScene.Text = "Load Scene";
+            this.tsmiLoadScene.Click += new System.EventHandler(this.tsmiLoadScene_Click);
             // 
             // ToolboxForm
             // 
@@ -96,5 +105,6 @@
         private ToolStripDropDownButton toolStripDropDownButton1;
         private ToolStripMenuItem tsmiNewScene;
         private ToolStripMenuItem tsmiSaveScene;
+        private ToolStripMenuItem tsmiLoadScene;
     }
 }

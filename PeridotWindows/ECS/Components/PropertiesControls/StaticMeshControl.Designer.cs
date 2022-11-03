@@ -88,7 +88,6 @@
             this.cmbEffect.Name = "cmbEffect";
             this.cmbEffect.Size = new System.Drawing.Size(268, 23);
             this.cmbEffect.TabIndex = 11;
-            this.cmbEffect.SelectedIndexChanged += new System.EventHandler(this.cmbEffect_SelectedIndexChanged);
             // 
             // gbEffectProperties
             // 

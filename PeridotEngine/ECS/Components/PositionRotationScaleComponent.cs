@@ -43,11 +43,11 @@ namespace PeridotWindows.ECS.Components
             {
                 if (matrixOutdated)
                 {
-                    transformation = Matrix.CreateTranslation(position)
+                    transformation = Matrix.CreateScale(scale)
                                      * Matrix.CreateRotationX(rotation.X)
                                      * Matrix.CreateRotationY(rotation.Y)
                                      * Matrix.CreateRotationZ(rotation.Z)
-                                     * Matrix.CreateScale(scale);
+                                     * Matrix.CreateTranslation(position);
                 }
 
                 return transformation;

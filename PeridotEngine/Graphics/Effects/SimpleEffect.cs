@@ -90,6 +90,11 @@ namespace PeridotEngine.Graphics.Effects
 
             public uint TextureId { get; set; }
 
+            public SimpleEffectProperties(SimpleEffect effect)
+            {
+                this.effect = effect;
+            }
+
             public override void Apply(Mesh mesh)
             {
                 base.Apply(mesh);

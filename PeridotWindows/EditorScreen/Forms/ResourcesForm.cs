@@ -133,7 +133,7 @@ namespace PeridotWindows.EditorScreen.Forms
             ComponentBase[] components = new ComponentBase[]
             {
                 new PositionRotationScaleComponent(scene),
-                new StaticMeshComponent(scene, ((MeshResources.MeshInfo)lvMeshes.SelectedItems[0].Tag).Mesh, scene.Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
+                new StaticMeshComponent(scene, (MeshResources.MeshInfo)lvMeshes.SelectedItems[0].Tag, scene.Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
             };
 
             scene.Ecs.Archetype(typeof(PositionRotationScaleComponent), typeof(StaticMeshComponent)).CreateEntity(components);

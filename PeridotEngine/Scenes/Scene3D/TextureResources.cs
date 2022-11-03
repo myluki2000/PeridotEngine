@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
     public class TextureResources
     {
+        [JsonIgnore]
         public Texture2D? TextureAtlas { get; set; }
 
+        [JsonProperty]
         private TextureInfo?[] textures = new TextureInfo[] { };
 
         public event EventHandler<IEnumerable<TextureInfo>>? TextureAtlasChanged;
@@ -223,6 +226,7 @@ namespace PeridotEngine.Scenes.Scene3D
         public class TextureInfo
         {
             public string FilePath;
+            [JsonIgnore]
             public RectangleF Bounds;
             public uint TextureId;
 

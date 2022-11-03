@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics.Geometry;
@@ -32,8 +32,10 @@ namespace PeridotEngine.Graphics.Effects
                 Effect.WorldViewProjParam.SetValue(worldViewProjection);
             }
 
+            [JsonIgnore]
             public abstract EffectBase Effect { get; }
 
+            [JsonIgnore]
             public EffectTechnique? Technique { get; protected set; }
         }
     }

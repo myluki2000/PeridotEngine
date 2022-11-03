@@ -42,7 +42,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             ComponentBase[] components = new ComponentBase[]
             {
-                new StaticMeshComponent(this, Resources.MeshResources.GetAllMeshes().First().Mesh, Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
+                new StaticMeshComponent(this, Resources.MeshResources.GetAllMeshes().First(), Resources.EffectPool.Effect<SimpleEffect>().CreateProperties())
                 {
                     
                 },
@@ -80,34 +80,34 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 meshC.EffectProperties.Effect.World = posC.Transformation;
 
-                if (meshC.Mesh.VertexBuffer == null)
+                if (meshC.Mesh.Mesh.VertexBuffer == null)
                 {
-                    meshC.Mesh.VertexBuffer = new VertexBuffer(gd, meshC.Mesh.GetVertexDeclaration(),
-                        meshC.Mesh.GetVertexCount(), BufferUsage.WriteOnly);
+                    meshC.Mesh.Mesh.VertexBuffer = new VertexBuffer(gd, meshC.Mesh.Mesh.GetVertexDeclaration(),
+                        meshC.Mesh.Mesh.GetVertexCount(), BufferUsage.WriteOnly);
 
-                    object vertsObj = meshC.Mesh.GetType().GetMethod("GetVertices")
-                        .Invoke(meshC.Mesh, new object[] { });
+                    object vertsObj = meshC.Mesh.Mesh.GetType().GetMethod("GetVertices")
+                        .Invoke(meshC.Mesh.Mesh, new object[] { });
                     
                     typeof(VertexBuffer).GetMethods().First(x => x.Name == "SetData" && x.GetParameters().Length == 1)
-                        .MakeGenericMethod(meshC.Mesh.GetVertexType()).Invoke(meshC.Mesh.VertexBuffer, new[] {vertsObj});
+                        .MakeGenericMethod(meshC.Mesh.Mesh.GetVertexType()).Invoke(meshC.Mesh.Mesh.VertexBuffer, new[] {vertsObj});
                 }
 
-                if (meshC.Mesh.IndexBuffer == null)
+                if (meshC.Mesh.Mesh.IndexBuffer == null)
                 {
-                    uint[] indices = meshC.Mesh.GetIndices();
-                    meshC.Mesh.IndexBuffer = new IndexBuffer(gd, IndexElementSize.ThirtyTwoBits, indices.Length,
+                    uint[] indices = meshC.Mesh.Mesh.GetIndices();
+                    meshC.Mesh.Mesh.IndexBuffer = new IndexBuffer(gd, IndexElementSize.ThirtyTwoBits, indices.Length,
                         BufferUsage.WriteOnly);
-                    meshC.Mesh.IndexBuffer.SetData(indices);
+                    meshC.Mesh.Mesh.IndexBuffer.SetData(indices);
                 }
 
-                gd.SetVertexBuffer(meshC.Mesh.VertexBuffer);
-                gd.Indices = meshC.Mesh.IndexBuffer;
+                gd.SetVertexBuffer(meshC.Mesh.Mesh.VertexBuffer);
+                gd.Indices = meshC.Mesh.Mesh.IndexBuffer;
 
-                meshC.EffectProperties.Apply(meshC.Mesh);
+                meshC.EffectProperties.Apply(meshC.Mesh.Mesh);
                 foreach (EffectPass pass in meshC.EffectProperties.Technique!.Passes)
                 {
                     pass.Apply();
-                    gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshC.Mesh.IndexBuffer.IndexCount / 3);
+                    gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshC.Mesh.Mesh.IndexBuffer.IndexCount / 3);
                 }
             });
         }

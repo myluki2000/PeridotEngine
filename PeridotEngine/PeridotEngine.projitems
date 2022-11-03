@@ -25,6 +25,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\Mesh.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\ScreenManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\EffectPropertiesJsonConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\StaticMeshComponentJsonConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene.cs" />

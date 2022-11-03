@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using PeridotWindows.ECS.Components;
 
 namespace PeridotWindows.ECS
@@ -65,6 +65,7 @@ namespace PeridotWindows.ECS
             }
         }
 
+        [JsonIgnore]
         public int EntityCount => Components[0].Count;
     }
 }

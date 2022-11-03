@@ -7,7 +7,7 @@ namespace PeridotWindows.ECS.Components
 {
     public sealed partial class StaticMeshComponent : ComponentBase
     {
-        public Mesh Mesh { get; set; }
+        public MeshResources.MeshInfo Mesh { get; set; }
         public EffectBase.EffectProperties EffectProperties { get; set; }
     }
 }

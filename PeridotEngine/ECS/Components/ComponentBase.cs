@@ -1,6 +1,5 @@
-﻿using PeridotEngine.Scenes.Scene3D;
-using System.Text.Json.Serialization;
-
+﻿using Newtonsoft.Json;
+using PeridotEngine.Scenes.Scene3D;
 namespace PeridotWindows.ECS.Components
 {
     public abstract partial class ComponentBase

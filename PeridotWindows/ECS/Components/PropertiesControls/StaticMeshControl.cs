@@ -44,13 +44,13 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             {
                 cmbMesh.Items.Add(meshInfo);
 
-                if (meshInfo.Mesh == component.Mesh) cmbMesh.SelectedItem = meshInfo;
+                if (meshInfo == component.Mesh) cmbMesh.SelectedItem = meshInfo;
             }
         }
 
         private void cmbMesh_SelectedIndexChanged(object sender, EventArgs e)
         {
-            component.Mesh = ((MeshResources.MeshInfo)cmbMesh.SelectedItem).Mesh;
+            component.Mesh = (MeshResources.MeshInfo)cmbMesh.SelectedItem;
         }
 
         private void cmbEffect_SelectedIndexChanged(object sender, EventArgs e)

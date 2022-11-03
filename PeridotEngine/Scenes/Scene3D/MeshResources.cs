@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Geometry;
 using Color = Microsoft.Xna.Framework.Color;
@@ -12,9 +13,11 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class MeshResources
     {
-        public event EventHandler<IEnumerable<MeshInfo>>? MeshListChanged; 
+        public event EventHandler<IEnumerable<MeshInfo>>? MeshListChanged;
 
-        private readonly List<MeshInfo> meshes = new();
+        private readonly List<MeshInfo> defaultMeshes = new();
+        [JsonProperty]
+        private readonly List<MeshInfo> customMeshes = new();
 
         public MeshResources()
         {
@@ -24,7 +27,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public IEnumerable<MeshInfo> GetAllMeshes()
         {
-            return meshes;
+            return defaultMeshes.Concat(customMeshes);
         }
 
         public void CreateQuad(string name)
@@ -43,7 +46,7 @@ namespace PeridotEngine.Scenes.Scene3D
                     0, 3, 2
                 });
 
-            AddMesh(new MeshInfo(name, mesh));
+            AddDefaultMesh(new MeshInfo(name, mesh));
         }
 
         public void CreateTriangle(string name)
@@ -60,7 +63,7 @@ namespace PeridotEngine.Scenes.Scene3D
                     2, 1, 0
                 });
 
-            AddMesh(new MeshInfo(name, mesh));
+            AddDefaultMesh(new MeshInfo(name, mesh));
         }
 
         public void LoadModel(string contentPath)
@@ -70,15 +73,21 @@ namespace PeridotEngine.Scenes.Scene3D
             ModelMesh mesh = new(model.Meshes[0].MeshParts[0].VertexBuffer,
                                  model.Meshes[0].MeshParts[0].IndexBuffer);
 
-            AddMesh(new MeshInfo(contentPath, mesh));
+            AddCustomMesh(new MeshInfo(contentPath, mesh));
 
             Globals.Content.UnloadAsset(contentPath);
         }
 
-        private void AddMesh(MeshInfo mesh)
+        private void AddCustomMesh(MeshInfo mesh)
         {
-            meshes.Add(mesh);
-            MeshListChanged?.Invoke(this, meshes);
+            customMeshes.Add(mesh);
+            MeshListChanged?.Invoke(this, GetAllMeshes());
+        }
+
+        private void AddDefaultMesh(MeshInfo mesh)
+        {
+            defaultMeshes.Add(mesh);
+            MeshListChanged?.Invoke(this, GetAllMeshes());
         }
 
         public class MeshInfo

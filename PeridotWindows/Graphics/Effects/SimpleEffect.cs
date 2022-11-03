@@ -12,14 +12,8 @@ namespace PeridotEngine.Graphics.Effects
     {
         public partial class SimpleEffectProperties
         {
-            public override UserControl PropertiesControl { get; }
-
-            public SimpleEffectProperties(SimpleEffect effect)
-            {
-                this.effect = effect;
-
-                PropertiesControl = new SimpleEffectControl(this);
-            }
+            private UserControl? propertiesControl;
+            public override UserControl PropertiesControl => propertiesControl ??= new SimpleEffectControl(this);
         }
     }
 }

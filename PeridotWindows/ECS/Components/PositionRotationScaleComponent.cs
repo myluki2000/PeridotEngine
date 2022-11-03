@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS.Components.PropertiesControls;

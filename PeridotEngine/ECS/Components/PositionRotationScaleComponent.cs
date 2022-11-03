@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Newtonsoft.Json;
+using Microsoft.Xna.Framework;
 using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotWindows.ECS.Components
@@ -35,6 +36,7 @@ namespace PeridotWindows.ECS.Components
             }
         }
 
+        [JsonIgnore]
         public Matrix Transformation
         {
             get
@@ -57,6 +59,6 @@ namespace PeridotWindows.ECS.Components
         private Vector3 scale = Vector3.One;
         private Matrix transformation = Matrix.Identity;
 
-        private bool matrixOutdated = false;
+        private bool matrixOutdated = true;
     }
 }

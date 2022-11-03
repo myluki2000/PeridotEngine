@@ -108,6 +108,7 @@ namespace PeridotEngine.Graphics.Camera
             direction.Normalize();
             direction *= (float)Math.Cos(Pitch);
             direction.Y = (float)Math.Sin(Pitch);
+            direction.Normalize();
             return direction;
         }
 

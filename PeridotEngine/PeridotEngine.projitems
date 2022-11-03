@@ -13,11 +13,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\ComponentBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticMeshComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\PositionRotationScaleComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\SunLightComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Ecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Entity.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Query.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\MeshRenderingSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\SunShadowMapSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Camera\Camera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\DepthEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectTexture.cs" />

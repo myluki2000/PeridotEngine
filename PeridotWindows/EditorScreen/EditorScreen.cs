@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PeridotEngine;
+using PeridotEngine.ECS.Components;
+using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
+using PeridotWindows.ECS.Components;
 using PeridotWindows.EditorScreen.Forms;
 using PeridotWindows.Graphics.Camera;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
@@ -114,6 +118,38 @@ namespace PeridotWindows.EditorScreen
         public override void Draw(GameTime gameTime)
         {
             scene.Draw(gameTime);
+
+            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+
+            scene.Ecs.Query().Has<SunLightComponent>().Has<PositionRotationScaleComponent>().ForEach(
+                (PositionRotationScaleComponent posC) =>
+                {
+                    SimpleEffect effect = new();
+                    effect.World = Matrix.Identity;
+                    effect.ViewProjection = scene.Camera.GetViewMatrix() * scene.Camera.GetProjectionMatrix();
+
+                    Vector3 direction = new Vector3(
+                        (float)Math.Sin(posC.Rotation.Y),
+                        0,
+                        -(float)Math.Cos(posC.Rotation.Y)
+                    );
+                    direction.Normalize();
+                    direction *= (float)Math.Cos(posC.Rotation.X);
+                    direction.Y = (float)Math.Sin(posC.Rotation.X);
+                    direction.Normalize();
+
+                    VertexPosition[] verts = new[]
+                    {
+                        new VertexPosition(posC.Position),
+                        new VertexPosition(posC.Position + direction)
+                    };
+
+                    foreach(EffectPass pass in effect.Techniques[0].Passes)
+                    {
+                        pass.Apply();
+                        gd.DrawUserPrimitives(PrimitiveType.LineList, verts, 0, 1);
+                    }
+                });
         }
 
         public override void Deinitialize()

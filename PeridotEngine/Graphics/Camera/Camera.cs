@@ -80,12 +80,12 @@ namespace PeridotEngine.Graphics.Camera
 
         public void MoveLeft(float distance = 1f)
         {
-            Position += GetLookDirection().Transform(Matrix.CreateRotationY(+MathHelper.PiOver2)) * distance;
+            Position += GetLookDirectionPlanar().Transform(Matrix.CreateRotationY(+MathHelper.PiOver2)) * distance;
         }
 
         public void MoveRight(float distance = 1f)
         {
-            Position += GetLookDirection().Transform(Matrix.CreateRotationY(-MathHelper.PiOver2)) * distance;
+            Position += GetLookDirectionPlanar().Transform(Matrix.CreateRotationY(-MathHelper.PiOver2)) * distance;
         }
 
         public void MoveUp(float distance = 1f)
@@ -98,13 +98,25 @@ namespace PeridotEngine.Graphics.Camera
             Position += new Vector3(0, -distance, 0);
         }
 
-        private Vector3 GetLookDirection()
+        public Vector3 GetLookDirection()
         {
-            // TODO: Make Y axis work
             Vector3 direction = new Vector3(
-                (float)Math.Sin(Yaw) / 1,
+                (float)Math.Sin(Yaw),
                 0,
-                -(float)Math.Cos(Yaw) / 1
+                -(float)Math.Cos(Yaw)
+            );
+            direction.Normalize();
+            direction *= (float)Math.Cos(Pitch);
+            direction.Y = (float)Math.Sin(Pitch);
+            return direction;
+        }
+
+        public Vector3 GetLookDirectionPlanar()
+        {
+            Vector3 direction = new Vector3(
+                (float)Math.Sin(Yaw),
+                0,
+                -(float)Math.Cos(Yaw)
             );
             direction.Normalize();
             return direction;

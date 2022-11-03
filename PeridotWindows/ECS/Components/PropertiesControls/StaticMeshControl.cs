@@ -27,6 +27,8 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
             component.Scene.Resources.MeshResources.MeshListChanged += (_, _) => UpdateMeshList();
 
+            UpdateMeshList();
+
             foreach (Type effectType in EffectPool.GetRegisteredEffectTypes())
             {
                 cmbEffect.Items.Add(effectType);
@@ -35,11 +37,6 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             }
 
             cmbEffect.SelectedIndexChanged += cmbEffect_SelectedIndexChanged;
-        }
-
-        private void Populate()
-        {
-            UpdateMeshList();
         }
 
         private void UpdateMeshList()

@@ -33,7 +33,11 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             {
                 cmbEffect.Items.Add(effectType);
 
-                if (effectType == component.EffectProperties.Effect.GetType()) cmbEffect.SelectedItem = effectType;
+                if (effectType == component.EffectProperties.Effect.GetType())
+                {
+                    cmbEffect.SelectedItem = effectType;
+                    PopulateEffectProperties();
+                }
             }
 
             cmbEffect.SelectedIndexChanged += cmbEffect_SelectedIndexChanged;
@@ -61,6 +65,11 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             Type effectType = (Type)cmbEffect.SelectedItem;
             component.EffectProperties = component.Scene.Resources.EffectPool.Effect(effectType).CreatePropertiesBase();
 
+            PopulateEffectProperties();
+        }
+
+        private void PopulateEffectProperties()
+        {
             gbEffectProperties.Controls.Clear();
             gbEffectProperties.Controls.Add(component.EffectProperties.PropertiesControl);
             component.EffectProperties.PropertiesControl.Location = new Point(5, 15);

@@ -19,6 +19,8 @@ namespace PeridotEngine.ECS.Systems
 
         private readonly Query sunLights;
 
+        private RenderTarget2D? rt;
+
         public SunShadowMapSystem(Scene3D scene)
         {
             this.scene = scene;
@@ -40,8 +42,9 @@ namespace PeridotEngine.ECS.Systems
 
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
-            RenderTarget2D rt = new(gd, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
+            if(rt == null) 
+                rt = new(gd, Globals.Graphics.PreferredBackBufferWidth,
+                         Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
 
             gd.SetRenderTarget(rt);
             gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, float.MaxValue, 0);
@@ -68,6 +71,12 @@ namespace PeridotEngine.ECS.Systems
             // TODO: This matrix calculation is performed twice, once in Effect.Apply() and once here. This is unnecessary.
             lightViewProjection = depthEffect.ViewProjection;
             return rt;
+        }
+
+        ~SunShadowMapSystem()
+        {
+            // not sure if this is necessary, but just do it to make sure we don't get a VRAM memory leak
+            rt?.Dispose();
         }
     }
 }

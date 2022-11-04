@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -82,14 +83,27 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
-            Debug.WriteLine(Camera.GetLookDirection());
-
-            Texture2D shadowMap = SunShadowMapSystem.GenerateShadowMap();
-
-            gd.Clear(Color.CornflowerBlue);
-
             Resources.EffectPool.UpdateEffectViewProjection(Camera.GetViewMatrix() * Camera.GetProjectionMatrix());
 
+            Texture2D? shadowMap = SunShadowMapSystem.GenerateShadowMap(out Matrix lightViewProj);
+
+            /*Vector4 p = new(0, -0.2f, -1.4f, 1);
+            p = Vector4.Transform(p, lightViewProj);
+            p /= p.W;
+            Debug.WriteLine(p);*/
+            Vector4 p = new(0, 0, 0, 1);
+            p = Vector4.Transform(p, Camera.GetViewMatrix() * Camera.GetProjectionMatrix());
+            Debug.WriteLine(p / p.W);
+
+
+            if (!File.Exists(@"C:\Users\lukas\Desktop\gd.png"))
+            {
+                using FileStream fs = File.OpenWrite(@"C:\Users\lukas\Desktop\gd.png");
+                shadowMap?.SaveAsPng(fs, Globals.Graphics.PreferredBackBufferWidth, Globals.Graphics.PreferredBackBufferHeight);
+            }
+
+            gd.Clear(Color.CornflowerBlue);
+            Resources.EffectPool.UpdateEffectShadows(shadowMap, lightViewProj);
             MeshRenderingSystem.RenderMeshes();
         }
 

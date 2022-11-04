@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using PeridotEngine;
 using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Effects;
+using PeridotEngine.Graphics.Geometry;
 using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
@@ -127,6 +128,7 @@ namespace PeridotWindows.EditorScreen
                     SimpleEffect effect = new();
                     effect.World = Matrix.Identity;
                     effect.ViewProjection = scene.Camera.GetViewMatrix() * scene.Camera.GetProjectionMatrix();
+                    effect.UpdateMatrices();
 
                     Vector3 direction = new Vector3(
                         (float)Math.Sin(posC.Rotation.Y),
@@ -143,7 +145,7 @@ namespace PeridotWindows.EditorScreen
                         new VertexPosition(posC.Position),
                         new VertexPosition(posC.Position + direction)
                     };
-
+                    
                     foreach(EffectPass pass in effect.Techniques[0].Passes)
                     {
                         pass.Apply();

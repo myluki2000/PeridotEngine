@@ -10,11 +10,35 @@
 #include "Macros.fxh"
 
 DECLARE_TEXTURE(Texture, 0);
+DECLARE_TEXTURE(ShadowMap, 1);
 
 matrix WorldViewProjection;
+
 float4 MixColor;
+
 float2 TexturePosition;
 float2 TextureSize;
+
+bool EnableShadows;
+matrix LightWorldViewProjection;
+
+float CalculateShadowPresence(float4 positionLightSpace)
+{
+    positionLightSpace /= positionLightSpace.w;
+    
+    float2 uv = float2(
+        map(positionLightSpace.x, -1, 1, 0, 1),
+        map(-positionLightSpace.y, -1, 1, 0, 1)
+    );
+    
+    float mapDepth = SAMPLE_TEXTURE(ShadowMap, uv).r;
+    
+    bool inLight = (mapDepth > (positionLightSpace.z - (1 - positionLightSpace.z) * 0.01))
+            || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0;
+    
+    // return 0.4 if in shadow or 1 if in light
+    return 0.4 + 0.6 * inLight;
+}
 
 struct VertexInNone
 {
@@ -24,6 +48,7 @@ struct VertexInNone
 struct PixelInNone
 {
 	float4 Position : SV_POSITION;
+    float4 PositionLightSpace : TEXCOORD0;
 };
 
 PixelInNone VS_None(in VertexInNone input)
@@ -31,13 +56,15 @@ PixelInNone VS_None(in VertexInNone input)
     PixelInNone output = (PixelInNone) 0;
 
 	output.Position = mul(input.Position, WorldViewProjection);
+    output.PositionLightSpace = mul(input.Position, LightWorldViewProjection);
 
 	return output;
 }
 
 float4 PS_None(PixelInNone input) : COLOR
 {
-	return MixColor;
+    return MixColor * CalculateShadowPresence(input.PositionLightSpace);
+
 }
 
 struct VertexInColor
@@ -50,6 +77,7 @@ struct PixelInColor
 {
     float4 Position : SV_POSITION;
     float4 Color : COLOR0;
+    float4 PositionLightSpace : TEXCOORD0;
 };
 
 PixelInColor VS_Color(in VertexInColor input)
@@ -58,13 +86,14 @@ PixelInColor VS_Color(in VertexInColor input)
 
     output.Position = mul(input.Position, WorldViewProjection);
     output.Color = input.Color;
+    output.PositionLightSpace = mul(input.Position, LightWorldViewProjection);
 
     return output;
 }
 
 float4 PS_Color(PixelInColor input) : COLOR
 {
-    return input.Color * MixColor;
+    return input.Color * MixColor * CalculateShadowPresence(input.PositionLightSpace);
 }
 
 struct VertexInTexture
@@ -77,6 +106,7 @@ struct PixelInTexture
 {
     float4 Position : SV_POSITION;
     float2 TexCoord : TEXCOORD0;
+    float4 PositionLightSpace : TEXCOORD1;
 };
 
 PixelInTexture VS_Texture(in VertexInTexture input)
@@ -85,6 +115,7 @@ PixelInTexture VS_Texture(in VertexInTexture input)
 
     output.Position = mul(input.Position, WorldViewProjection);
     output.TexCoord = input.TexCoord;
+    output.PositionLightSpace = mul(input.Position, LightWorldViewProjection);
 
     return output;
 }
@@ -92,7 +123,7 @@ PixelInTexture VS_Texture(in VertexInTexture input)
 float4 PS_Texture(PixelInTexture input) : COLOR
 {
     float2 texCoord = TexturePosition + input.TexCoord * TextureSize;
-    return SAMPLE_TEXTURE(Texture, texCoord) * MixColor;
+    return SAMPLE_TEXTURE(Texture, texCoord) * MixColor * CalculateShadowPresence(input.PositionLightSpace);
 }
 
 struct VertexInColorTexture
@@ -107,6 +138,7 @@ struct PixelInColorTexture
     float4 Position : SV_POSITION;
     float4 Color : COLOR0;
     float2 TexCoord : TEXCOORD0;
+    float4 PositionLightSpace : TEXCOORD1;
 };
 
 PixelInColorTexture VS_ColorTexture(in VertexInColorTexture input)
@@ -116,6 +148,7 @@ PixelInColorTexture VS_ColorTexture(in VertexInColorTexture input)
     output.Position = mul(input.Position, WorldViewProjection);
     output.TexCoord = input.TexCoord;
     output.Color = input.Color;
+    output.PositionLightSpace = mul(input.Position, LightWorldViewProjection);
 
     return output;
 }
@@ -123,7 +156,7 @@ PixelInColorTexture VS_ColorTexture(in VertexInColorTexture input)
 float4 PS_ColorTexture(PixelInColorTexture input) : COLOR
 {
     float2 texCoord = TexturePosition + input.TexCoord * TextureSize;
-    return SAMPLE_TEXTURE(Texture, texCoord) * input.Color * MixColor;
+    return SAMPLE_TEXTURE(Texture, texCoord) * input.Color * MixColor * CalculateShadowPresence(input.PositionLightSpace);
 }
 
 // appearance "none" (just solid white)
@@ -136,6 +169,7 @@ technique
 	}
 };
 
+// vertex color
 technique
 {
 	pass P0
@@ -145,6 +179,7 @@ technique
     }
 };
 
+// textured
 technique
 {
     pass P0
@@ -154,6 +189,7 @@ technique
     }
 };
 
+// vertex color + textured
 technique
 {
     pass P0

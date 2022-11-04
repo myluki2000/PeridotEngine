@@ -43,6 +43,21 @@ namespace PeridotEngine.Graphics.Effects
             }
         }
 
+        public void UpdateEffectShadows(Texture2D shadowMap, Matrix lightViewProjection)
+        {
+            foreach (WeakReference<EffectBase> effectRef in effects.Values)
+            {
+                if (effectRef.TryGetTarget(out EffectBase? effect))
+                {
+                    if (effect is IEffectShadows shadowEffect)
+                    {
+                        shadowEffect.ShadowMap = shadowMap;
+                        shadowEffect.LightViewProjection = lightViewProjection;
+                    }
+                }
+            }
+        }
+
         public EffectBase Effect(Type effectType)
         {
             if (!effectType.IsAssignableTo(typeof(EffectBase)))
@@ -80,8 +95,8 @@ namespace PeridotEngine.Graphics.Effects
             {
                 effectTexture.TextureResources = scene.Resources.TextureResources;
             }
-
-            effects.Add(typeof(T), new WeakReference<EffectBase>(newEffect));
+            
+            effects[typeof(T)] = new WeakReference<EffectBase>(newEffect);
             return newEffect;
         }
     }

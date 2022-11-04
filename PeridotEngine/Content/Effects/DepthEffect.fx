@@ -17,7 +17,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
-    float Depth : TEXCOORD0;
+    float2 Depth : TEXCOORD0;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -25,14 +25,14 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
 	output.Position = mul(input.Position, WorldViewProjection);
-    output.Depth = output.Position.z / output.Position.w;
+    output.Depth = output.Position.zw;
 
 	return output;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    return float4(input.Depth, 0, 0, 0);
+    return float4(input.Depth.x / input.Depth.y, 0, 0, 0);
 }
 
 technique BasicColorDrawing

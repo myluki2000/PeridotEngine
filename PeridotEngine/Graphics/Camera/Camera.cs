@@ -49,7 +49,6 @@ namespace PeridotEngine.Graphics.Camera
 
         public void UpdateProjectionMatrix()
         {
-            Debug.WriteLine(Globals.Graphics.GraphicsDevice.DisplayMode.AspectRatio);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.ToRadians(80),
                 (float)Globals.Graphics.PreferredBackBufferWidth / Globals.Graphics.PreferredBackBufferHeight,

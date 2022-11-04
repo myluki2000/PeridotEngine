@@ -32,8 +32,10 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
             this.tsmiNewScene = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSaveScene = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiLoadScene = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSaveScene = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.tsmiAddSunlight = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -41,7 +43,8 @@
             // 
             this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton1});
+            this.toolStripDropDownButton1,
+            this.toolStripDropDownButton2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 31);
@@ -64,23 +67,41 @@
             // tsmiNewScene
             // 
             this.tsmiNewScene.Name = "tsmiNewScene";
-            this.tsmiNewScene.Size = new System.Drawing.Size(180, 22);
+            this.tsmiNewScene.Size = new System.Drawing.Size(134, 22);
             this.tsmiNewScene.Text = "New Scene";
             this.tsmiNewScene.Click += new System.EventHandler(this.tsmiNewScene_Click);
-            // 
-            // tsmiSaveScene
-            // 
-            this.tsmiSaveScene.Name = "tsmiSaveScene";
-            this.tsmiSaveScene.Size = new System.Drawing.Size(180, 22);
-            this.tsmiSaveScene.Text = "Save Scene";
-            this.tsmiSaveScene.Click += new System.EventHandler(this.tsmiSaveScene_Click);
             // 
             // tsmiLoadScene
             // 
             this.tsmiLoadScene.Name = "tsmiLoadScene";
-            this.tsmiLoadScene.Size = new System.Drawing.Size(180, 22);
+            this.tsmiLoadScene.Size = new System.Drawing.Size(134, 22);
             this.tsmiLoadScene.Text = "Load Scene";
             this.tsmiLoadScene.Click += new System.EventHandler(this.tsmiLoadScene_Click);
+            // 
+            // tsmiSaveScene
+            // 
+            this.tsmiSaveScene.Name = "tsmiSaveScene";
+            this.tsmiSaveScene.Size = new System.Drawing.Size(134, 22);
+            this.tsmiSaveScene.Text = "Save Scene";
+            this.tsmiSaveScene.Click += new System.EventHandler(this.tsmiSaveScene_Click);
+            // 
+            // toolStripDropDownButton2
+            // 
+            this.toolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAddSunlight});
+            this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
+            this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
+            this.toolStripDropDownButton2.Size = new System.Drawing.Size(85, 28);
+            this.toolStripDropDownButton2.Text = "Add Objects";
+            // 
+            // tsmiAddSunlight
+            // 
+            this.tsmiAddSunlight.Name = "tsmiAddSunlight";
+            this.tsmiAddSunlight.Size = new System.Drawing.Size(180, 22);
+            this.tsmiAddSunlight.Text = "Add Sunlight";
+            this.tsmiAddSunlight.Click += new System.EventHandler(this.tsmiAddSunlight_Click);
             // 
             // ToolboxForm
             // 
@@ -106,5 +127,7 @@
         private ToolStripMenuItem tsmiNewScene;
         private ToolStripMenuItem tsmiSaveScene;
         private ToolStripMenuItem tsmiLoadScene;
+        private ToolStripDropDownButton toolStripDropDownButton2;
+        private ToolStripMenuItem tsmiAddSunlight;
     }
 }

@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\DepthEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectShadows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectTexture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\SimpleEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\Mesh.cs" />

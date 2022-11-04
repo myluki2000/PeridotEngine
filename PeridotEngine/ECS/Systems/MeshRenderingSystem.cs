@@ -36,6 +36,7 @@ namespace PeridotEngine.ECS.Systems
                 else
                 {
                     effectOverride.World = posC.Transformation;
+                    effectOverride.UpdateMatrices();
                 }
 
                 if (meshC.Mesh.Mesh.VertexBuffer == null)

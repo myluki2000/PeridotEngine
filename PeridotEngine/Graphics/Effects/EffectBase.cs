@@ -22,6 +22,12 @@ namespace PeridotEngine.Graphics.Effects
             WorldViewProjParam = Parameters["WorldViewProjection"];
         }
 
+        public virtual void UpdateMatrices()
+        {
+            Matrix worldViewProjection = World * ViewProjection;
+            WorldViewProjParam.SetValue(worldViewProjection);
+        }
+
         public abstract EffectProperties CreatePropertiesBase();
         public abstract Type GetPropertiesType();
 
@@ -29,8 +35,7 @@ namespace PeridotEngine.Graphics.Effects
         {
             public virtual void Apply(Mesh mesh)
             {
-                Matrix worldViewProjection = Effect.World * Effect.ViewProjection;
-                Effect.WorldViewProjParam.SetValue(worldViewProjection);
+                Effect.UpdateMatrices();
             }
 
             [JsonIgnore]

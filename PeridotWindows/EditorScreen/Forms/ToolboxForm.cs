@@ -5,9 +5,11 @@ using System.Windows.Forms;
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Camera;
 using PeridotEngine.IO.JsonConverters;
 using PeridotWindows.ECS;
+using PeridotWindows.ECS.Components;
 
 namespace PeridotWindows.EditorScreen.Forms
 {
@@ -50,6 +52,15 @@ namespace PeridotWindows.EditorScreen.Forms
             Scene3D newScene = new Scene3D(json);
 
             ScreenManager.CurrentScreen = new EditorScreen(newScene);
+        }
+
+        private void tsmiAddSunlight_Click(object sender, EventArgs e)
+        {
+            scene.Ecs
+                .Archetype(typeof(PositionRotationScaleComponent), typeof(SunLightComponent))
+                .CreateEntity(
+                    new PositionRotationScaleComponent(scene),
+                    new SunLightComponent());
         }
     }
 }

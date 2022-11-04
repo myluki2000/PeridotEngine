@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -60,6 +61,11 @@ namespace PeridotWindows.Graphics.Camera
 
             lastMouseState = mouseState;
             base.Update(gameTime);
+        }
+
+        public override string ToString()
+        {
+            return "Pos: " + Position + " Yaw: " + Yaw + " Pitch: " + Pitch + " Roll: " + Roll;
         }
     }
 }

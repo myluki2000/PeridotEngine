@@ -14,20 +14,28 @@ using VertexElement = Microsoft.Xna.Framework.Graphics.VertexElement;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public partial class SimpleEffect : EffectBase, IEffectTexture
+    public partial class SimpleEffect : EffectBase, IEffectTexture, IEffectShadows
     {
         private readonly EffectParameter textureParam;
         private readonly EffectParameter mixColorParam;
         private readonly EffectParameter texturePositionParam;
         private readonly EffectParameter textureSizeParam;
+
+
+        private readonly EffectParameter enableShadowsParam;
+        private readonly EffectParameter shadowMapParam;
+        private readonly EffectParameter lightWorldViewProjParam;
         private TextureResources? textureResources;
 
         public SimpleEffect() : base(Globals.Content.Load<Effect>("Effects/SimpleEffect"))
         {
             textureParam = Parameters["Texture"];
+            shadowMapParam = Parameters["ShadowMap"];
             mixColorParam = Parameters["MixColor"];
             texturePositionParam = Parameters["TexturePosition"];
             textureSizeParam = Parameters["TextureSize"];
+            enableShadowsParam = Parameters["EnableShadows"];
+            lightWorldViewProjParam = Parameters["LightWorldViewProjection"];
         }
 
         public TextureResources? TextureResources
@@ -47,6 +55,14 @@ namespace PeridotEngine.Graphics.Effects
                 }
             }
         }
+
+        public Texture2D ShadowMap
+        {
+            get => shadowMapParam.GetValueTexture2D();
+            set => shadowMapParam.SetValue(value);
+        }
+
+        public Matrix LightViewProjection { get; set; }
 
         private void TextureAtlasChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
         {
@@ -68,9 +84,19 @@ namespace PeridotEngine.Graphics.Effects
             return new SimpleEffectProperties(this);
         }
 
+        public override void UpdateMatrices()
+        {
+            base.UpdateMatrices();
+
+            Matrix lightWorldViewProj = World * LightViewProjection;
+
+            lightWorldViewProjParam.SetValue(lightWorldViewProj);
+        }
+
         public partial class SimpleEffectProperties : EffectProperties
         {
             public Color MixColor { get; set; } = Color.White;
+            public bool EnableShadows { get; set; }
 
             public bool VertexColorEnabled
             {
@@ -104,6 +130,7 @@ namespace PeridotEngine.Graphics.Effects
                 base.Apply(mesh);
 
                 SimpleEffect.mixColorParam.SetValue(MixColor.ToVector4());
+                SimpleEffect.enableShadowsParam.SetValue(EnableShadows);
 
                 if (TextureEnabled)
                 {

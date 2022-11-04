@@ -20,34 +20,9 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             InitializeComponent();
 
             this.component = component;
-
-            nudPositionX.Value = (decimal)component.Position.X;
-            nudPositionY.Value = (decimal)component.Position.Y;
-            nudPositionZ.Value = (decimal)component.Position.Z;
-
-            nudRotationX.Value = (decimal)component.Rotation.X;
-            nudRotationY.Value = (decimal)component.Rotation.Y;
-            nudRotationZ.Value = (decimal)component.Rotation.Z;
-
-            nudScaleX.Value = (decimal)component.Scale.X;
-            nudScaleY.Value = (decimal)component.Scale.Y;
-            nudScaleZ.Value = (decimal)component.Scale.Z;
-
-
-            nudPositionX.ValueChanged += NudPosition_ValueChanged;
-            nudPositionY.ValueChanged += NudPosition_ValueChanged;
-            nudPositionZ.ValueChanged += NudPosition_ValueChanged;
-
-            nudRotationX.ValueChanged += NudRotation_ValueChanged;
-            nudRotationY.ValueChanged += NudRotation_ValueChanged;
-            nudRotationZ.ValueChanged += NudRotation_ValueChanged;
-
-            nudScaleX.ValueChanged += NudScale_ValueChanged;
-            nudScaleY.ValueChanged += NudScale_ValueChanged;
-            nudScaleZ.ValueChanged += NudScale_ValueChanged;
-
-
         }
+
+
 
         private void NudPosition_ValueChanged(object? sender, EventArgs eventArgs)
         {
@@ -75,6 +50,34 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             flpPosition.MaximumSize = new Size(ClientSize.Width, flpPosition.MaximumSize.Height);
             flpRotation.MaximumSize = new Size(ClientSize.Width, flpRotation.MaximumSize.Height);
             flpScale.MaximumSize = new Size(ClientSize.Width, flpScale.MaximumSize.Height);
+        }
+
+        private void PositionRotationScaleControl_Load(object sender, EventArgs e)
+        {
+            nudPositionX.Value = (decimal)component.Position.X;
+            nudPositionY.Value = (decimal)component.Position.Y;
+            nudPositionZ.Value = (decimal)component.Position.Z;
+
+            nudRotationX.Value = (decimal)component.Rotation.X;
+            nudRotationY.Value = (decimal)component.Rotation.Y;
+            nudRotationZ.Value = (decimal)component.Rotation.Z;
+
+            nudScaleX.Value = (decimal)component.Scale.X;
+            nudScaleY.Value = (decimal)component.Scale.Y;
+            nudScaleZ.Value = (decimal)component.Scale.Z;
+
+
+            nudPositionX.ValueChanged += NudPosition_ValueChanged;
+            nudPositionY.ValueChanged += NudPosition_ValueChanged;
+            nudPositionZ.ValueChanged += NudPosition_ValueChanged;
+
+            nudRotationX.ValueChanged += NudRotation_ValueChanged;
+            nudRotationY.ValueChanged += NudRotation_ValueChanged;
+            nudRotationZ.ValueChanged += NudRotation_ValueChanged;
+
+            nudScaleX.ValueChanged += NudScale_ValueChanged;
+            nudScaleY.ValueChanged += NudScale_ValueChanged;
+            nudScaleZ.ValueChanged += NudScale_ValueChanged;
         }
     }
 }

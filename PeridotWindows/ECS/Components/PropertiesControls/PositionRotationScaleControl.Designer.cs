@@ -570,6 +570,7 @@
             this.Controls.Add(this.titleBar);
             this.Name = "PositionRotationScaleControl";
             this.Size = new System.Drawing.Size(552, 294);
+            this.Load += new System.EventHandler(this.PositionRotationScaleControl_Load);
             this.ClientSizeChanged += new System.EventHandler(this.PositionRotationScaleControl_ClientSizeChanged);
             this.gbPosition.ResumeLayout(false);
             this.gbPosition.PerformLayout();

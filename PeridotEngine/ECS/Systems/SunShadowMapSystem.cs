@@ -43,8 +43,8 @@ namespace PeridotEngine.ECS.Systems
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
             if(rt == null) 
-                rt = new(gd, Globals.Graphics.PreferredBackBufferWidth,
-                         Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
+                rt = new(gd, 1920,
+                         1080, false, SurfaceFormat.Single, DepthFormat.Depth24);
 
             gd.SetRenderTarget(rt);
             gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, float.MaxValue, 0);

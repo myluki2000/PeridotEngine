@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PeridotEngine;
 using PeridotEngine.Graphics;
@@ -11,6 +12,7 @@ namespace PeridotEngine
         {
             Globals.GameMain = this;
             Globals.Graphics = new GraphicsDeviceManager(this);
+            Globals.Graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Globals.Content = Content;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;

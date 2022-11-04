@@ -3,8 +3,8 @@
 	#define VS_SHADERMODEL vs_3_0
 	#define PS_SHADERMODEL ps_3_0
 #else
-	#define VS_SHADERMODEL vs_4_0_level_9_1
-	#define PS_SHADERMODEL ps_4_0_level_9_1
+	#define VS_SHADERMODEL vs_4_0
+	#define PS_SHADERMODEL ps_4_0
 #endif
 
 #include "Macros.fxh"
@@ -31,13 +31,40 @@ float CalculateShadowPresence(float4 positionLightSpace)
         map(-positionLightSpace.y, -1, 1, 0, 1)
     );
     
+    float shadowCoeff = 0;
+    for (float x = -1.5; x < 1.5; x++)
+    {
+        for (float y = -1.5; y < 1.5; y++)
+        {
+            float mapDepth = SAMPLE_TEXTURE(ShadowMap, uv + float2(x, y) * 0.0015).r;
+            bool inLight = (mapDepth > (positionLightSpace.z - (1 - positionLightSpace.z) * 0.02))
+            || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0;
+            
+            shadowCoeff += inLight;
+        }
+    }
+    
+    shadowCoeff /= 16;
+    
+    // return 0.4 if in shadow or 1 if in light
+    return 0.4 + 0.6 * shadowCoeff;
+    
+    // alternate code without multisampling
+    
+    /*positionLightSpace /= positionLightSpace.w;
+    
+    float2 uv = float2(
+        map(positionLightSpace.x, -1, 1, 0, 1),
+        map(-positionLightSpace.y, -1, 1, 0, 1)
+    );
+    
     float mapDepth = SAMPLE_TEXTURE(ShadowMap, uv).r;
     
     bool inLight = (mapDepth > (positionLightSpace.z - (1 - positionLightSpace.z) * 0.01))
             || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0;
     
     // return 0.4 if in shadow or 1 if in light
-    return 0.4 + 0.6 * inLight;
+    return 0.4 + 0.6 * inLight;*/
 }
 
 struct VertexInNone

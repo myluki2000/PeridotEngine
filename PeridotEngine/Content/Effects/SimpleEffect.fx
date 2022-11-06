@@ -18,6 +18,7 @@ float4 MixColor;
 
 float2 TexturePosition;
 float2 TextureSize;
+float2 TextureRepeat;
 
 bool EnableShadows;
 matrix LightWorldViewProjection;
@@ -149,7 +150,8 @@ PixelInTexture VS_Texture(in VertexInTexture input)
 
 float4 PS_Texture(PixelInTexture input) : COLOR
 {
-    float2 texCoord = TexturePosition + input.TexCoord * TextureSize;
+    float2 internalTexCoord = frac(input.TexCoord * TextureRepeat);
+    float2 texCoord = TexturePosition + internalTexCoord * TextureSize;
     return SAMPLE_TEXTURE(Texture, texCoord) * MixColor * CalculateShadowPresence(input.PositionLightSpace);
 }
 
@@ -182,7 +184,8 @@ PixelInColorTexture VS_ColorTexture(in VertexInColorTexture input)
 
 float4 PS_ColorTexture(PixelInColorTexture input) : COLOR
 {
-    float2 texCoord = TexturePosition + input.TexCoord * TextureSize;
+    float2 internalTexCoord = frac(input.TexCoord * TextureRepeat);
+    float2 texCoord = TexturePosition + internalTexCoord * TextureSize;
     return SAMPLE_TEXTURE(Texture, texCoord) * input.Color * MixColor * CalculateShadowPresence(input.PositionLightSpace);
 }
 

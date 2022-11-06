@@ -31,6 +31,8 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
             cbTexture.Checked = effectProperties.TextureEnabled;
             nudTextureId.Value = effectProperties.TextureId;
             pnlColor.BackColor = effectProperties.MixColor.ToSystemColor();
+            nudTextureRepeatX.Value = effectProperties.TextureRepeatX;
+            nudTextureRepeatY.Value = effectProperties.TextureRepeatY;
         }
 
         private void btnPickColor_Click(object sender, EventArgs e)
@@ -51,7 +53,20 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
         private void cbTexture_CheckedChanged(object sender, EventArgs e)
         {
             nudTextureId.Enabled = cbTexture.Checked;
+            nudTextureRepeatX.Enabled = cbTexture.Checked;
+            nudTextureRepeatY.Enabled = cbTexture.Checked;
+
             effectProperties.TextureEnabled = cbTexture.Checked;
+        }
+
+        private void nudTextureRepeatX_ValueChanged(object sender, EventArgs e)
+        {
+            effectProperties.TextureRepeatX = (int)nudTextureRepeatX.Value;
+        }
+
+        private void nudTextureRepeatY_ValueChanged(object sender, EventArgs e)
+        {
+            effectProperties.TextureRepeatY = (int)nudTextureRepeatY.Value;
         }
     }
 }

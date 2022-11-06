@@ -34,7 +34,13 @@
             this.label1 = new System.Windows.Forms.Label();
             this.nudTextureId = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.nudTextureRepeatX = new System.Windows.Forms.NumericUpDown();
+            this.nudTextureRepeatY = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).BeginInit();
             this.SuspendLayout();
             // 
             // cbTexture
@@ -91,10 +97,78 @@
             this.label2.TabIndex = 16;
             this.label2.Text = "Texture ID:";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(39, 63);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(97, 15);
+            this.label3.TabIndex = 17;
+            this.label3.Text = "Texture Repeat X:";
+            // 
+            // nudTextureRepeatX
+            // 
+            this.nudTextureRepeatX.Location = new System.Drawing.Point(142, 61);
+            this.nudTextureRepeatX.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudTextureRepeatX.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudTextureRepeatX.Name = "nudTextureRepeatX";
+            this.nudTextureRepeatX.Size = new System.Drawing.Size(63, 23);
+            this.nudTextureRepeatX.TabIndex = 18;
+            this.nudTextureRepeatX.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudTextureRepeatX.ValueChanged += new System.EventHandler(this.nudTextureRepeatX_ValueChanged);
+            // 
+            // nudTextureRepeatY
+            // 
+            this.nudTextureRepeatY.Location = new System.Drawing.Point(142, 90);
+            this.nudTextureRepeatY.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nudTextureRepeatY.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudTextureRepeatY.Name = "nudTextureRepeatY";
+            this.nudTextureRepeatY.Size = new System.Drawing.Size(63, 23);
+            this.nudTextureRepeatY.TabIndex = 19;
+            this.nudTextureRepeatY.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudTextureRepeatY.ValueChanged += new System.EventHandler(this.nudTextureRepeatY_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(39, 92);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(97, 15);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Texture Repeat Y:";
+            // 
             // SimpleEffectControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.nudTextureRepeatY);
+            this.Controls.Add(this.nudTextureRepeatX);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.nudTextureId);
             this.Controls.Add(this.label1);
@@ -102,8 +176,10 @@
             this.Controls.Add(this.pnlColor);
             this.Controls.Add(this.btnPickColor);
             this.Name = "SimpleEffectControl";
-            this.Size = new System.Drawing.Size(394, 61);
+            this.Size = new System.Drawing.Size(394, 125);
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -117,5 +193,9 @@
         private Label label1;
         private NumericUpDown nudTextureId;
         private Label label2;
+        private Label label3;
+        private NumericUpDown nudTextureRepeatX;
+        private NumericUpDown nudTextureRepeatY;
+        private Label label4;
     }
 }

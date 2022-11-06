@@ -20,6 +20,7 @@ namespace PeridotEngine.Graphics.Effects
         private readonly EffectParameter mixColorParam;
         private readonly EffectParameter texturePositionParam;
         private readonly EffectParameter textureSizeParam;
+        private readonly EffectParameter textureRepeatParam;
 
 
         private readonly EffectParameter enableShadowsParam;
@@ -36,6 +37,7 @@ namespace PeridotEngine.Graphics.Effects
             textureSizeParam = Parameters["TextureSize"];
             enableShadowsParam = Parameters["EnableShadows"];
             lightWorldViewProjParam = Parameters["LightWorldViewProjection"];
+            textureRepeatParam = Parameters["TextureRepeat"];
         }
 
         public TextureResources? TextureResources
@@ -120,6 +122,9 @@ namespace PeridotEngine.Graphics.Effects
 
             public uint TextureId { get; set; }
 
+            public int TextureRepeatX { get; set; } = 1;
+            public int TextureRepeatY { get; set; } = 1;
+
             public SimpleEffectProperties(SimpleEffect effect)
             {
                 Effect = effect;
@@ -137,6 +142,7 @@ namespace PeridotEngine.Graphics.Effects
                     RectangleF bounds = SimpleEffect.TextureResources.GetTextureBoundsInAtlas(TextureId);
                     SimpleEffect.texturePositionParam.SetValue(bounds.Location.ToVector2());
                     SimpleEffect.textureSizeParam.SetValue(bounds.Size.ToVector2());
+                    SimpleEffect.textureRepeatParam.SetValue(new Vector2(TextureRepeatX, TextureRepeatY));
                 }
 
                 if (Technique == null)

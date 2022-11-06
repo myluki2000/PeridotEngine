@@ -13,6 +13,7 @@ namespace PeridotEngine
             Globals.GameMain = this;
             Globals.Graphics = new GraphicsDeviceManager(this);
             Globals.Graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            Globals.Graphics.PreferMultiSampling = true;
             Globals.Content = Content;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;

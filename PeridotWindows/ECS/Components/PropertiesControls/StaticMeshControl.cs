@@ -40,6 +40,8 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
                 }
             }
 
+            cbCastShadows.Checked = component.CastShadows;
+
             cmbEffect.SelectedIndexChanged += cmbEffect_SelectedIndexChanged;
         }
 
@@ -73,6 +75,11 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             gbEffectProperties.Controls.Clear();
             gbEffectProperties.Controls.Add(component.EffectProperties.PropertiesControl);
             component.EffectProperties.PropertiesControl.Location = new Point(5, 15);
+        }
+
+        private void cbCastShadows_CheckedChanged(object sender, EventArgs e)
+        {
+            component.CastShadows = cbCastShadows.Checked;
         }
     }
 }

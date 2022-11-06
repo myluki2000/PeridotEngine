@@ -29,12 +29,14 @@ namespace PeridotEngine.IO.JsonConverters
             serializer.Serialize(writer, component.EffectProperties);
             writer.WritePropertyName("Mesh");
             writer.WriteValue(component.Mesh.Name);
+            writer.WritePropertyName("CastShadows");
+            writer.WriteValue(component.CastShadows);
             writer.WriteEndObject();
         }
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            JToken root = JToken.ReadFrom(reader);
+            JObject root = JToken.ReadFrom(reader) as JObject;
 
             JToken ep = root["EffectProperties"];
 
@@ -47,9 +49,14 @@ namespace PeridotEngine.IO.JsonConverters
 
             if (mesh == null) throw new Exception("Could not find mesh with name " + meshName);
 
-            StaticMeshComponent component = new StaticMeshComponent(scene, mesh, effectProperties);
-
-            return component;
+            if (root.ContainsKey("CastShadows"))
+            {
+                return new StaticMeshComponent(scene, mesh, effectProperties, root.Value<bool>("CastShadows"));
+            }
+            else
+            {
+                return new StaticMeshComponent(scene, mesh, effectProperties);
+            }
         }
 
         public override bool CanConvert(Type objectType)

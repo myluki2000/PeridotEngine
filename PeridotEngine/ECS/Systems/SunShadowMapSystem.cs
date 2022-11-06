@@ -64,7 +64,12 @@ namespace PeridotEngine.ECS.Systems
 
             EffectBase depthEffect = scene.Resources.EffectPool.Effect<DepthEffect>();
             depthEffect.ViewProjection = camera.GetViewMatrix() * camera.GetProjectionMatrix();
-            scene.MeshRenderingSystem.RenderMeshes(depthEffect);
+            
+            scene.MeshRenderingSystem.Meshes.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
+            {
+                if (!meshC.CastShadows) return;
+                scene.MeshRenderingSystem.RenderMesh(meshC, posC, depthEffect);
+            });
 
             gd.SetRenderTarget(null);
 

@@ -34,6 +34,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.cmbEffect = new System.Windows.Forms.ComboBox();
             this.gbEffectProperties = new System.Windows.Forms.GroupBox();
+            this.cbCastShadows = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // titleBar
@@ -46,7 +47,7 @@
             this.titleBar.MaximumSize = new System.Drawing.Size(9999, 28);
             this.titleBar.MinimumSize = new System.Drawing.Size(0, 28);
             this.titleBar.Name = "titleBar";
-            this.titleBar.Size = new System.Drawing.Size(320, 28);
+            this.titleBar.Size = new System.Drawing.Size(365, 28);
             this.titleBar.TabIndex = 3;
             this.titleBar.Text = "Static Mesh";
             // 
@@ -66,7 +67,7 @@
             this.cmbMesh.FormattingEnabled = true;
             this.cmbMesh.Location = new System.Drawing.Point(49, 34);
             this.cmbMesh.Name = "cmbMesh";
-            this.cmbMesh.Size = new System.Drawing.Size(268, 23);
+            this.cmbMesh.Size = new System.Drawing.Size(313, 23);
             this.cmbMesh.TabIndex = 5;
             this.cmbMesh.SelectedIndexChanged += new System.EventHandler(this.cmbMesh_SelectedIndexChanged);
             // 
@@ -86,7 +87,7 @@
             this.cmbEffect.FormattingEnabled = true;
             this.cmbEffect.Location = new System.Drawing.Point(49, 63);
             this.cmbEffect.Name = "cmbEffect";
-            this.cmbEffect.Size = new System.Drawing.Size(268, 23);
+            this.cmbEffect.Size = new System.Drawing.Size(313, 23);
             this.cmbEffect.TabIndex = 11;
             // 
             // gbEffectProperties
@@ -94,12 +95,23 @@
             this.gbEffectProperties.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbEffectProperties.AutoSize = true;
-            this.gbEffectProperties.Location = new System.Drawing.Point(4, 92);
+            this.gbEffectProperties.Location = new System.Drawing.Point(3, 117);
             this.gbEffectProperties.Name = "gbEffectProperties";
-            this.gbEffectProperties.Size = new System.Drawing.Size(313, 59);
+            this.gbEffectProperties.Size = new System.Drawing.Size(358, 55);
             this.gbEffectProperties.TabIndex = 12;
             this.gbEffectProperties.TabStop = false;
             this.gbEffectProperties.Text = "Effect Properties";
+            // 
+            // cbCastShadows
+            // 
+            this.cbCastShadows.AutoSize = true;
+            this.cbCastShadows.Location = new System.Drawing.Point(4, 92);
+            this.cbCastShadows.Name = "cbCastShadows";
+            this.cbCastShadows.Size = new System.Drawing.Size(99, 19);
+            this.cbCastShadows.TabIndex = 13;
+            this.cbCastShadows.Text = "Cast Shadows";
+            this.cbCastShadows.UseVisualStyleBackColor = true;
+            this.cbCastShadows.CheckedChanged += new System.EventHandler(this.cbCastShadows_CheckedChanged);
             // 
             // StaticMeshControl
             // 
@@ -107,6 +119,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.cbCastShadows);
             this.Controls.Add(this.gbEffectProperties);
             this.Controls.Add(this.cmbEffect);
             this.Controls.Add(this.label2);
@@ -114,7 +127,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.titleBar);
             this.Name = "StaticMeshControl";
-            this.Size = new System.Drawing.Size(320, 154);
+            this.Size = new System.Drawing.Size(365, 175);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,5 +141,6 @@
         private Label label2;
         private ComboBox cmbEffect;
         private GroupBox gbEffectProperties;
+        private CheckBox cbCastShadows;
     }
 }

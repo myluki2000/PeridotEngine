@@ -13,11 +13,12 @@ namespace PeridotWindows.ECS.Components
 {
     public partial class StaticMeshComponent
     {
-        public StaticMeshComponent(Scene3D scene, MeshResources.MeshInfo mesh, EffectBase.EffectProperties effectProperties)
+        public StaticMeshComponent(Scene3D scene, MeshResources.MeshInfo mesh, EffectBase.EffectProperties effectProperties, bool castShadows = true)
         {
             Scene = scene;
             Mesh = mesh;
             EffectProperties = effectProperties;
+            CastShadows = castShadows;
 
             PropertiesControl = new StaticMeshControl(this);
         }

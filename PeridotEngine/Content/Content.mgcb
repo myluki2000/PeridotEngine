@@ -10,6 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
+/reference:..\..\PeridotContentExtensions\bin\Debug\net6.0\PeridotContentExtensions.dll
 
 #---------------------------------- Content ---------------------------------#
 
@@ -19,11 +20,11 @@
 /processorParam:DebugMode=Auto
 /build:Effects/DepthEffect.fx
 
-#begin Effects/SimpleEffect.fx
-/importer:EffectImporter
+#begin Effects/SimpleEffect.ufx
+/importer:UfxImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/SimpleEffect.fx
+/build:Effects/SimpleEffect.ufx
 
 #begin Models/barrel.obj
 /importer:FbxImporter

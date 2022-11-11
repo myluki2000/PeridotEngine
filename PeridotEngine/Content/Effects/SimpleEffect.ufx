@@ -1,0 +1,123 @@
+﻿#if OPENGL
+	#define SV_POSITION POSITION
+	#define VS_SHADERMODEL vs_3_0
+	#define PS_SHADERMODEL ps_3_0
+#else
+	#define VS_SHADERMODEL vs_4_0
+	#define PS_SHADERMODEL ps_4_0
+#endif
+
+#include "Macros.fxh"
+
+DECLARE_TEXTURE(Texture, 0);
+DECLARE_TEXTURE(ShadowMap, 1);
+
+matrix WorldViewProjection;
+
+float4 MixColor;
+
+float2 TexturePosition;
+float2 TextureSize;
+float2 TextureRepeat;
+
+bool EnableShadows;
+matrix LightWorldViewProjection;
+
+float CalculateShadowPresence(float4 positionLightSpace)
+{
+    positionLightSpace /= positionLightSpace.w;
+    
+    float2 uv = float2(
+        map(positionLightSpace.x, -1, 1, 0, 1),
+        map(-positionLightSpace.y, -1, 1, 0, 1)
+    );
+    
+    float shadowCoeff = 0;
+    for (float x = -1.5; x < 1.5; x++)
+    {
+        for (float y = -1.5; y < 1.5; y++)
+        {
+            float mapDepth = SAMPLE_TEXTURE(ShadowMap, uv + float2(x, y) * 0.0015).r;
+            bool inLight = (mapDepth > (positionLightSpace.z - (1 - positionLightSpace.z) * 0.02))
+            || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0;
+            
+            shadowCoeff += inLight;
+        }
+    }
+    
+    shadowCoeff /= 16;
+    
+    // return 0.4 if in shadow or 1 if in light
+    return 0.4 + 0.6 * shadowCoeff;
+}
+
+$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled)
+struct VertexIn$$
+{
+	float4 Position : POSITION0;
+    $if vertexColorEnabled
+        float4 Color : COLOR0;
+    $endif
+    $if textureEnabled
+        float2 TexCoord : TEXCOORD0;
+    $endif
+};
+
+struct PixelIn$$
+{
+	float4 Position : SV_POSITION;
+    $if vertexColorEnabled
+        float4 Color : COLOR0;
+    $endif
+    $if textureEnabled
+        float2 TexCoord : TEXCOORD0;
+    $endif
+    $if shadowsEnabled
+        float4 PositionLightSpace : TEXCOORD1;
+    $endif
+};
+
+PixelIn$$ VertexShader$$(in VertexIn$$ input)
+{
+    PixelIn$$ output = (PixelIn$$) 0;
+
+	output.Position = mul(input.Position, WorldViewProjection);
+
+    $if vertexColorEnabled
+        output.Color = input.Color;
+    $endif
+    $if textureEnabled
+        output.TexCoord = input.TexCoord;
+    $endif
+    $if shadowsEnabled
+        output.PositionLightSpace = mul(input.Position, LightWorldViewProjection);
+    $endif
+
+	return output;
+}
+
+float4 PixelShader$$(PixelIn$$ input) : COLOR
+{
+    float4 result = MixColor;
+
+    $if vertexColorEnabled
+        result *= input.Color;
+    $endif
+    $if textureEnabled
+        float2 internalTexCoord = frac(input.TexCoord * TextureRepeat);
+        float2 texCoord = TexturePosition + internalTexCoord * TextureSize;
+        result *= SAMPLE_TEXTURE(Texture, texCoord);
+    $endif
+    $if shadowsEnabled
+        result = result * CalculateShadowPresence(input.PositionLightSpace);
+    $endif
+
+    return result;
+
+}
+$endblock
+
+$ubertechnique SimpleEffect(false, false, true)
+$ubertechnique SimpleEffect(true, false, true)
+$ubertechnique SimpleEffect(false, true, true)
+$ubertechnique SimpleEffect(true, true, true)

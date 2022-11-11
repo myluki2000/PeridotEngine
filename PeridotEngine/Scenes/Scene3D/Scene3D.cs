@@ -68,10 +68,15 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Camera.Position = new Vector3(0, 1, 1);
 
-            Globals.GameMain.Window.ClientSizeChanged += (_, _) => Camera.UpdateProjectionMatrix();
-            Camera.UpdateProjectionMatrix();
+            Globals.GameMain.Window.ClientSizeChanged += (_, _) =>
+            {
+                Camera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
+                                     Globals.Graphics.PreferredBackBufferHeight;
+            };
+            Camera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
+                                 Globals.Graphics.PreferredBackBufferHeight;
 
-            
+
         }
 
         public override void Update(GameTime gameTime)

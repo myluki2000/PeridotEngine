@@ -34,11 +34,27 @@ namespace PeridotEngine.Graphics.Camera
             set => _yaw = (float)(value % (Math.PI * 2));
         }
 
+        public float AspectRatio
+        {
+            get => aspectRatio;
+            set
+            {
+                aspectRatio = value;
+                UpdateProjectionMatrix();
+            }
+        }
+
         private float _roll;
         private float _pitch;
         private float _yaw;
 
         private Matrix projectionMatrix;
+        private float aspectRatio = 1;
+
+        public Camera()
+        {
+            UpdateProjectionMatrix();
+        }
 
         public virtual void Update(GameTime gameTime) {}
 
@@ -47,11 +63,11 @@ namespace PeridotEngine.Graphics.Camera
             return Matrix.CreateTranslation(-Position) * Matrix.CreateRotationY(Yaw) * Matrix.CreateRotationX(-Pitch) * Matrix.CreateRotationZ(Roll);
         }
 
-        public void UpdateProjectionMatrix()
+        private void UpdateProjectionMatrix()
         {
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.ToRadians(80),
-                (float)Globals.Graphics.PreferredBackBufferWidth / Globals.Graphics.PreferredBackBufferHeight,
+                aspectRatio,
                 0.1f,
                 100
             );

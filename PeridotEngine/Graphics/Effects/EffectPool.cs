@@ -9,7 +9,9 @@ namespace PeridotEngine.Graphics.Effects
 {
     public class EffectPool
     {
-        private readonly Dictionary<Type, WeakReference<EffectBase>> effects = new();
+        public event EventHandler<EffectBase>? EffectInstantiated; 
+
+        public readonly Dictionary<Type, WeakReference<EffectBase>> Effects = new();
         private static readonly List<Type> effectTypes = new();
 
         private readonly Scene3D scene;
@@ -36,7 +38,7 @@ namespace PeridotEngine.Graphics.Effects
 
         public void UpdateEffectViewProjection(Matrix viewProjection)
         {
-            foreach (WeakReference<EffectBase> effectRef in effects.Values)
+            foreach (WeakReference<EffectBase> effectRef in Effects.Values)
             {
                 if(effectRef.TryGetTarget(out EffectBase? effect))
                     effect.ViewProjection = viewProjection;
@@ -45,7 +47,7 @@ namespace PeridotEngine.Graphics.Effects
 
         public void UpdateEffectShadows(Texture2D shadowMap, Matrix lightViewProjection)
         {
-            foreach (WeakReference<EffectBase> effectRef in effects.Values)
+            foreach (WeakReference<EffectBase> effectRef in Effects.Values)
             {
                 if (effectRef.TryGetTarget(out EffectBase? effect))
                 {
@@ -64,7 +66,7 @@ namespace PeridotEngine.Graphics.Effects
                 throw new ArgumentException("EffectPool.Effect(Type) expects to be passed the type " +
                                             "of an effect (which inherits from EffectBase)");
 
-            if (effects.TryGetValue(effectType, out WeakReference<EffectBase>? effectRef))
+            if (Effects.TryGetValue(effectType, out WeakReference<EffectBase>? effectRef))
             {
                 if (effectRef.TryGetTarget(out EffectBase? effect))
                     return effect;
@@ -77,13 +79,13 @@ namespace PeridotEngine.Graphics.Effects
                 effectTexture.TextureResources = scene.Resources.TextureResources;
             }
 
-            effects.Add(effectType, new WeakReference<EffectBase>(newEffect));
+            Effects.Add(effectType, new WeakReference<EffectBase>(newEffect));
             return newEffect;
         }
 
         public T Effect<T>() where T : EffectBase, new()
         {
-            if (effects.TryGetValue(typeof(T), out WeakReference<EffectBase>? effectRef))
+            if (Effects.TryGetValue(typeof(T), out WeakReference<EffectBase>? effectRef))
             {
                 if (effectRef.TryGetTarget(out EffectBase? effect))
                     return (T)effect;
@@ -96,7 +98,8 @@ namespace PeridotEngine.Graphics.Effects
                 effectTexture.TextureResources = scene.Resources.TextureResources;
             }
             
-            effects[typeof(T)] = new WeakReference<EffectBase>(newEffect);
+            Effects[typeof(T)] = new WeakReference<EffectBase>(newEffect);
+            EffectInstantiated?.Invoke(this, newEffect);
             return newEffect;
         }
     }

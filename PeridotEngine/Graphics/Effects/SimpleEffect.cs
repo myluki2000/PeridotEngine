@@ -14,7 +14,7 @@ using VertexElement = Microsoft.Xna.Framework.Graphics.VertexElement;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public partial class SimpleEffect : EffectBase, IEffectTexture, IEffectShadows
+    public partial class SimpleEffect : EffectBase, IEffectTexture, IEffectShadows, IEffectFog
     {
         private readonly EffectParameter textureParam;
         private readonly EffectParameter mixColorParam;
@@ -26,6 +26,11 @@ namespace PeridotEngine.Graphics.Effects
         private readonly EffectParameter enableShadowsParam;
         private readonly EffectParameter shadowMapParam;
         private readonly EffectParameter lightWorldViewProjParam;
+
+        private readonly EffectParameter fogStartParam;
+        private readonly EffectParameter fogEndParam;
+        private readonly EffectParameter fogColorParam;
+
         private TextureResources? textureResources;
 
         public SimpleEffect() : base(Globals.Content.Load<Effect>("Effects/SimpleEffect"))
@@ -38,6 +43,9 @@ namespace PeridotEngine.Graphics.Effects
             enableShadowsParam = Parameters["EnableShadows"];
             lightWorldViewProjParam = Parameters["LightWorldViewProjection"];
             textureRepeatParam = Parameters["TextureRepeat"];
+            fogStartParam = Parameters["FogStart"];
+            fogEndParam = Parameters["FogEnd"];
+            fogColorParam = Parameters["FogColor"];
         }
 
         public TextureResources? TextureResources
@@ -62,6 +70,29 @@ namespace PeridotEngine.Graphics.Effects
         {
             get => shadowMapParam.GetValueTexture2D();
             set => shadowMapParam.SetValue(value);
+        }
+
+        private Color fogColor;
+        public Color FogColor
+        {
+            get => fogColor;
+            set
+            {
+                fogColor = value;
+                fogColorParam.SetValue(value.ToVector4());
+            }
+        }
+
+        public float FogStart
+        {
+            get => fogStartParam.GetValueSingle();
+            set => fogStartParam.SetValue(value);
+        }
+
+        public float FogEnd
+        {
+            get => fogEndParam.GetValueSingle();
+            set => fogEndParam.SetValue(value);
         }
 
         public Matrix LightViewProjection { get; set; }
@@ -98,7 +129,26 @@ namespace PeridotEngine.Graphics.Effects
         public partial class SimpleEffectProperties : EffectProperties
         {
             public Color MixColor { get; set; } = Color.White;
-            public bool EnableShadows { get; set; }
+
+            public bool ShadowsEnabled
+            {
+                get => shadowsEnabled;
+                set
+                {
+                    shadowsEnabled = value;
+                    Technique = null;
+                }
+            }
+
+            public bool FogEnabled
+            {
+                get => fogEnabled;
+                set
+                {
+                    fogEnabled = value;
+                    Technique = null;
+                }
+            }
 
             public bool VertexColorEnabled
             {
@@ -135,7 +185,6 @@ namespace PeridotEngine.Graphics.Effects
                 base.Apply(mesh);
 
                 SimpleEffect.mixColorParam.SetValue(MixColor.ToVector4());
-                SimpleEffect.enableShadowsParam.SetValue(EnableShadows);
 
                 if (TextureEnabled)
                 {
@@ -155,6 +204,8 @@ namespace PeridotEngine.Graphics.Effects
 
             private bool textureEnabled;
             private bool vertexColorEnabled;
+            private bool shadowsEnabled = true;
+            private bool fogEnabled = true;
 
             private void ChooseTechnique(VertexDeclaration vertexDeclaration)
             {
@@ -171,16 +222,25 @@ namespace PeridotEngine.Graphics.Effects
                         throw new Exception(
                             "VertexColorEnabled is set to true but mesh does not contain vertex color data.");
 
-                    techniqueIndex += 1;
+                    techniqueIndex |= 0b0001;
                 }
-
 
                 if (TextureEnabled)
                 {
                     if (vertexElements.All(x => x.VertexElementUsage != VertexElementUsage.TextureCoordinate))
                         throw new Exception("TextureEnabled is set to true but mesh does not contain UV data.");
 
-                    techniqueIndex += 2;
+                    techniqueIndex |= 0b0010;
+                }
+
+                if (ShadowsEnabled)
+                {
+                    techniqueIndex |= 0b0100;
+                }
+
+                if (FogEnabled)
+                {
+                    techniqueIndex |= 0b1000;
                 }
 
                 Technique = Effect.Techniques[techniqueIndex];

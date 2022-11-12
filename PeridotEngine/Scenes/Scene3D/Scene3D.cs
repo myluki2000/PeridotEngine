@@ -20,6 +20,7 @@ using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
+using IEffectFog = PeridotEngine.Graphics.Effects.IEffectFog;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -77,6 +78,27 @@ namespace PeridotEngine.Scenes.Scene3D
                                  Globals.Graphics.PreferredBackBufferHeight;
 
 
+            // set fog params for effects
+            Resources.EffectPool.EffectInstantiated += (_, effect) =>
+            {
+                if (effect is IEffectFog fog)
+                {
+                    fog.FogStart = 0.995f;
+                    fog.FogEnd = 0.9999f;
+                    fog.FogColor = Color.CornflowerBlue;
+                }
+            };
+            foreach (WeakReference<EffectBase> effectRef in Resources.EffectPool.Effects.Values)
+            {
+                if (!effectRef.TryGetTarget(out EffectBase? effect)) continue;
+
+                if (effect is IEffectFog fog)
+                {
+                    fog.FogStart = 0.995f;
+                    fog.FogEnd = 0.9999f;
+                    fog.FogColor = Color.CornflowerBlue;
+                }
+            }
         }
 
         public override void Update(GameTime gameTime)

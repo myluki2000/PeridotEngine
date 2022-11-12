@@ -38,6 +38,8 @@
             this.nudTextureRepeatX = new System.Windows.Forms.NumericUpDown();
             this.nudTextureRepeatY = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
+            this.cbReceiveShadows = new System.Windows.Forms.CheckBox();
+            this.cbFog = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).BeginInit();
@@ -161,10 +163,34 @@
             this.label4.TabIndex = 20;
             this.label4.Text = "Texture Repeat Y:";
             // 
+            // cbReceiveShadows
+            // 
+            this.cbReceiveShadows.AutoSize = true;
+            this.cbReceiveShadows.Location = new System.Drawing.Point(6, 119);
+            this.cbReceiveShadows.Name = "cbReceiveShadows";
+            this.cbReceiveShadows.Size = new System.Drawing.Size(116, 19);
+            this.cbReceiveShadows.TabIndex = 21;
+            this.cbReceiveShadows.Text = "Receive Shadows";
+            this.cbReceiveShadows.UseVisualStyleBackColor = true;
+            this.cbReceiveShadows.CheckedChanged += new System.EventHandler(this.cbReceiveShadows_CheckedChanged);
+            // 
+            // cbFog
+            // 
+            this.cbFog.AutoSize = true;
+            this.cbFog.Location = new System.Drawing.Point(6, 144);
+            this.cbFog.Name = "cbFog";
+            this.cbFog.Size = new System.Drawing.Size(110, 19);
+            this.cbFog.TabIndex = 22;
+            this.cbFog.Text = "Affected by Fog";
+            this.cbFog.UseVisualStyleBackColor = true;
+            this.cbFog.CheckedChanged += new System.EventHandler(this.cbFog_CheckedChanged);
+            // 
             // SimpleEffectControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbFog);
+            this.Controls.Add(this.cbReceiveShadows);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.nudTextureRepeatY);
             this.Controls.Add(this.nudTextureRepeatX);
@@ -176,7 +202,7 @@
             this.Controls.Add(this.pnlColor);
             this.Controls.Add(this.btnPickColor);
             this.Name = "SimpleEffectControl";
-            this.Size = new System.Drawing.Size(394, 125);
+            this.Size = new System.Drawing.Size(394, 193);
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).EndInit();
@@ -197,5 +223,7 @@
         private NumericUpDown nudTextureRepeatX;
         private NumericUpDown nudTextureRepeatY;
         private Label label4;
+        private CheckBox cbReceiveShadows;
+        private CheckBox cbFog;
     }
 }

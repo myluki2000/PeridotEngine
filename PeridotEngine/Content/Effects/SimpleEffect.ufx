@@ -20,7 +20,10 @@ float2 TexturePosition;
 float2 TextureSize;
 float2 TextureRepeat;
 
-bool EnableShadows;
+float FogStart;
+float FogEnd;
+float4 FogColor;
+
 matrix LightWorldViewProjection;
 
 float CalculateShadowPresence(float4 positionLightSpace)
@@ -51,7 +54,7 @@ float CalculateShadowPresence(float4 positionLightSpace)
     return 0.4 + 0.6 * shadowCoeff;
 }
 
-$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled)
+$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, fogEnabled)
 struct VertexIn$$
 {
 	float4 Position : POSITION0;
@@ -111,13 +114,46 @@ float4 PixelShader$$(PixelIn$$ input) : COLOR
     $if shadowsEnabled
         result = result * CalculateShadowPresence(input.PositionLightSpace);
     $endif
+    $if fogEnabled
+        float fogBlend = clamp(map(input.Position.z, FogStart, FogEnd, 0, 1), 0, 1);
+
+        result = lerp(result, FogColor, fogBlend);
+    $endif
 
     return result;
 
 }
 $endblock
 
-$ubertechnique SimpleEffect(false, false, true)
-$ubertechnique SimpleEffect(true, false, true)
-$ubertechnique SimpleEffect(false, true, true)
-$ubertechnique SimpleEffect(true, true, true)
+// 0000
+$ubertechnique SimpleEffect(false, false, false, false)
+// 1000
+$ubertechnique SimpleEffect(true, false, false, false)
+// 0100
+$ubertechnique SimpleEffect(false, true, false, false)
+// 1100
+$ubertechnique SimpleEffect(true, true, false, false)
+// 0010
+$ubertechnique SimpleEffect(false, false, true, false)
+// 1010
+$ubertechnique SimpleEffect(true, false, true, false)
+// 0110
+$ubertechnique SimpleEffect(false, true, true, false)
+// 1110
+$ubertechnique SimpleEffect(true, true, true, false)
+// 0001
+$ubertechnique SimpleEffect(false, false, false, true)
+// 1001
+$ubertechnique SimpleEffect(true, false, false, true)
+// 0101
+$ubertechnique SimpleEffect(false, true, false, true)
+// 1101
+$ubertechnique SimpleEffect(true, true, false, true)
+// 0011
+$ubertechnique SimpleEffect(false, false, true, true)
+// 1011
+$ubertechnique SimpleEffect(true, false, true, true)
+// 0111
+$ubertechnique SimpleEffect(false, true, true, true)
+// 1111
+$ubertechnique SimpleEffect(true, true, true, true)

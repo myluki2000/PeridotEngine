@@ -33,6 +33,8 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
             pnlColor.BackColor = effectProperties.MixColor.ToSystemColor();
             nudTextureRepeatX.Value = effectProperties.TextureRepeatX;
             nudTextureRepeatY.Value = effectProperties.TextureRepeatY;
+            cbReceiveShadows.Checked = effectProperties.ShadowsEnabled;
+            cbFog.Checked = effectProperties.FogEnabled;
         }
 
         private void btnPickColor_Click(object sender, EventArgs e)
@@ -67,6 +69,16 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
         private void nudTextureRepeatY_ValueChanged(object sender, EventArgs e)
         {
             effectProperties.TextureRepeatY = (int)nudTextureRepeatY.Value;
+        }
+
+        private void cbReceiveShadows_CheckedChanged(object sender, EventArgs e)
+        {
+            effectProperties.ShadowsEnabled = cbReceiveShadows.Checked;
+        }
+
+        private void cbFog_CheckedChanged(object sender, EventArgs e)
+        {
+            effectProperties.FogEnabled = cbFog.Checked;
         }
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using PeridotEngine.Scenes.Scene3D;
 
-namespace PeridotWindows.ECS.Components
+namespace PeridotEngine.ECS.Components
 {
     public sealed partial class PositionRotationScaleComponent : ComponentBase
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PeridotEngine.Scenes.Scene3D;
 
-namespace PeridotWindows.ECS.Components
+namespace PeridotEngine.ECS.Components
 {
     public abstract partial class ComponentBase
     {

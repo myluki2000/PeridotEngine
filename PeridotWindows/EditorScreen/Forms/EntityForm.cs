@@ -1,4 +1,5 @@
-﻿using PeridotWindows.ECS;
+﻿using PeridotEngine.ECS.Components;
+using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 
 namespace PeridotWindows.EditorScreen.Forms

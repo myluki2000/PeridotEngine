@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS.Components.PropertiesControls;
 
-namespace PeridotWindows.ECS.Components
+namespace PeridotEngine.ECS.Components
 {
     public sealed partial class PositionRotationScaleComponent
     {

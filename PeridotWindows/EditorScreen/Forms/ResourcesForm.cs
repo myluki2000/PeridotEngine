@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PeridotEngine;
+using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS.Components;

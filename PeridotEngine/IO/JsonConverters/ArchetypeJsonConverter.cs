@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PeridotEngine.ECS.Components;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 

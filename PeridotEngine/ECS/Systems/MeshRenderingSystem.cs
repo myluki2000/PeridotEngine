@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
+using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;

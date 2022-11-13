@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Misc;
 using PeridotEngine.Scenes;

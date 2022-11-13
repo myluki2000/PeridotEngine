@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
 using PeridotEngine.Scenes.Scene3D;

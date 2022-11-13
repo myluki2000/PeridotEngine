@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
+using PeridotEngine.ECS.Components;
 
 namespace PeridotWindows.ECS.Components.PropertiesControls
 {

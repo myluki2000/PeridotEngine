@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Newtonsoft.Json;
+using PeridotEngine.ECS.Components;
 using PeridotWindows.ECS.Components;
 
 namespace PeridotWindows.ECS

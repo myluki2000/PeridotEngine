@@ -11,6 +11,6 @@ namespace PeridotEngine.ECS.Components
     public abstract partial class ComponentBase
     {
         [JsonIgnore]
-        public UserControl? PropertiesControl { get; protected set; }
+        public abstract UserControl? PropertiesControl { get; }
     }
 }

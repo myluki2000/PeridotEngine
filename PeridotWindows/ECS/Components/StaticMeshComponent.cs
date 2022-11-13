@@ -13,14 +13,7 @@ namespace PeridotEngine.ECS.Components
 {
     public partial class StaticMeshComponent
     {
-        public StaticMeshComponent(Scene3D scene, MeshResources.MeshInfo mesh, EffectBase.EffectProperties effectProperties, bool castShadows = true)
-        {
-            Scene = scene;
-            Mesh = mesh;
-            EffectProperties = effectProperties;
-            CastShadows = castShadows;
-
-            PropertiesControl = new StaticMeshControl(this);
-        }
+        private UserControl? propertiesControl;
+        public override UserControl? PropertiesControl => propertiesControl ??= new StaticMeshControl(this);
     }
 }

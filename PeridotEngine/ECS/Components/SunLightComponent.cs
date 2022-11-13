@@ -5,7 +5,7 @@ using PeridotWindows.ECS.Components;
 
 namespace PeridotEngine.ECS.Components
 {
-    public class SunLightComponent : ComponentBase
+    public partial class SunLightComponent : ComponentBase
     {
     }
 }

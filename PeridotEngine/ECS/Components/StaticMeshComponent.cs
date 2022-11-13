@@ -10,5 +10,13 @@ namespace PeridotEngine.ECS.Components
         public MeshResources.MeshInfo Mesh { get; set; }
         public bool CastShadows { get; set; } = true;
         public EffectBase.EffectProperties EffectProperties { get; set; }
+
+        public StaticMeshComponent(Scene3D scene, MeshResources.MeshInfo mesh, EffectBase.EffectProperties effectProperties, bool castShadows = true)
+        {
+            Scene = scene;
+            Mesh = mesh;
+            EffectProperties = effectProperties;
+            CastShadows = castShadows;
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using PeridotEngine.ECS.Components;
+using PeridotWindows.Controls;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 
@@ -6,9 +7,12 @@ namespace PeridotWindows.EditorScreen.Forms
 {
     public partial class EntityForm : Form
     {
-        public EntityForm()
+        private EditorScreen editorScreen;
+
+        public EntityForm(EditorScreen editorScreen)
         {
             InitializeComponent();
+            this.editorScreen = editorScreen;
         }
 
         public Entity? Entity
@@ -38,6 +42,17 @@ namespace PeridotWindows.EditorScreen.Forms
                 control.Dock = DockStyle.Top;
                 pnlComponents.Controls.Add(control);
             }
+
+            NameControl nameControl = new();
+            nameControl.Dock = DockStyle.Top;
+            pnlComponents.Controls.Add(nameControl);
+
+            nameControl.Text = entity.Name ?? "";
+            nameControl.TextChanged += (_, _) =>
+            {
+                entity.Name = nameControl.Text;
+                editorScreen.FrmScene?.Populate();
+            };
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PeridotEngine.Graphics.Screens
 {
-    internal abstract class Screen
+    public abstract class Screen
     {
         public abstract void Initialize();
         public abstract void Update(GameTime gameTime);

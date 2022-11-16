@@ -23,16 +23,20 @@ namespace PeridotWindows.EditorScreen.Forms
             InitializeComponent();
 
             this.scene = scene;
-            scene.Ecs.EntityListChanged += (_, _) => Scene_EntityListChanged();
-            Scene_EntityListChanged();
+            scene.Ecs.EntityListChanged += (_, _) => Populate();
+            Populate();
         }
 
-        private void Scene_EntityListChanged()
+        public void Populate()
         {
             List<ListViewItem> items = new();
             scene.Ecs.Query().ForEach((Entity entity) =>
             {
-                ListViewItem item = new(string.Join(", ", entity.Components.Select(x => x.GetType().Name)))
+                string name = string.IsNullOrEmpty(entity.Name)
+                    ? string.Join(", ", entity.Components.Select(x => x.GetType().Name))
+                    : entity.Name;
+
+                ListViewItem item = new(name)
                 {
                     Tag = entity,
                 };

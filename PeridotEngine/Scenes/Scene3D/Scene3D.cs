@@ -38,7 +38,7 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             Resources = new SceneResources(this);
             Ecs = new Ecs();
-            Camera = new Camera();
+            Camera = new PerspectiveCamera();
         }
 
         public Scene3D(string json)
@@ -56,7 +56,7 @@ namespace PeridotEngine.Scenes.Scene3D
             });
 
             Resources = (SceneResources)root["Resources"].ToObject(typeof(SceneResources), serializer);
-            Camera = root["Camera"].ToObject<Camera>();
+            Camera = root["Camera"].ToObject<PerspectiveCamera>();
             Ecs = (Ecs)root["Ecs"].ToObject(typeof(Ecs), serializer);
         }
 
@@ -71,11 +71,13 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Globals.GameMain.Window.ClientSizeChanged += (_, _) =>
             {
-                Camera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
-                                     Globals.Graphics.PreferredBackBufferHeight;
+                if(Camera is PerspectiveCamera perspectiveCamera)
+                    perspectiveCamera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
+                                                    Globals.Graphics.PreferredBackBufferHeight;
             };
-            Camera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
-                                 Globals.Graphics.PreferredBackBufferHeight;
+            if (Camera is PerspectiveCamera perspectiveCamera)
+                perspectiveCamera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
+                                            Globals.Graphics.PreferredBackBufferHeight;
 
 
             // set fog params for effects

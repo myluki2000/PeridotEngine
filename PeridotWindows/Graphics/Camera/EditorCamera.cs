@@ -13,7 +13,7 @@ using Point = Microsoft.Xna.Framework.Point;
 
 namespace PeridotWindows.Graphics.Camera
 {
-    public class EditorCamera : PeridotEngine.Graphics.Camera.Camera
+    public class EditorCamera : PeridotEngine.Graphics.Camera.PerspectiveCamera
     {
         private MouseState lastMouseState;
         public override void Update(GameTime gameTime)

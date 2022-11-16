@@ -51,7 +51,7 @@ namespace PeridotEngine.ECS.Systems
 
             gd.DepthStencilState = DepthStencilState.Default;
 
-            Camera camera = new();
+            Camera camera = new OrthographicCamera();
 
             sunLights.ForEach((PositionRotationScaleComponent posC) =>
             {

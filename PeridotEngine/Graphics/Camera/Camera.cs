@@ -7,7 +7,7 @@ using PeridotEngine.Misc;
 
 namespace PeridotEngine.Graphics.Camera
 {
-    public class Camera
+    public abstract class Camera
     {
         public Vector3 Position { get; set; }
 
@@ -34,48 +34,24 @@ namespace PeridotEngine.Graphics.Camera
             set => _yaw = (float)(value % (Math.PI * 2));
         }
 
-        public float AspectRatio
-        {
-            get => aspectRatio;
-            set
-            {
-                aspectRatio = value;
-                UpdateProjectionMatrix();
-            }
-        }
-
         private float _roll;
         private float _pitch;
         private float _yaw;
 
-        private Matrix projectionMatrix;
-        private float aspectRatio = 1;
+        protected Matrix ProjectionMatrix;
 
-        public Camera()
-        {
-            UpdateProjectionMatrix();
-        }
-
-        public virtual void Update(GameTime gameTime) {}
+        public virtual void Update(GameTime gameTime) { }
 
         public Matrix GetViewMatrix()
         {
             return Matrix.CreateTranslation(-Position) * Matrix.CreateRotationY(Yaw) * Matrix.CreateRotationX(-Pitch) * Matrix.CreateRotationZ(Roll);
         }
 
-        private void UpdateProjectionMatrix()
-        {
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.ToRadians(80),
-                aspectRatio,
-                0.1f,
-                100
-            );
-        }
+        protected abstract void UpdateProjectionMatrix();
 
         public Matrix GetProjectionMatrix()
         {
-            return projectionMatrix;
+            return ProjectionMatrix;
         }
 
         public Matrix GetLookAtMatrix(Vector3 target)

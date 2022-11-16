@@ -41,7 +41,7 @@ float CalculateShadowPresence(float4 positionLightSpace)
         for (float y = -1.5; y < 1.5; y++)
         {
             float mapDepth = SAMPLE_TEXTURE(ShadowMap, uv + float2(x, y) * 0.0015).r;
-            bool inLight = (mapDepth > (positionLightSpace.z - (1 - positionLightSpace.z) * 0.02))
+            bool inLight = (mapDepth > (positionLightSpace.z - 0.0025f))
             || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0;
             
             shadowCoeff += inLight;

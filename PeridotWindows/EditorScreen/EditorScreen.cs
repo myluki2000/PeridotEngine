@@ -52,7 +52,7 @@ namespace PeridotWindows.EditorScreen
             Globals.GameMain.Window.AllowUserResizing = true;
 
             Control mainWindowControl = Control.FromHandle(Globals.GameMain.Window.Handle);
-
+            
             frmResources = new(scene);
             frmResources.Show(mainWindowControl);
             frmToolbox = new(scene);
@@ -75,17 +75,27 @@ namespace PeridotWindows.EditorScreen
 
             if (bounds != windowLastBounds)
             {
+                Form mainWindow = (Form)Control.FromHandle(Globals.GameMain.Window.Handle);
+                if (mainWindow.WindowState == FormWindowState.Maximized)
+                {
+                    int screenWith = mainWindow.Width;
+                    int screenHeight = mainWindow.Height;
+                    mainWindow.WindowState = FormWindowState.Normal;
+                    mainWindow.Width = screenWith - frmScene.Width - frmEntity.Width;
+                    mainWindow.Height = screenHeight - frmToolbox.Height - frmResources.Height;
+                    mainWindow.Location = new Point(frmScene.Width, frmToolbox.Height);
+                }
 
-                frmToolbox.Location = new Point(bounds.Left, bounds.Top - titleHeight - 3 - frmToolbox.Height);
+                frmToolbox.Location = new Point(bounds.Left, bounds.Top - titleHeight - frmToolbox.Height);
                 frmToolbox.Width = bounds.Width;
 
-                frmResources.Location = new Point(bounds.Left, bounds.Bottom + 3);
+                frmResources.Location = new Point(bounds.Left, bounds.Bottom);
                 frmResources.Width = bounds.Width;
 
-                frmScene.Location = new Point(bounds.Left - frmScene.Width - 3, frmToolbox.Top);
+                frmScene.Location = new Point(bounds.Left - frmScene.Width, frmToolbox.Top);
                 frmScene.Height = frmResources.Bottom - frmToolbox.Top;
 
-                frmEntity.Location = new Point(bounds.Right + 3, frmToolbox.Top);
+                frmEntity.Location = new Point(bounds.Right, frmToolbox.Top);
                 frmEntity.Height = frmResources.Bottom - frmToolbox.Top;
             }
 

@@ -9,13 +9,15 @@ namespace PeridotWindows.ECS
     {
         public Type[] ComponentTypes { get; }
 
+        public List<uint> Ids { get; } = new();
         public List<string?> Names { get; } = new();
         public List<IList> Components { get; } = new();
 
         public event Action? EntityListChanged;
 
-        public Archetype(Type[] componentTypes, List<string?> names, List<IList> components) : this(componentTypes)
+        public Archetype(Type[] componentTypes, List<uint> ids, List<string?> names, List<IList> components) : this(componentTypes)
         {
+            Ids = ids;
             Names = names;
             Components = components;
         }
@@ -32,6 +34,12 @@ namespace PeridotWindows.ECS
 
         public void CreateEntity(string? name, params ComponentBase[] entityComponents)
         {
+            uint id = Ids.Count > 0
+                ? Ids.Max() + 1
+                : 0;
+
+            Ids.Add(id);
+
             while (Components.Count < ComponentTypes.Length)
                 Components.Add(new ArrayList());
 
@@ -60,12 +68,7 @@ namespace PeridotWindows.ECS
         {
             for (int i = 0; i < EntityCount; i++)
             {
-                ComponentBase[] c = new ComponentBase[ComponentTypes.Length];
-                for (int j = 0; j < ComponentTypes.Length; j++)
-                {
-                    c[j] = (ComponentBase)Components[j][i];
-                }
-                yield return new Entity(Names[i], this, c);
+                yield return new Entity(Ids[i], this);
             }
         }
 

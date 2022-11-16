@@ -1,19 +1,36 @@
-﻿using PeridotEngine.ECS.Components;
-using PeridotWindows.ECS.Components;
+﻿using System.Collections;
+using PeridotEngine.ECS.Components;
 
 namespace PeridotWindows.ECS
 {
     public class Entity
     {
-        public string? Name { get; }
+        public uint Id { get; }
         public Archetype Archetype { get; }
-        public ComponentBase[] Components { get; }
 
-        public Entity(string? name, Archetype archetype, ComponentBase[] components)
+        public IReadOnlyCollection<ComponentBase> Components
+            => Archetype.Components.Select(list => (ComponentBase)list[index]!).ToList();
+
+        public string? Name
         {
-            Name = name;
+            get => Archetype.Names[index];
+            set => Archetype.Names[index] = value;
+        }
+
+        private int index;
+
+        public Entity(uint id, Archetype archetype)
+        {
+            Id = id;
             Archetype = archetype;
-            Components = components;
+
+            Archetype.EntityListChanged += GetEntityIndex;
+            GetEntityIndex();
+        }
+
+        private void GetEntityIndex()
+        {
+            index = Archetype.Ids.IndexOf(Id);
         }
     }
 }

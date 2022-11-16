@@ -31,6 +31,9 @@ namespace PeridotEngine.IO.JsonConverters
             }
             writer.WriteEndArray();
 
+            writer.WritePropertyName("Ids");
+            serializer.Serialize(writer, archetype.Ids);
+
             writer.WritePropertyName("Names");
             serializer.Serialize(writer, archetype.Names);
 
@@ -53,6 +56,7 @@ namespace PeridotEngine.IO.JsonConverters
                 return type;
             }).ToArray();
 
+            List<uint> ids = root["Ids"].Values<uint>().ToList();
             List<string?> names = root["Names"].Values<string?>().ToList();
 
             List<IList> components = new();
@@ -73,7 +77,7 @@ namespace PeridotEngine.IO.JsonConverters
             }
 
 
-            return new Archetype(componentTypes, names, components);
+            return new Archetype(componentTypes, ids, names, components);
         }
 
         public override bool CanConvert(Type objectType)

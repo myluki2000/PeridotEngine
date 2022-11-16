@@ -28,6 +28,11 @@ namespace PeridotWindows.ECS
             GetEntityIndex();
         }
 
+        public void Remove()
+        {
+            Archetype.RemoveEntityAt(index);
+        }
+
         private void GetEntityIndex()
         {
             index = Archetype.Ids.IndexOf(Id);

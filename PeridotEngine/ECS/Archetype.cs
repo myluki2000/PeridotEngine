@@ -27,6 +27,27 @@ namespace PeridotWindows.ECS
             ComponentTypes = componentTypes.OrderBy(x => x.FullName).ToArray();
         }
 
+        public Entity EntityById(uint entityId)
+        {
+            return new Entity(entityId, this);
+        }
+
+        public Entity EntityAt(int index)
+        {
+            return new Entity(Ids[index], this);
+        }
+
+        public void RemoveEntityAt(int index)
+        {
+            Ids.RemoveAt(index);
+            Names.RemoveAt(index);
+            foreach (IList list in Components)
+            {
+                list.RemoveAt(index);
+            }
+            EntityListChanged?.Invoke();
+        }
+
         public void CreateEntity(params ComponentBase[] entityComponents)
         {
             CreateEntity(null, entityComponents);

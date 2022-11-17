@@ -22,8 +22,6 @@ namespace PeridotEngine.Graphics.Effects
         private readonly EffectParameter textureSizeParam;
         private readonly EffectParameter textureRepeatParam;
 
-
-        private readonly EffectParameter enableShadowsParam;
         private readonly EffectParameter shadowMapParam;
         private readonly EffectParameter lightWorldViewProjParam;
 
@@ -40,7 +38,6 @@ namespace PeridotEngine.Graphics.Effects
             mixColorParam = Parameters["MixColor"];
             texturePositionParam = Parameters["TexturePosition"];
             textureSizeParam = Parameters["TextureSize"];
-            enableShadowsParam = Parameters["EnableShadows"];
             lightWorldViewProjParam = Parameters["LightWorldViewProjection"];
             textureRepeatParam = Parameters["TextureRepeat"];
             fogStartParam = Parameters["FogStart"];

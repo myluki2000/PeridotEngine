@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.ECS.Components;
-using PeridotEngine.Graphics.Camera;
+using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;

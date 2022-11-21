@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using PeridotEngine.Misc;
 
-namespace PeridotEngine.Graphics.Camera
+namespace PeridotEngine.Graphics.Cameras
 {
     public abstract class Camera
     {

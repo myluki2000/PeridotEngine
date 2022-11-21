@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace PeridotEngine.Graphics.Camera
+namespace PeridotEngine.Graphics.Cameras
 {
     public class OrthographicCamera : Camera
     {

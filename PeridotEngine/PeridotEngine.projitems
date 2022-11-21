@@ -20,12 +20,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\MeshRenderingSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\SunShadowMapSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Camera\Camera.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Camera\OrthographicCamera.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Camera\PerspectiveCamera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Cameras\Camera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Cameras\OrthographicCamera.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Cameras\PerspectiveCamera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\DepthEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectCameraData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectFog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectShadows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectTexture.cs" />

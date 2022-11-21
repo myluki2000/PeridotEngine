@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics.Geometry;
+using PeridotEngine.Scenes;
+using PeridotEngine.Scenes.Scene3D;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotEngine.Graphics.Effects

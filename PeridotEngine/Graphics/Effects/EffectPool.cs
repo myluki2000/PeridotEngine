@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotEngine.Graphics.Effects
@@ -36,12 +37,19 @@ namespace PeridotEngine.Graphics.Effects
             return effectTypes;
         }
 
-        public void UpdateEffectViewProjection(Matrix viewProjection)
+        public void UpdateEffectCameraData(Camera camera)
         {
+            Matrix m = camera.GetViewMatrix() * camera.GetProjectionMatrix();
             foreach (WeakReference<EffectBase> effectRef in Effects.Values)
             {
-                if(effectRef.TryGetTarget(out EffectBase? effect))
-                    effect.ViewProjection = viewProjection;
+                if (!effectRef.TryGetTarget(out EffectBase? effect)) continue;
+
+                effect.ViewProjection = m;
+
+                if (effect is IEffectCameraData cameraDataEffect)
+                {
+                    cameraDataEffect.CameraPosition = camera.Position;
+                }
             }
         }
 

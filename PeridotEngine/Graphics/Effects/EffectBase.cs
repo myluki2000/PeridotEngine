@@ -15,17 +15,26 @@ namespace PeridotEngine.Graphics.Effects
         public Matrix ViewProjection { get; set; }
 
         [JsonIgnore]
-        protected readonly EffectParameter WorldViewProjParam;
+        protected readonly EffectParameter WorldParam;
+        [JsonIgnore]
+        protected readonly EffectParameter? TransposedInverseWorldParam;
+        [JsonIgnore]
+        protected readonly EffectParameter ViewProjectionParam;
 
         protected EffectBase(Effect cloneSource) : base(cloneSource)
         {
-            WorldViewProjParam = Parameters["WorldViewProjection"];
+            WorldParam = Parameters["World"];
+            ViewProjectionParam = Parameters["ViewProjection"];
+            TransposedInverseWorldParam = Parameters["TransposedInverseWorld"];
         }
 
         public virtual void UpdateMatrices()
         {
-            Matrix worldViewProjection = World * ViewProjection;
-            WorldViewProjParam.SetValue(worldViewProjection);
+            WorldParam.SetValue(World);
+            ViewProjectionParam.SetValue(ViewProjection);
+            
+            // the matrix is only calculated if the TransposedInverseWorld parameter is defined in the shader code
+            TransposedInverseWorldParam?.SetValue(Matrix.Transpose(Matrix.Invert(World)));
         }
 
         public abstract EffectProperties CreatePropertiesBase();

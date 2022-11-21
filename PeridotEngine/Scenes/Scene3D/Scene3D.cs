@@ -115,10 +115,10 @@ namespace PeridotEngine.Scenes.Scene3D
             Resources.EffectPool.UpdateEffectViewProjection(Camera.GetViewMatrix() * Camera.GetProjectionMatrix());
 
             // TODO: It's only necessary to re-render the shadow map if scene geometry changes
-            Texture2D? shadowMap = SunShadowMapSystem.GenerateShadowMap(out Matrix lightViewProj);
+            Texture2D? shadowMap = SunShadowMapSystem.GenerateShadowMap(out Vector3 lightPosition, out Matrix lightViewProj);
 
             gd.Clear(Color.CornflowerBlue);
-            Resources.EffectPool.UpdateEffectShadows(shadowMap, lightViewProj);
+            Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
             MeshRenderingSystem.RenderMeshes();
         }
 

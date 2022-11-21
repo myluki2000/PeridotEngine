@@ -45,7 +45,7 @@ namespace PeridotEngine.Graphics.Effects
             }
         }
 
-        public void UpdateEffectShadows(Texture2D shadowMap, Matrix lightViewProjection)
+        public void UpdateEffectShadows(Texture2D shadowMap, Vector3 lightPosition, Matrix lightViewProjection)
         {
             foreach (WeakReference<EffectBase> effectRef in Effects.Values)
             {
@@ -54,6 +54,7 @@ namespace PeridotEngine.Graphics.Effects
                     if (effect is IEffectShadows shadowEffect)
                     {
                         shadowEffect.ShadowMap = shadowMap;
+                        shadowEffect.LightPosition = lightPosition;
                         shadowEffect.LightViewProjection = lightViewProjection;
                     }
                 }

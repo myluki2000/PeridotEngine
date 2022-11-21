@@ -29,7 +29,7 @@ namespace PeridotEngine.ECS.Systems
                                          .Has<PositionRotationScaleComponent>();
         }
 
-        public Texture2D? GenerateShadowMap(out Matrix lightViewProjection)
+        public Texture2D? GenerateShadowMap(out Vector3 lightPosition, out Matrix lightViewProjection)
         {
             switch (sunLights.EntityCount)
             {
@@ -37,6 +37,7 @@ namespace PeridotEngine.ECS.Systems
                     throw new Exception("At most 1 sun can exist per scene.");
                 case 0:
                     lightViewProjection = Matrix.Identity;
+                    lightPosition = Vector3.Zero;
                     return null;
             }
 
@@ -74,6 +75,10 @@ namespace PeridotEngine.ECS.Systems
 
             // TODO: This matrix calculation is performed twice, once in Effect.Apply() and once here. This is unnecessary.
             lightViewProjection = depthEffect.ViewProjection;
+
+            // for sunlights we don't use the light's actual position and instead use a sufficiently far away position in the opposite
+            // direction of the light's ray direction, calculated from the world origin (0, 0, 0)
+            lightPosition = camera.GetLookDirection() * -1000000;
             return rt;
         }
 

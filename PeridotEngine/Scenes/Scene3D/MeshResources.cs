@@ -33,13 +33,13 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void CreateQuad(string name)
         {
-            Mesh mesh = new Mesh<VertexPositionTexture>(
-                new VertexPositionTexture[]
+            Mesh mesh = new Mesh<VertexPositionNormalTexture>(
+                new VertexPositionNormalTexture[]
                 {
-                    new(new Vector3(-0.5f, 0,  0.5f), new Vector2(0, 1)),
-                    new(new Vector3( 0.5f, 0,  0.5f), new Vector2(1, 1)),
-                    new(new Vector3( 0.5f, 0, -0.5f), new Vector2(1, 0)),
-                    new(new Vector3(-0.5f, 0, -0.5f), new Vector2(0, 0)),
+                    new(new Vector3(-0.5f, 0,  0.5f), new Vector3(0, 1, 0), new Vector2(0, 1)),
+                    new(new Vector3( 0.5f, 0,  0.5f), new Vector3(0, 1, 0), new Vector2(1, 1)),
+                    new(new Vector3( 0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(1, 0)),
+                    new(new Vector3(-0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(0, 0)),
                 },
                 new uint[]
                 {
@@ -52,12 +52,12 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void CreateTriangle(string name)
         {
-            Mesh mesh = new Mesh<VertexPositionTexture>(
-                new VertexPositionTexture[]
+            Mesh mesh = new Mesh<VertexPositionNormalTexture>(
+                new VertexPositionNormalTexture[]
                 {
-                    new(new Vector3(0, 0, 0.5f), new Vector2(0.5f, 1)),
-                    new(new Vector3(0.5f, 0, -0.5f), new Vector2(1, 0)),
-                    new(new Vector3(-0.5f, 0, -0.5f), new Vector2(0, 0)),
+                    new(new Vector3(0, 0, 0.5f), new Vector3(0, 1, 0), new Vector2(0.5f, 1)),
+                    new(new Vector3(0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(1, 0)),
+                    new(new Vector3(-0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(0, 0)),
                 },
                 new uint[]
                 {

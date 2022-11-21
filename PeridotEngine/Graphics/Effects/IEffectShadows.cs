@@ -10,5 +10,6 @@ namespace PeridotEngine.Graphics.Effects
     {
         public Texture2D ShadowMap { get; set; }
         public Matrix LightViewProjection { get; set; }
+        public Vector3 LightPosition { get; set; }
     }
 }

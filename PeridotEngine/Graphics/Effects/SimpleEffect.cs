@@ -24,6 +24,7 @@ namespace PeridotEngine.Graphics.Effects
 
         private readonly EffectParameter shadowMapParam;
         private readonly EffectParameter lightWorldViewProjParam;
+        private readonly EffectParameter lightPositionParam;
 
         private readonly EffectParameter fogStartParam;
         private readonly EffectParameter fogEndParam;
@@ -43,6 +44,7 @@ namespace PeridotEngine.Graphics.Effects
             fogStartParam = Parameters["FogStart"];
             fogEndParam = Parameters["FogEnd"];
             fogColorParam = Parameters["FogColor"];
+            lightPositionParam = Parameters["lightPosition"];
         }
 
         public TextureResources? TextureResources
@@ -93,6 +95,12 @@ namespace PeridotEngine.Graphics.Effects
         }
 
         public Matrix LightViewProjection { get; set; }
+
+        public Vector3 LightPosition
+        {
+            get => lightPositionParam.GetValueVector3();
+            set => lightPositionParam.SetValue(value);
+        }
 
         private void TextureAtlasChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
         {
@@ -167,6 +175,16 @@ namespace PeridotEngine.Graphics.Effects
                 }
             }
 
+            public bool DiffuseShadingEnabled
+            {
+                get => diffuseShadingEnabled;
+                set
+                {
+                    diffuseShadingEnabled = value;
+                    Technique = null;
+                }
+            }
+
             public uint TextureId { get; set; }
 
             public int TextureRepeatX { get; set; } = 1;
@@ -203,6 +221,7 @@ namespace PeridotEngine.Graphics.Effects
             private bool vertexColorEnabled;
             private bool shadowsEnabled = true;
             private bool fogEnabled = true;
+            private bool diffuseShadingEnabled = true;
 
             private void ChooseTechnique(VertexDeclaration vertexDeclaration)
             {
@@ -219,7 +238,7 @@ namespace PeridotEngine.Graphics.Effects
                         throw new Exception(
                             "VertexColorEnabled is set to true but mesh does not contain vertex color data.");
 
-                    techniqueIndex |= 0b0001;
+                    techniqueIndex |= 0b00001;
                 }
 
                 if (TextureEnabled)
@@ -227,17 +246,25 @@ namespace PeridotEngine.Graphics.Effects
                     if (vertexElements.All(x => x.VertexElementUsage != VertexElementUsage.TextureCoordinate))
                         throw new Exception("TextureEnabled is set to true but mesh does not contain UV data.");
 
-                    techniqueIndex |= 0b0010;
+                    techniqueIndex |= 0b00010;
                 }
 
                 if (ShadowsEnabled)
                 {
-                    techniqueIndex |= 0b0100;
+                    techniqueIndex |= 0b00100;
                 }
 
                 if (FogEnabled)
                 {
-                    techniqueIndex |= 0b1000;
+                    techniqueIndex |= 0b01000;
+                }
+
+                if (DiffuseShadingEnabled)
+                {
+                    if (vertexElements.All(x => x.VertexElementUsage != VertexElementUsage.Normal))
+                        throw new Exception("DiffuseShadingEnabled is set to true but mesh does not contain normal data.");
+
+                    techniqueIndex |= 0b10000;
                 }
 
                 Technique = Effect.Techniques[techniqueIndex];

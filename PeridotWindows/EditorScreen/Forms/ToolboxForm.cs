@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PeridotEngine.ECS.Components;
-using PeridotEngine.Graphics.Camera;
+using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.IO.JsonConverters;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;

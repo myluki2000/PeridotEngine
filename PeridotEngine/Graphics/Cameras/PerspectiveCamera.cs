@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PeridotEngine.Graphics.Camera
+namespace PeridotEngine.Graphics.Cameras
 {
     public class PerspectiveCamera : Camera
     {

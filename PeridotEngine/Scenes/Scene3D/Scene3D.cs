@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using PeridotEngine.ECS.Systems;
 using PeridotEngine.Graphics;
-using PeridotEngine.Graphics.Camera;
+using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
 using PeridotEngine.IO.JsonConverters;
@@ -96,8 +96,8 @@ namespace PeridotEngine.Scenes.Scene3D
 
                 if (effect is IEffectFog fog)
                 {
-                    fog.FogStart = 0.995f;
-                    fog.FogEnd = 0.9999f;
+                    fog.FogStart = 20f;
+                    fog.FogEnd = 50f;
                     fog.FogColor = Color.CornflowerBlue;
                 }
             }
@@ -112,7 +112,7 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
-            Resources.EffectPool.UpdateEffectViewProjection(Camera.GetViewMatrix() * Camera.GetProjectionMatrix());
+            Resources.EffectPool.UpdateEffectCameraData(Camera);
 
             // TODO: It's only necessary to re-render the shadow map if scene geometry changes
             Texture2D? shadowMap = SunShadowMapSystem.GenerateShadowMap(out Vector3 lightPosition, out Matrix lightViewProj);

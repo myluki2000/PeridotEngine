@@ -14,7 +14,7 @@ using VertexElement = Microsoft.Xna.Framework.Graphics.VertexElement;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public partial class SimpleEffect : EffectBase, IEffectTexture, IEffectShadows, IEffectFog
+    public partial class SimpleEffect : EffectBase, IEffectTexture, IEffectShadows, IEffectFog, IEffectCameraData
     {
         private readonly EffectParameter textureParam;
         private readonly EffectParameter mixColorParam;
@@ -30,6 +30,8 @@ namespace PeridotEngine.Graphics.Effects
         private readonly EffectParameter fogEndParam;
         private readonly EffectParameter fogColorParam;
 
+        private readonly EffectParameter? cameraPositionParam;
+
         private TextureResources? textureResources;
 
         public SimpleEffect() : base(Globals.Content.Load<Effect>("Effects/SimpleEffect"))
@@ -44,7 +46,14 @@ namespace PeridotEngine.Graphics.Effects
             fogStartParam = Parameters["FogStart"];
             fogEndParam = Parameters["FogEnd"];
             fogColorParam = Parameters["FogColor"];
-            lightPositionParam = Parameters["lightPosition"];
+            lightPositionParam = Parameters["LightPosition"];
+            cameraPositionParam = Parameters["CameraPosition"];
+        }
+
+        public Vector3 CameraPosition
+        {
+            get => cameraPositionParam?.GetValueVector3() ?? Vector3.Zero;
+            set => cameraPositionParam?.SetValue(value);
         }
 
         public TextureResources? TextureResources

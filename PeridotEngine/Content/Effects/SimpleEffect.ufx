@@ -26,7 +26,9 @@ float FogStart;
 float FogEnd;
 float4 FogColor;
 
-float3 lightPosition;
+float3 CameraPosition;
+
+float3 LightPosition;
 matrix LightWorldViewProjection;
 
 float CalculateShadowPresence(float4 positionLightSpace)
@@ -57,7 +59,7 @@ float CalculateShadowPresence(float4 positionLightSpace)
 }
 
 float CalculateDiffuseShading(float3 position, float3 normal) {
-    float3 lightRay = position - lightPosition;
+    float3 lightRay = position - LightPosition;
     lightRay = normalize(-lightRay);
     normal = normalize(normal);
 
@@ -93,6 +95,8 @@ struct PixelIn$$
     $endif
     $if diffuseShading
         float3 Normal : NORMAL0; 
+    $endif
+    $if diffuseShading || fogEnabled
         float4 WorldPosition : POSITION1;
     $endif
 };
@@ -115,6 +119,8 @@ PixelIn$$ VertexShader$$(in VertexIn$$ input)
     $endif
     $if diffuseShading
         output.Normal = mul(input.Normal, (float3x3)TransposedInverseWorld);
+    $endif
+    $if diffuseShading || fogEnabled
         output.WorldPosition = worldPos;
     $endif
 
@@ -148,7 +154,8 @@ float4 PixelShader$$(PixelIn$$ input) : COLOR
     $endif
 
     $if fogEnabled
-        float fogBlend = clamp(map(input.Position.z, FogStart, FogEnd, 0, 1), 0, 1);
+        float dist = distance(CameraPosition, input.WorldPosition);
+        float fogBlend = clamp(map(dist, FogStart, FogEnd, 0, 1), 0, 1);
 
         result = lerp(result, FogColor, fogBlend);
     $endif

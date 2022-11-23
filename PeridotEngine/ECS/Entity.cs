@@ -48,24 +48,21 @@ namespace PeridotWindows.ECS
         {
             Id = id;
             this.archetype = archetype;
-
-            Archetype.EntityListChanged += GetEntityIndex;
-            GetEntityIndex();
+            UpdateEntityIndex();
         }
 
         private Entity(Archetype archetype)
         {
             this.archetype = archetype;
-            Archetype.EntityListChanged += GetEntityIndex;
         }
 
         public void Delete()
         {
             IsDeleted = true;
-            Archetype.RemoveEntityAt(index);
+            archetype.RemoveEntityAt(index);
         }
 
-        private void GetEntityIndex()
+        public void UpdateEntityIndex()
         {
             index = Archetype.Ids.IndexOf(Id);
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using PeridotEngine.ECS.Components;
 using PeridotWindows.ECS.Components;
@@ -28,7 +29,6 @@ namespace PeridotWindows.ECS
             {
                 entities.Add(null);
             }
-
         }
 
         public Archetype(Type[] componentTypes)
@@ -76,6 +76,15 @@ namespace PeridotWindows.ECS
             {
                 list.RemoveAt(index);
             }
+
+            foreach (WeakReference<Entity>? entityRef in entities)
+            {
+                if (entityRef?.TryGetTarget(out Entity? e) ?? false)
+                {
+                    e.UpdateEntityIndex();
+                }
+            }
+
             EntityListChanged?.Invoke();
         }
 
@@ -86,6 +95,9 @@ namespace PeridotWindows.ECS
 
         public void CreateEntity(string? name, params ComponentBase[] entityComponents)
         {
+            while (Components.Count < ComponentTypes.Length)
+                Components.Add(new ArrayList());
+
             // check that all components of the archetype were provided for the entity
             if (entityComponents.Length != Components.Count) throw new Exception("Not all required components were passed to the CreateEntity method when creating an entity of this specific archetype.");
             foreach (Type componentType in ComponentTypes)
@@ -99,9 +111,6 @@ namespace PeridotWindows.ECS
                 : 0;
 
             Ids.Add(id);
-
-            while (Components.Count < ComponentTypes.Length)
-                Components.Add(new ArrayList());
 
             entityComponents = entityComponents.OrderBy(x => x.GetType().FullName).ToArray();
 
@@ -123,12 +132,16 @@ namespace PeridotWindows.ECS
             for (int i = 0; i < EntityCount; i++)
             {
                 if (entities[i]?.TryGetTarget(out Entity? entity) ?? false)
+                {
                     yield return entity;
+                }
+                else
+                {
+                    entity = Entity.FromIndex(i, this);
+                    entities[i] = new WeakReference<Entity>(entity);
 
-                entity = Entity.FromIndex(i, this);
-                entities[i] = new WeakReference<Entity>(entity);
-
-                yield return entity;
+                    yield return entity;
+                }
             }
         }
 

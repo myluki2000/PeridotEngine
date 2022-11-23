@@ -14,6 +14,7 @@ namespace PeridotWindows.EditorScreen.Forms
 {
     public partial class SceneForm : Form
     {
+        public Entity? SelectedEntity;
         public event EventHandler<Entity?>? SelectedEntityChanged;
 
         private readonly Scene3D scene;
@@ -23,7 +24,17 @@ namespace PeridotWindows.EditorScreen.Forms
             InitializeComponent();
 
             this.scene = scene;
-            scene.Ecs.EntityListChanged += (_, _) => Populate();
+            scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
+            Populate();
+        }
+
+        private void EcsOnEntityListChanged(object? sender, Archetype e)
+        {
+            if (SelectedEntity != null && SelectedEntity.IsDeleted)
+            {
+                SelectedEntity = null;
+                SelectedEntityChanged?.Invoke(this, null);
+            }
             Populate();
         }
 
@@ -48,8 +59,10 @@ namespace PeridotWindows.EditorScreen.Forms
 
         private void lvScene_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(lvScene.SelectedItems.Count == 0) SelectedEntityChanged?.Invoke(this, null);
-            else SelectedEntityChanged?.Invoke(this, (Entity)lvScene.SelectedItems[0].Tag);
+            if (lvScene.SelectedItems.Count == 0) SelectedEntity = null;
+            else SelectedEntity = (Entity)lvScene.SelectedItems[0].Tag;
+
+            SelectedEntityChanged?.Invoke(this, SelectedEntity);
         }
     }
 }

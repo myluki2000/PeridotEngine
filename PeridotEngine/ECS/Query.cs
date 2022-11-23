@@ -1,4 +1,5 @@
-﻿using PeridotEngine.ECS.Components;
+﻿using System.Diagnostics;
+using PeridotEngine.ECS.Components;
 
 namespace PeridotWindows.ECS
 {

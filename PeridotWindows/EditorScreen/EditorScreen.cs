@@ -119,6 +119,11 @@ namespace PeridotWindows.EditorScreen
                 ((Form)Control.FromHandle(Globals.GameMain.Window.Handle)).Activate();
             }
 
+            if (lastKeyboardState.IsKeyUp(Keys.Delete) && keyboardState.IsKeyDown(Keys.Delete))
+            {
+                selectedEntity?.Delete();
+            }
+
             scene.Update(gameTime);
 
             UpdateWindowLocations();

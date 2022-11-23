@@ -5,11 +5,18 @@ namespace PeridotWindows.ECS
 {
     public class Entity
     {
-        public uint Id { get; }
-        public Archetype Archetype { get; }
+        public uint Id { get; private set; }
 
-        public IReadOnlyCollection<ComponentBase> Components
-            => Archetype.Components.Select(list => (ComponentBase)list[index]!).ToList();
+        public Archetype Archetype
+        {
+            get
+            {
+                if (IsDeleted) throw new Exception("Cannot access a deleted entity.");
+                return archetype;
+            }
+        }
+
+        public IReadOnlyCollection<ComponentBase> Components => Archetype.Components.Select(list => (ComponentBase)list[index]!).ToList();
 
         public string? Name
         {
@@ -17,19 +24,44 @@ namespace PeridotWindows.ECS
             set => Archetype.Names[index] = value;
         }
 
+        public bool IsDeleted { get; private set; }
+
         private int index;
+        private readonly Archetype archetype;
+
+        public static Entity FromIndex(int index, Archetype archetype)
+        {
+            Entity e = new(archetype);
+
+            e.index = index;
+            e.Id = archetype.Ids[index];
+
+            return e;
+        }
+
+        public static Entity FromEntityId(uint id, Archetype archetype)
+        {
+            return new Entity(id, archetype);
+        }
 
         public Entity(uint id, Archetype archetype)
         {
             Id = id;
-            Archetype = archetype;
+            this.archetype = archetype;
 
             Archetype.EntityListChanged += GetEntityIndex;
             GetEntityIndex();
         }
 
-        public void Remove()
+        private Entity(Archetype archetype)
         {
+            this.archetype = archetype;
+            Archetype.EntityListChanged += GetEntityIndex;
+        }
+
+        public void Delete()
+        {
+            IsDeleted = true;
             Archetype.RemoveEntityAt(index);
         }
 

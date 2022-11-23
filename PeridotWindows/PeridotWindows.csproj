@@ -10,11 +10,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\PeridotEngine\ECS\QueryMethods.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>QueryMethods.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.1.*" />
 <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.*" />
 <PackageReference Include="Newtonsoft.JSON" Version="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
   <Import Project="..\PeridotEngine\PeridotEngine.projitems" Label="Shared" />
+
+  <ItemGroup>
+    <None Update="C:\Users\lukas\source\repos\PeridotEngine\PeridotEngine\ECS\QueryMethods.tt">
+      <LastGenOutput>QueryMethods.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 
 </Project>

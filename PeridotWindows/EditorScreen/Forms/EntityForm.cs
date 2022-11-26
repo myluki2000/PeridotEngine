@@ -22,6 +22,7 @@ namespace PeridotWindows.EditorScreen.Forms
             foreach (Type componentType in componentTypes)
             {
                 ToolStripItem item = cmsAddComponent.Items.Add(componentType.Name);
+                item.Tag = componentType;
                 item.Click += (_, _) =>
                 {
                     entity?.AddComponent(componentType);
@@ -56,6 +57,11 @@ namespace PeridotWindows.EditorScreen.Forms
 
             btnAddComponent.Click += (_, _) =>
             {
+                foreach (ToolStripItem item in cmsAddComponent.Items)
+                {
+                    item.Visible = !entity.Components.Select(x => x.GetType()).Contains(item.Tag);
+                }
+
                 cmsAddComponent.Show(btnAddComponent, new Point(0, 0), ToolStripDropDownDirection.BelowLeft);
             };
 

@@ -14,8 +14,8 @@ namespace PeridotWindows.EditorScreen.Forms
 {
     public partial class SceneForm : Form
     {
-        public Entity? SelectedEntity;
-        public event EventHandler<Entity?>? SelectedEntityChanged;
+        public Archetype.Entity? SelectedEntity;
+        public event EventHandler<Archetype.Entity?>? SelectedEntityChanged;
 
         private readonly Scene3D scene;
 
@@ -41,7 +41,7 @@ namespace PeridotWindows.EditorScreen.Forms
         public void Populate()
         {
             List<ListViewItem> items = new();
-            scene.Ecs.Query().ForEach((Entity entity) =>
+            scene.Ecs.Query().ForEach((Archetype.Entity entity) =>
             {
                 string name = string.IsNullOrEmpty(entity.Name)
                     ? string.Join(", ", entity.Components.Select(x => x.GetType().Name))
@@ -60,7 +60,7 @@ namespace PeridotWindows.EditorScreen.Forms
         private void lvScene_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lvScene.SelectedItems.Count == 0) SelectedEntity = null;
-            else SelectedEntity = (Entity)lvScene.SelectedItems[0].Tag;
+            else SelectedEntity = (Archetype.Entity)lvScene.SelectedItems[0].Tag;
 
             SelectedEntityChanged?.Invoke(this, SelectedEntity);
         }

@@ -64,13 +64,13 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public void ForEach(Action<Entity> action)
+        public void ForEach(Action<Archetype.Entity> action)
         {
             if(archetypesOutdated) UpdateMatchingArchetypes();
 
             foreach (Archetype archetype in matchingArchetypes)
             {
-                foreach (Entity entity in archetype.Entities())
+                foreach (Archetype.Entity entity in archetype.Entities())
                 {
                     action.Invoke(entity);
                 }

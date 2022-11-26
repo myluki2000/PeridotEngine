@@ -17,6 +17,17 @@ namespace PeridotWindows.Controls
             InitializeComponent();
         }
 
+        private ContextMenuStrip? _optionsMenu;
+        public ContextMenuStrip? OptionsMenu
+        {
+            get => _optionsMenu;
+            set
+            {
+                btnOptionsMenu.Visible = value != null;
+                _optionsMenu = value;
+            }
+        }
+
         [Browsable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public override string Text
@@ -61,6 +72,14 @@ namespace PeridotWindows.Controls
             }
 
             CollapseToggled?.Invoke(this, collapsed);
+        }
+
+        private void btnOptionsMenu_Click(object sender, EventArgs e)
+        {
+            if (OptionsMenu == null) return;
+
+            OptionsMenu.Tag = Tag;
+            OptionsMenu.Show(btnOptionsMenu, new Point(0, 0), ToolStripDropDownDirection.BelowLeft);
         }
     }
 }

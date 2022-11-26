@@ -11,7 +11,7 @@ namespace PeridotEngine.ECS.Components
 {
     public sealed partial class PositionRotationScaleComponent
     {
-        private UserControl? propertiesControl;
-        public override UserControl? PropertiesControl => propertiesControl ??= new PositionRotationScaleControl(this);
+        private IComponentControl? propertiesControl;
+        public override IComponentControl? PropertiesControl => propertiesControl ??= new PositionRotationScaleControl(this);
     }
 }

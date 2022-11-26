@@ -30,6 +30,7 @@
         {
             this.btnCollapse = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.btnOptionsMenu = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnCollapse
@@ -54,12 +55,26 @@
             this.lblTitle.TabIndex = 1;
             this.lblTitle.Text = "label1";
             // 
+            // btnOptionsMenu
+            // 
+            this.btnOptionsMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOptionsMenu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnOptionsMenu.Font = new System.Drawing.Font("Segoe UI", 7F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnOptionsMenu.Location = new System.Drawing.Point(671, 3);
+            this.btnOptionsMenu.Name = "btnOptionsMenu";
+            this.btnOptionsMenu.Size = new System.Drawing.Size(20, 20);
+            this.btnOptionsMenu.TabIndex = 2;
+            this.btnOptionsMenu.Text = "⋮";
+            this.btnOptionsMenu.UseVisualStyleBackColor = true;
+            this.btnOptionsMenu.Click += new System.EventHandler(this.btnOptionsMenu_Click);
+            // 
             // CollapsibleTitleBar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Controls.Add(this.btnOptionsMenu);
             this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.btnCollapse);
             this.MaximumSize = new System.Drawing.Size(9999, 28);
@@ -75,5 +90,6 @@
 
         private Button btnCollapse;
         private Label lblTitle;
+        private Button btnOptionsMenu;
     }
 }

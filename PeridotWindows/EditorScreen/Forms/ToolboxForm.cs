@@ -37,7 +37,7 @@ namespace PeridotWindows.EditorScreen.Forms
 
             if (sfd.ShowDialog() != DialogResult.OK) return;
 
-            string json = JsonConvert.SerializeObject(scene, new StaticMeshComponentJsonConverter(scene), new EffectPropertiesJsonConverter(scene), new ArchetypeJsonConverter());
+            string json = JsonConvert.SerializeObject(scene, new StaticMeshComponentJsonConverter(scene), new EffectPropertiesJsonConverter(scene), new EcsJsonConverter(scene));
             File.WriteAllText(sfd.FileName, json);
         }
 
@@ -60,7 +60,7 @@ namespace PeridotWindows.EditorScreen.Forms
                 .Archetype(typeof(PositionRotationScaleComponent), typeof(SunLightComponent))
                 .CreateEntity(
                     new PositionRotationScaleComponent(scene),
-                    new SunLightComponent());
+                    new SunLightComponent(scene));
         }
     }
 }

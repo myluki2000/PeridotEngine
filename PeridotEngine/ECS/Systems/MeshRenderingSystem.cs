@@ -36,6 +36,8 @@ namespace PeridotEngine.ECS.Systems
 
         public void RenderMesh(StaticMeshComponent meshC, PositionRotationScaleComponent posC, EffectBase? effectOverride = null)
         {
+            if (meshC.EffectProperties == null || meshC.Mesh == null) return;
+
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
             if (effectOverride == null)

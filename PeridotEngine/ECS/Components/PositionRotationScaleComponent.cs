@@ -54,9 +54,8 @@ namespace PeridotEngine.ECS.Components
             }
         }
 
-        public PositionRotationScaleComponent(Scene3D scene)
+        public PositionRotationScaleComponent(Scene3D scene) : base(scene)
         {
-            Scene = scene;
         }
 
         private Vector3 position;

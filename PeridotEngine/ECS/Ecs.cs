@@ -9,6 +9,9 @@ namespace PeridotWindows.ECS
         public event EventHandler<IEnumerable<Archetype>>? ArchetypeListChanged;
         public event EventHandler<Archetype>? EntityListChanged;
 
+        [JsonIgnore]
+        public uint LargestId { get; set; } = 0;
+
         public Ecs()
         {
         }
@@ -21,6 +24,9 @@ namespace PeridotWindows.ECS
             foreach (Archetype archetype in Archetypes)
             {
                 archetype.EntityListChanged += () => EntityListChanged?.Invoke(this, archetype);
+
+                uint archetypeLargestId = archetype.Ids.Max();
+                if (archetypeLargestId > LargestId) LargestId = archetypeLargestId;
             }
         }
 
@@ -32,13 +38,24 @@ namespace PeridotWindows.ECS
 
             if (archetype == null)
             {
-                archetype = new Archetype(componentTypes);
+                archetype = new Archetype(this, componentTypes);
                 archetype.EntityListChanged += () => EntityListChanged?.Invoke(this, archetype);
                 Archetypes.Add(archetype);
                 ArchetypeListChanged?.Invoke(this, Archetypes);
             }
 
             return archetype;
+        }
+
+        public Archetype.Entity? EntityById(uint id)
+        {
+            foreach (Archetype archetype in Archetypes)
+            {
+                Archetype.Entity? e = archetype.EntityById(id);
+                if (e != null) return e;
+            }
+
+            return null;
         }
 
         public Query Query()

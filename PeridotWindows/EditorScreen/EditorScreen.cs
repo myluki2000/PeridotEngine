@@ -24,47 +24,47 @@ namespace PeridotWindows.EditorScreen
 {
     public class EditorScreen : PeridotEngine.Graphics.Screens.Screen
     {
-        private readonly Scene3D scene;
+        public readonly Scene3D Scene;
 
         public ResourcesForm? FrmResources;
         public ToolboxForm? FrmToolbox;
         public EntityForm? FrmEntity;
         public SceneForm? FrmScene;
 
-        private Entity? selectedEntity = null;
+        private Archetype.Entity? selectedEntity = null;
 
         private Rectangle windowLastBounds;
 
         public EditorScreen()
         {
-            scene = new();
+            Scene = new();
         }
 
         public EditorScreen(Scene3D scene)
         {
-            this.scene = scene;
+            this.Scene = scene;
         }
 
         public override void Initialize()
         {
-            scene.Camera = new EditorCamera();
+            Scene.Camera = new EditorCamera();
 
             Globals.GameMain.Window.AllowUserResizing = true;
 
             Control mainWindowControl = Control.FromHandle(Globals.GameMain.Window.Handle);
             
-            FrmResources = new(scene);
+            FrmResources = new(Scene);
             FrmResources.Show(mainWindowControl);
-            FrmToolbox = new(scene);
+            FrmToolbox = new(Scene);
             FrmToolbox.Show(mainWindowControl);
             FrmEntity = new(this);
             FrmEntity.Show(mainWindowControl);
-            FrmScene = new(scene);
+            FrmScene = new(Scene);
             FrmScene.Show(mainWindowControl);
             
             FrmScene.SelectedEntityChanged += FrmScene_OnSelectedEntityChanged;
 
-            scene.Initialize();
+            Scene.Initialize();
         }
 
         private void UpdateWindowLocations()
@@ -102,7 +102,7 @@ namespace PeridotWindows.EditorScreen
             windowLastBounds = bounds;
         }
 
-        private void FrmScene_OnSelectedEntityChanged(object? sender, Entity? e)
+        private void FrmScene_OnSelectedEntityChanged(object? sender, Archetype.Entity? e)
         {
             selectedEntity = e;
 
@@ -124,7 +124,7 @@ namespace PeridotWindows.EditorScreen
                 selectedEntity?.Delete();
             }
 
-            scene.Update(gameTime);
+            Scene.Update(gameTime);
 
             UpdateWindowLocations();
 
@@ -133,16 +133,16 @@ namespace PeridotWindows.EditorScreen
 
         public override void Draw(GameTime gameTime)
         {
-            scene.Draw(gameTime);
+            Scene.Draw(gameTime);
 
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
-            scene.Ecs.Query().Has<SunLightComponent>().Has<PositionRotationScaleComponent>().ForEach(
+            Scene.Ecs.Query().Has<SunLightComponent>().Has<PositionRotationScaleComponent>().ForEach(
                 (PositionRotationScaleComponent posC) =>
                 {
                     SimpleEffect effect = new();
                     effect.World = Matrix.Identity;
-                    effect.ViewProjection = scene.Camera.GetViewMatrix() * scene.Camera.GetProjectionMatrix();
+                    effect.ViewProjection = Scene.Camera.GetViewMatrix() * Scene.Camera.GetProjectionMatrix();
                     effect.UpdateMatrices();
 
                     Vector3 direction = new Vector3(
@@ -171,7 +171,7 @@ namespace PeridotWindows.EditorScreen
 
         public override void Deinitialize()
         {
-            scene.Deinitialize();
+            Scene.Deinitialize();
 
             FrmResources?.Dispose();
             FrmResources = null;

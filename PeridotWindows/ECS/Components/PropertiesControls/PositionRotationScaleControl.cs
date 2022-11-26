@@ -12,7 +12,7 @@ using PeridotEngine.ECS.Components;
 
 namespace PeridotWindows.ECS.Components.PropertiesControls
 {
-    public partial class PositionRotationScaleControl : UserControl
+    public partial class PositionRotationScaleControl : UserControl, IComponentControl
     {
         private readonly PositionRotationScaleComponent component;
 
@@ -21,6 +21,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             InitializeComponent();
 
             this.component = component;
+            titleBar.Tag = component;
         }
 
 
@@ -79,6 +80,12 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudScaleX.ValueChanged += NudScale_ValueChanged;
             nudScaleY.ValueChanged += NudScale_ValueChanged;
             nudScaleZ.ValueChanged += NudScale_ValueChanged;
+        }
+
+        public ContextMenuStrip? OptionsMenu
+        {
+            get => titleBar.OptionsMenu;
+            set => titleBar.OptionsMenu = value;
         }
     }
 }

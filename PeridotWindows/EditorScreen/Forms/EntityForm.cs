@@ -1,7 +1,9 @@
-﻿using PeridotEngine.ECS.Components;
+﻿using System.Reflection;
+using PeridotEngine.ECS.Components;
 using PeridotWindows.Controls;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
+using PeridotWindows.ECS.Components.PropertiesControls;
 
 namespace PeridotWindows.EditorScreen.Forms
 {
@@ -13,9 +15,22 @@ namespace PeridotWindows.EditorScreen.Forms
         {
             InitializeComponent();
             this.editorScreen = editorScreen;
+
+            IEnumerable<Type> componentTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(ComponentBase)));
+
+            foreach (Type componentType in componentTypes)
+            {
+                ToolStripItem item = cmsAddComponent.Items.Add(componentType.Name);
+                item.Click += (_, _) =>
+                {
+                    entity?.AddComponent(componentType);
+                    Populate();
+                };
+            }
         }
 
-        public Entity? Entity
+        public Archetype.Entity? Entity
         {
             get => entity;
             set
@@ -25,7 +40,7 @@ namespace PeridotWindows.EditorScreen.Forms
             }
         }
 
-        private Entity? entity;
+        private Archetype.Entity? entity;
 
         private void Populate()
         {
@@ -33,11 +48,29 @@ namespace PeridotWindows.EditorScreen.Forms
 
             if (entity == null) return;
 
+            Button btnAddComponent = new Button()
+            {
+                Text = "Add Component",
+                Dock = DockStyle.Top,
+            };
+
+            btnAddComponent.Click += (_, _) =>
+            {
+                cmsAddComponent.Show(btnAddComponent, new Point(0, 0), ToolStripDropDownDirection.BelowLeft);
+            };
+
+            pnlComponents.Controls.Add(btnAddComponent);
+
             foreach (ComponentBase component in entity.Components.Reverse())
             {
-                UserControl control = component.PropertiesControl;
+                UserControl? control = (UserControl?)component.PropertiesControl;
                 
                 if (control == null) continue;
+
+                if (control is IComponentControl componentControl)
+                {
+                    componentControl.OptionsMenu = cmsComponentOptions;
+                }
 
                 control.Dock = DockStyle.Top;
                 pnlComponents.Controls.Add(control);
@@ -53,6 +86,12 @@ namespace PeridotWindows.EditorScreen.Forms
                 entity.Name = nameControl.Text;
                 editorScreen.FrmScene?.Populate();
             };
+        }
+
+        private void tsmiDelete_Click(object sender, EventArgs e)
+        {
+            entity?.RemoveComponent(cmsComponentOptions.Tag.GetType());
+            Populate();
         }
     }
 }

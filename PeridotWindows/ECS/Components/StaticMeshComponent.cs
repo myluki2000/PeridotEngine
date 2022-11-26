@@ -13,7 +13,7 @@ namespace PeridotEngine.ECS.Components
 {
     public partial class StaticMeshComponent
     {
-        private UserControl? propertiesControl;
-        public override UserControl? PropertiesControl => propertiesControl ??= new StaticMeshControl(this);
+        private IComponentControl? propertiesControl;
+        public override IComponentControl? PropertiesControl => propertiesControl ??= new StaticMeshControl(this);
     }
 }

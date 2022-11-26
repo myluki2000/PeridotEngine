@@ -2,11 +2,12 @@
 using System.Diagnostics;
 using Newtonsoft.Json;
 using PeridotEngine.ECS.Components;
+using PeridotEngine.Misc;
 using PeridotWindows.ECS.Components;
 
 namespace PeridotWindows.ECS
 {
-    public class Archetype
+    public partial class Archetype
     {
         public Type[] ComponentTypes { get; }
 
@@ -16,9 +17,11 @@ namespace PeridotWindows.ECS
 
         private readonly List<WeakReference<Entity>?> entities;
 
+        private readonly Ecs ecs;
+
         public event Action? EntityListChanged;
 
-        public Archetype(Type[] componentTypes, List<uint> ids, List<string?> names, List<IList> components) : this(componentTypes)
+        public Archetype(Ecs ecs, Type[] componentTypes, List<uint> ids, List<string?> names, List<IList> components) : this(ecs, componentTypes)
         {
             Ids = ids;
             Names = names;
@@ -31,16 +34,19 @@ namespace PeridotWindows.ECS
             }
         }
 
-        public Archetype(Type[] componentTypes)
+        public Archetype(Ecs ecs, Type[] componentTypes)
         {
+            this.ecs = ecs;
             ComponentTypes = componentTypes.OrderBy(x => x.FullName).ToArray();
 
             entities = new();
         }
 
-        public Entity EntityById(uint entityId)
+        public Entity? EntityById(uint entityId)
         {
             int index = Ids.IndexOf(entityId);
+
+            if (index == -1) return null;
 
             return EntityAt(index);
         }
@@ -60,14 +66,17 @@ namespace PeridotWindows.ECS
         {
             if (entities[index]?.TryGetTarget(out Entity? entity) ?? false)
             {
-                if (!entity.IsDeleted)
-                {
-                    entity.Delete();
-                    // entity.Delete() will call this function again anyways, so we can just stop here.
-                    return;
-                }
+                entity.Delete();
+            }
+            else
+            {
+                RemoveEntityAtInternal(index);
             }
 
+        }
+
+        private void RemoveEntityAtInternal(int index)
+        {
             Ids.RemoveAt(index);
             Names.RemoveAt(index);
             entities.RemoveAt(index);
@@ -106,9 +115,7 @@ namespace PeridotWindows.ECS
                     throw new Exception("Not all required components were passed to the CreateEntity method when creating an entity of this specific archetype.");
             }
 
-            uint id = Ids.Count > 0
-                ? Ids.Max() + 1
-                : 0;
+            uint id = ++ecs.LargestId;
 
             Ids.Add(id);
 
@@ -125,7 +132,6 @@ namespace PeridotWindows.ECS
 
             EntityListChanged?.Invoke();
         }
-
 
         public IEnumerable<Entity> Entities()
         {

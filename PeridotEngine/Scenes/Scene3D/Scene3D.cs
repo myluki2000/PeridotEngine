@@ -50,7 +50,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 {
                     new StaticMeshComponentJsonConverter(this),
                     new EffectPropertiesJsonConverter(this),
-                    new ArchetypeJsonConverter(),
+                    new EcsJsonConverter(this),
                     new SceneResourcesJsonConverter(this)
                 }
             });

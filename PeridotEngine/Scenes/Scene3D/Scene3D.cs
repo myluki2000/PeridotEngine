@@ -37,7 +37,8 @@ namespace PeridotEngine.Scenes.Scene3D
         public MeshRenderingSystem MeshRenderingSystem;
         public SunShadowMapSystem SunShadowMapSystem;
 
-        private RenderTarget2D renderTarget;
+        private RenderTarget2D colorRT;
+        private RenderTarget2D depthRT;
 
         public Scene3D()
         {
@@ -70,12 +71,17 @@ namespace PeridotEngine.Scenes.Scene3D
             MeshRenderingSystem = new(this);
             SunShadowMapSystem = new(this);
 
-            renderTarget = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+            colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                 Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
             Globals.GameMain.Window.ClientSizeChanged += (_, _) =>
             {
-                renderTarget?.Dispose();
-                renderTarget = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                colorRT?.Dispose();
+                depthRT?.Dispose();
+                depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+                colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
             };
 
@@ -133,17 +139,18 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
 
-            gd.SetRenderTarget(renderTarget);
-            gd.Clear(Color.CornflowerBlue);
+            gd.SetRenderTargets(colorRT, depthRT);
+            gd.Clear(Color.Black);
             MeshRenderingSystem.RenderMeshes();
             gd.SetRenderTarget(null);
-
-            RenderTargetRenderer.RenderRenderTarget(renderTarget);
+            
+            RenderTargetRenderer.RenderRenderTarget(colorRT);
         }
 
         public override void Deinitialize()
         {
-            renderTarget?.Dispose();
+            colorRT?.Dispose();
+            depthRT?.Dispose();
         }
     }
 }

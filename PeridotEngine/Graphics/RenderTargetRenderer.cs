@@ -31,7 +31,7 @@ namespace PeridotEngine.Graphics
             });
         }
 
-        public static void RenderRenderTarget(Texture2D rt)
+        public static void RenderRenderTarget(RenderTarget2D rt)
         {
             effect.Texture = rt;
             effect.TextureEnabled = true;

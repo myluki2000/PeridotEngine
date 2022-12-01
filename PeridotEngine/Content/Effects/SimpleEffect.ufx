@@ -45,7 +45,7 @@ float CalculateShadowPresence(float4 positionLightSpace)
     {
         for (float y = -1.5; y < 1.5; y++)
         {
-            float mapDepth = SAMPLE_TEXTURE(ShadowMap, uv + float2(x, y) * 0.0015).r;
+            float mapDepth = 1 - SAMPLE_TEXTURE(ShadowMap, uv + float2(x, y) * 0.0015).r;
             bool inLight = (mapDepth > (positionLightSpace.z - 0.0025f))
             || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0;
             
@@ -66,6 +66,12 @@ float CalculateDiffuseShading(float3 position, float3 normal) {
     return clamp(dot(normal, lightRay), 0, 1);
 }
 
+struct PixelOut
+{
+    float4 Color : COLOR0;
+    float Depth : COLOR1;
+};
+
 $uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, fogEnabled, diffuseShading)
 struct VertexIn$$
 {
@@ -84,6 +90,8 @@ struct VertexIn$$
 struct PixelIn$$
 {
 	float4 Position : SV_POSITION;
+    float2 Depth : TEXCOORD2;
+
     $if vertexColorEnabled
         float4 Color : COLOR0;
     $endif
@@ -107,6 +115,7 @@ PixelIn$$ VertexShader$$(in VertexIn$$ input)
 
     float4 worldPos = mul(input.Position, World);
 	output.Position = mul(worldPos, ViewProjection);
+    output.Depth = output.Position.zw;
 
     $if vertexColorEnabled
         output.Color = input.Color;
@@ -127,7 +136,7 @@ PixelIn$$ VertexShader$$(in VertexIn$$ input)
 	return output;
 }
 
-float4 PixelShader$$(PixelIn$$ input) : COLOR
+PixelOut PixelShader$$(PixelIn$$ input)
 {
     float4 result = MixColor;
 
@@ -160,7 +169,11 @@ float4 PixelShader$$(PixelIn$$ input) : COLOR
         result = lerp(result, FogColor, fogBlend);
     $endif
 
-    return result;
+    PixelOut pout = (PixelOut)0;
+    pout.Color = result;
+    pout.Depth = 1 - input.Depth.x / input.Depth.y;
+
+    return pout;
 
 }
 $endblock

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Text;
+using Accessibility;
 using Microsoft.Win32.SafeHandles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,6 +16,7 @@ using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
+using PeridotEngine.Graphics.PostProcessing;
 using PeridotEngine.IO.JsonConverters;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
@@ -30,9 +32,12 @@ namespace PeridotEngine.Scenes.Scene3D
         public SceneResources Resources { get; }
 
         public Camera Camera { get; set; }
+        public List<PostProcessingEffectBase> PostProcessingEffects { get; set; } = new();
 
         public MeshRenderingSystem MeshRenderingSystem;
         public SunShadowMapSystem SunShadowMapSystem;
+
+        private RenderTarget2D renderTarget;
 
         public Scene3D()
         {
@@ -64,6 +69,15 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             MeshRenderingSystem = new(this);
             SunShadowMapSystem = new(this);
+
+            renderTarget = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            Globals.GameMain.Window.ClientSizeChanged += (_, _) =>
+            {
+                renderTarget?.Dispose();
+                renderTarget = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            };
 
             Globals.Graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
@@ -117,13 +131,19 @@ namespace PeridotEngine.Scenes.Scene3D
             // TODO: It's only necessary to re-render the shadow map if scene geometry changes
             Texture2D? shadowMap = SunShadowMapSystem.GenerateShadowMap(out Vector3 lightPosition, out Matrix lightViewProj);
 
-            gd.Clear(Color.CornflowerBlue);
             Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
+
+            gd.SetRenderTarget(renderTarget);
+            gd.Clear(Color.CornflowerBlue);
             MeshRenderingSystem.RenderMeshes();
+            gd.SetRenderTarget(null);
+
+            RenderTargetRenderer.RenderRenderTarget(renderTarget);
         }
 
         public override void Deinitialize()
         {
+            renderTarget?.Dispose();
         }
     }
 }

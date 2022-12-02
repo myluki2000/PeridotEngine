@@ -66,7 +66,17 @@ namespace PeridotEngine.Graphics.Cameras
 
         public Matrix GetViewMatrix()
         {
-            return Matrix.CreateTranslation(-Position) * Matrix.CreateRotationY(Yaw) * Matrix.CreateRotationX(-Pitch) * Matrix.CreateRotationZ(Roll);
+            return GetTranslationMatrix() * GetRotationMatrix();
+        }
+
+        public Matrix GetTranslationMatrix()
+        {
+            return Matrix.CreateTranslation(-Position);
+        }
+
+        public Matrix GetRotationMatrix()
+        {
+            return Matrix.CreateRotationY(Yaw) * Matrix.CreateRotationX(-Pitch) * Matrix.CreateRotationZ(Roll);
         }
 
         protected abstract void UpdateProjectionMatrix();

@@ -16,6 +16,7 @@ namespace PeridotEngine.Graphics
         static RenderTargetRenderer()
         {
             effect = new BasicEffect(Globals.Graphics.GraphicsDevice);
+            effect.TextureEnabled = true;
 
             vbf = new(Globals.Graphics.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
 
@@ -34,7 +35,6 @@ namespace PeridotEngine.Graphics
         public static void RenderRenderTarget(RenderTarget2D rt)
         {
             effect.Texture = rt;
-            effect.TextureEnabled = true;
 
             Globals.Graphics.GraphicsDevice.SetVertexBuffer(vbf);
 

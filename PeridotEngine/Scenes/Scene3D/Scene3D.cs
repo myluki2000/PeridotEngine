@@ -40,6 +40,9 @@ namespace PeridotEngine.Scenes.Scene3D
         private RenderTarget2D colorRT;
         private RenderTarget2D depthRT;
 
+        private Skydome skydome;
+        private SkydomeEffect.SkydomeEffectProperties skydomeEffectProperties;
+
         public Scene3D()
         {
             Resources = new SceneResources(this);
@@ -70,6 +73,9 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             MeshRenderingSystem = new(this);
             SunShadowMapSystem = new(this);
+
+            skydome = new();
+            skydomeEffectProperties = Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties();
 
             colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                 Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
@@ -141,9 +147,25 @@ namespace PeridotEngine.Scenes.Scene3D
 
             gd.SetRenderTargets(colorRT, depthRT);
             gd.Clear(Color.Black);
+
+            // render meshes
             MeshRenderingSystem.RenderMeshes();
+
+            // render skydome
+            gd.SetVertexBuffer(skydome.VertexBuffer);
+            gd.Indices = skydome.IndexBuffer;
+
+            skydomeEffectProperties.Effect.World = Matrix.Identity;
+            skydomeEffectProperties.Effect.ViewProjection = Camera.GetRotationMatrix() * Camera.GetProjectionMatrix();
+            skydomeEffectProperties.Effect.UpdateMatrices();
+            foreach (EffectPass pass in skydomeEffectProperties.Technique.Passes)
+            {
+                pass.Apply();
+                gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, skydome.IndexBuffer.IndexCount / 3);
+            }
+
+            // render target to screen
             gd.SetRenderTarget(null);
-            
             RenderTargetRenderer.RenderRenderTarget(colorRT);
         }
 

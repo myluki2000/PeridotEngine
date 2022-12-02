@@ -199,9 +199,8 @@ namespace PeridotEngine.Graphics.Effects
             public int TextureRepeatX { get; set; } = 1;
             public int TextureRepeatY { get; set; } = 1;
 
-            public SimpleEffectProperties(SimpleEffect effect)
+            public SimpleEffectProperties(SimpleEffect effect) : base(effect)
             {
-                Effect = effect;
             }
 
             public override void Apply(Mesh mesh)

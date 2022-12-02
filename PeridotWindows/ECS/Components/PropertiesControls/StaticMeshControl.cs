@@ -75,6 +75,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
         private void PopulateEffectProperties()
         {
             gbEffectProperties.Controls.Clear();
+
             gbEffectProperties.Controls.Add(component.EffectProperties.PropertiesControl);
             component.EffectProperties.PropertiesControl.Location = new Point(5, 15);
         }

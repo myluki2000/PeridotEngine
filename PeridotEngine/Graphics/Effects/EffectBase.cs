@@ -44,6 +44,11 @@ namespace PeridotEngine.Graphics.Effects
 
         public abstract partial class EffectProperties
         {
+            protected EffectProperties(EffectBase effect)
+            {
+                Effect = effect;
+            }
+
             public virtual void Apply(Mesh mesh)
             {
                 Effect.UpdateMatrices();

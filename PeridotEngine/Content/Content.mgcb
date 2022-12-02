@@ -26,6 +26,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/SimpleEffect.ufx
 
+#begin Effects/SkydomeEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/SkydomeEffect.fx
+
 #begin Models/barrel.obj
 /importer:FbxImporter
 /processor:ModelProcessor

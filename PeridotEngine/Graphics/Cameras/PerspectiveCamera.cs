@@ -28,8 +28,8 @@ namespace PeridotEngine.Graphics.Cameras
             ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                 MathHelper.ToRadians(80),
                 aspectRatio,
-                0.1f,
-                100
+                NearPlane,
+                FarPlane
             );
         }
     }

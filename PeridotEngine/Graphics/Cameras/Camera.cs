@@ -11,6 +11,26 @@ namespace PeridotEngine.Graphics.Cameras
     {
         public Vector3 Position { get; set; }
 
+        public float NearPlane
+        {
+            get => nearPlane;
+            set
+            {
+                nearPlane = value;
+                UpdateProjectionMatrix();
+            }
+        }
+
+        public float FarPlane
+        {
+            get => farPlane;
+            set
+            {
+                farPlane = value;
+                UpdateProjectionMatrix();
+            }
+        }
+
         public float Roll
         {
             get => _roll;
@@ -39,6 +59,8 @@ namespace PeridotEngine.Graphics.Cameras
         private float _yaw;
 
         protected Matrix ProjectionMatrix;
+        private float nearPlane = 0.1f;
+        private float farPlane = 100f;
 
         public virtual void Update(GameTime gameTime) { }
 

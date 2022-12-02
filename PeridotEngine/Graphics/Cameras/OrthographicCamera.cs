@@ -14,7 +14,7 @@ namespace PeridotEngine.Graphics.Cameras
 
         protected sealed override void UpdateProjectionMatrix()
         {
-            ProjectionMatrix = Matrix.CreateOrthographic(20, 20, 0.1f, 100);
+            ProjectionMatrix = Matrix.CreateOrthographic(20, 20, NearPlane, FarPlane);
         }
     }
 }

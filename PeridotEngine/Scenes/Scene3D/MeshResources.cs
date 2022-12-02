@@ -22,49 +22,31 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public MeshResources()
         {
-            CreateQuad("quad");
-            CreateTriangle("tri");
+            (VertexPositionNormalTexture[] quadVerts, uint[] quadIndices) = MeshGenerator.GenerateQuad();
+            AddDefaultMesh(new MeshInfo(
+                "quad",
+                null,
+                new Mesh<VertexPositionNormalTexture>(quadVerts, quadIndices)
+            ));
+
+            (VertexPositionNormalTexture[] triVerts, uint[] triIndices) = MeshGenerator.GenerateTriangle();
+            AddDefaultMesh(new MeshInfo(
+                "tri",
+                null,
+                new Mesh<VertexPositionNormalTexture>(triVerts, triIndices)
+            ));
+
+            (VertexPositionNormalTexture[] sphereVerts, uint[] sphereIndices) = MeshGenerator.GenerateSphere();
+            AddDefaultMesh(new MeshInfo(
+                "sphere",
+                null,
+                new Mesh<VertexPositionNormalTexture>(sphereVerts, sphereIndices)
+            ));
         }
 
         public IEnumerable<MeshInfo> GetAllMeshes()
         {
             return defaultMeshes.Concat(customMeshes);
-        }
-
-        public void CreateQuad(string name)
-        {
-            Mesh mesh = new Mesh<VertexPositionNormalTexture>(
-                new VertexPositionNormalTexture[]
-                {
-                    new(new Vector3(-0.5f, 0,  0.5f), new Vector3(0, 1, 0), new Vector2(0, 1)),
-                    new(new Vector3( 0.5f, 0,  0.5f), new Vector3(0, 1, 0), new Vector2(1, 1)),
-                    new(new Vector3( 0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(1, 0)),
-                    new(new Vector3(-0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(0, 0)),
-                },
-                new uint[]
-                {
-                    2, 1, 0,
-                    0, 3, 2
-                });
-
-            AddDefaultMesh(new MeshInfo(name, null, mesh));
-        }
-
-        public void CreateTriangle(string name)
-        {
-            Mesh mesh = new Mesh<VertexPositionNormalTexture>(
-                new VertexPositionNormalTexture[]
-                {
-                    new(new Vector3(0, 0, 0.5f), new Vector3(0, 1, 0), new Vector2(0.5f, 1)),
-                    new(new Vector3(0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(1, 0)),
-                    new(new Vector3(-0.5f, 0, -0.5f), new Vector3(0, 1, 0), new Vector2(0, 0)),
-                },
-                new uint[]
-                {
-                    2, 1, 0
-                });
-
-            AddDefaultMesh(new MeshInfo(name, null, mesh));
         }
 
         public void LoadModel(string contentPath)

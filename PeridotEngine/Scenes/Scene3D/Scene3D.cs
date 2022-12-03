@@ -39,6 +39,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private RenderTarget2D colorRT;
         private RenderTarget2D depthRT;
+        private RenderTarget2D ambientOcclusionRT;
 
         private Skydome skydome;
         private SkydomeEffect.SkydomeEffectProperties skydomeEffectProperties;
@@ -77,33 +78,35 @@ namespace PeridotEngine.Scenes.Scene3D
             skydome = new();
             skydomeEffectProperties = Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties();
 
-            colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            Globals.GameMain.Window.ClientSizeChanged += (_, _) =>
+            void InitRTs()
             {
                 colorRT?.Dispose();
                 depthRT?.Dispose();
-                depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+                ambientOcclusionRT?.Dispose();
                 colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            };
+                depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+                ambientOcclusionRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            }
+
+            InitRTs();
+            Globals.GameMain.Window.ClientSizeChanged += (_, _) => InitRTs();
 
             Globals.Graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
             Camera.Position = new Vector3(0, 1, 1);
 
-            Globals.GameMain.Window.ClientSizeChanged += (_, _) =>
+            void UpdateCameraAspectRatio()
             {
-                if(Camera is PerspectiveCamera perspectiveCamera)
+                if (Camera is PerspectiveCamera perspectiveCamera)
                     perspectiveCamera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
                                                     Globals.Graphics.PreferredBackBufferHeight;
-            };
-            if (Camera is PerspectiveCamera perspectiveCamera)
-                perspectiveCamera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
-                                            Globals.Graphics.PreferredBackBufferHeight;
+            }
+
+            UpdateCameraAspectRatio();
+            Globals.GameMain.Window.ClientSizeChanged += (_, _) => UpdateCameraAspectRatio();
 
 
             // set fog params for effects
@@ -145,13 +148,12 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
 
+            // render color and depth buffers
             gd.SetRenderTargets(colorRT, depthRT);
             gd.Clear(Color.Black);
 
-            // render meshes
             MeshRenderingSystem.RenderMeshes();
 
-            // render skydome
             gd.SetVertexBuffer(skydome.VertexBuffer);
             gd.Indices = skydome.IndexBuffer;
 
@@ -163,6 +165,9 @@ namespace PeridotEngine.Scenes.Scene3D
                 pass.Apply();
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, skydome.IndexBuffer.IndexCount / 3);
             }
+
+            // render ambient occlusion buffer
+            // TODO
 
             // render target to screen
             gd.SetRenderTarget(null);

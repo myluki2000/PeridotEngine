@@ -72,7 +72,7 @@ struct PixelOut
     float Depth : COLOR1;
 };
 
-$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, fogEnabled, diffuseShading)
+$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, fogEnabled, diffuseShading, randomTextureRotation)
 struct VertexIn$$
 {
 	float4 Position : POSITION0;
@@ -145,9 +145,34 @@ PixelOut PixelShader$$(PixelIn$$ input)
     $endif
     $if textureEnabled
         float2 internalTexCoord = frac(input.TexCoord * TextureRepeat);
-        float2 texCoord = TexturePosition + internalTexCoord * TextureSize;
+
+        float2 texCoord = internalTexCoord;
+
+        // random rotation for each tile for repeating textures
+        /*float rand = random(floor(input.TexCoord * TextureRepeat));
+        rand *= 4;
+        rand = floor(rand);
+        texCoord = float2(0, 0);
+
+        // don't rotate
+        texCoord.x += internalTexCoord.x * (rand == 0);
+        texCoord.y += internalTexCoord.y * (rand == 0);
+
+        // rotate ccw once
+        texCoord.x += (1 - internalTexCoord.y) * (rand == 1);
+        texCoord.y += (internalTexCoord.x) * (rand == 1);
+
+        // rotate twice
+        texCoord.x += (1 - internalTexCoord.x) * (rand == 2);
+        texCoord.y += (1 - internalTexCoord.y) * (rand == 2);
+
+        // rotate 3 times
+        texCoord.x += (internalTexCoord.y) * (rand == 3);
+        texCoord.y += (1 - internalTexCoord.x) * (rand == 3);*/
+
+        texCoord = TexturePosition + texCoord * TextureSize;
         result *= SAMPLE_TEXTURE(Texture, texCoord);
-    $endif
+        
 
     float lightIntensity = 0;
     $if shadowsEnabled

@@ -34,3 +34,8 @@ float map(float value, float min1, float max1, float min2, float max2)
     return perc * (max2 - min2) + min2;
 }
 
+float random(float2 uv)
+{
+    float2 noise = (frac(sin(dot(uv ,float2(12.9898,78.233)*2.0)) * 43758.5453));
+    return abs(noise.x + noise.y) * 0.5;
+}

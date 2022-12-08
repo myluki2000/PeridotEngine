@@ -20,7 +20,6 @@ namespace PeridotEngine.Graphics.Effects
         static EffectPool()
         {
             RegisterEffectType<SimpleEffect>();
-            RegisterEffectType<SkydomeEffect>();
         }
 
         public EffectPool(Scene3D scene)

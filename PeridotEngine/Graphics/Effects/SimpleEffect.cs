@@ -113,7 +113,7 @@ namespace PeridotEngine.Graphics.Effects
 
         private void TextureAtlasChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
         {
-            textureParam.SetValue(textureResources?.TextureAtlas);
+            textureParam?.SetValue(textureResources?.TextureAtlas);
         }
 
         public override EffectProperties CreatePropertiesBase()

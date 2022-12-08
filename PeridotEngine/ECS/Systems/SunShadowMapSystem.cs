@@ -72,8 +72,7 @@ namespace PeridotEngine.ECS.Systems
             });
 
             gd.SetRenderTarget(null);
-
-            // TODO: This matrix calculation is performed twice, once in Effect.Apply() and once here. This is unnecessary.
+            
             lightViewProjection = depthEffect.ViewProjection;
 
             // for sunlights we don't use the light's actual position and instead use a sufficiently far away position in the opposite

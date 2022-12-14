@@ -72,7 +72,7 @@ struct PixelOut
     float Depth : COLOR1;
 };
 
-$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, fogEnabled, diffuseShading, randomTextureRotation)
+$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, fogEnabled, diffuseShading)
 struct VertexIn$$
 {
 	float4 Position : POSITION0;
@@ -172,7 +172,7 @@ PixelOut PixelShader$$(PixelIn$$ input)
 
         texCoord = TexturePosition + texCoord * TextureSize;
         result *= SAMPLE_TEXTURE(Texture, texCoord);
-        
+    $endif
 
     float lightIntensity = 0;
     $if shadowsEnabled

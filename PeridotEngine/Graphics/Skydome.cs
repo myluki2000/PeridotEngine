@@ -32,7 +32,7 @@ namespace PeridotEngine.Graphics
 
         private void GenerateGeometry()
         {
-            (VertexPositionNormalTexture[] verts, uint[] indices) = MeshGenerator.GenerateSphere(100);
+            (VertexPositionNormalTexture[] verts, uint[] indices) = MeshGenerator.GenerateSphere(Resolution);
             Array.Reverse(indices);
 
             // scale the sphere

@@ -27,13 +27,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectPool.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\EffectBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectCameraData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectFog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectShadows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\IEffectTexture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\SimpleEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\SkydomeEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\Mesh.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\MeshGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\SimplePostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\PostProcessingEffectBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\RenderTargetRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />

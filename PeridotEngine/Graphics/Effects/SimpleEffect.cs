@@ -14,7 +14,7 @@ using VertexElement = Microsoft.Xna.Framework.Graphics.VertexElement;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public partial class SimpleEffect : EffectBase, IEffectTexture, IEffectShadows, IEffectFog, IEffectCameraData
+    public partial class SimpleEffect : EffectBase, IEffectTexture, IEffectShadows, IEffectCameraData
     {
         private readonly EffectParameter textureParam;
         private readonly EffectParameter mixColorParam;
@@ -25,10 +25,6 @@ namespace PeridotEngine.Graphics.Effects
         private readonly EffectParameter shadowMapParam;
         private readonly EffectParameter lightWorldViewProjParam;
         private readonly EffectParameter lightPositionParam;
-
-        private readonly EffectParameter fogStartParam;
-        private readonly EffectParameter fogEndParam;
-        private readonly EffectParameter fogColorParam;
 
         private readonly EffectParameter? cameraPositionParam;
 
@@ -43,9 +39,6 @@ namespace PeridotEngine.Graphics.Effects
             textureSizeParam = Parameters["TextureSize"];
             lightWorldViewProjParam = Parameters["LightWorldViewProjection"];
             textureRepeatParam = Parameters["TextureRepeat"];
-            fogStartParam = Parameters["FogStart"];
-            fogEndParam = Parameters["FogEnd"];
-            fogColorParam = Parameters["FogColor"];
             lightPositionParam = Parameters["LightPosition"];
             cameraPositionParam = Parameters["CameraPosition"];
         }
@@ -78,29 +71,6 @@ namespace PeridotEngine.Graphics.Effects
         {
             get => shadowMapParam.GetValueTexture2D();
             set => shadowMapParam.SetValue(value);
-        }
-
-        private Color fogColor;
-        public Color FogColor
-        {
-            get => fogColor;
-            set
-            {
-                fogColor = value;
-                fogColorParam.SetValue(value.ToVector4());
-            }
-        }
-
-        public float FogStart
-        {
-            get => fogStartParam.GetValueSingle();
-            set => fogStartParam.SetValue(value);
-        }
-
-        public float FogEnd
-        {
-            get => fogEndParam.GetValueSingle();
-            set => fogEndParam.SetValue(value);
         }
 
         public Matrix LightViewProjection { get; set; }
@@ -150,16 +120,6 @@ namespace PeridotEngine.Graphics.Effects
                 set
                 {
                     shadowsEnabled = value;
-                    Technique = null;
-                }
-            }
-
-            public bool FogEnabled
-            {
-                get => fogEnabled;
-                set
-                {
-                    fogEnabled = value;
                     Technique = null;
                 }
             }
@@ -228,7 +188,6 @@ namespace PeridotEngine.Graphics.Effects
             private bool textureEnabled;
             private bool vertexColorEnabled;
             private bool shadowsEnabled = true;
-            private bool fogEnabled = true;
             private bool diffuseShadingEnabled = true;
 
             private void ChooseTechnique(VertexDeclaration vertexDeclaration)
@@ -254,17 +213,12 @@ namespace PeridotEngine.Graphics.Effects
                     if (vertexElements.All(x => x.VertexElementUsage != VertexElementUsage.TextureCoordinate))
                         throw new Exception("TextureEnabled is set to true but mesh does not contain UV data.");
 
-                    techniqueIndex |= 0b00010;
+                    techniqueIndex |= 0b0010;
                 }
 
                 if (ShadowsEnabled)
                 {
-                    techniqueIndex |= 0b00100;
-                }
-
-                if (FogEnabled)
-                {
-                    techniqueIndex |= 0b01000;
+                    techniqueIndex |= 0b0100;
                 }
 
                 if (DiffuseShadingEnabled)
@@ -272,7 +226,7 @@ namespace PeridotEngine.Graphics.Effects
                     if (vertexElements.All(x => x.VertexElementUsage != VertexElementUsage.Normal))
                         throw new Exception("DiffuseShadingEnabled is set to true but mesh does not contain normal data.");
 
-                    techniqueIndex |= 0b10000;
+                    techniqueIndex |= 0b1000;
                 }
 
                 Technique = Effect.Techniques[techniqueIndex];

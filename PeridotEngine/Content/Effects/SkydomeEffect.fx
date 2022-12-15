@@ -3,19 +3,14 @@
 	#define VS_SHADERMODEL vs_3_0
 	#define PS_SHADERMODEL ps_3_0
 #else
-	#define VS_SHADERMODEL vs_4_0_level_9_1
-	#define PS_SHADERMODEL ps_4_0_level_9_1
+	#define VS_SHADERMODEL vs_4_0
+	#define PS_SHADERMODEL ps_4_0
 #endif
 
 #include "Macros.fxh"
 
 matrix World;
 matrix ViewProjection;
-
-float FogStart;
-float FogEnd;
-float4 FogColor;
-float3 CameraPosition;
 
 struct VertexShaderInput
 {
@@ -27,7 +22,13 @@ struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
 	float2 TexCoord : TEXCOORD0;
-	float4 WorldPosition : POSITION1;
+	float2 Depth : TEXCOORD1;
+};
+
+struct PixelShaderOutput
+{
+	float4 Color : COLOR0;
+	float Depth : COLOR1;
 };
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -37,12 +38,12 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	float4 worldPos = mul(input.Position, World);
 	output.Position = mul(worldPos, ViewProjection);
 	output.TexCoord = input.TexCoord;
-	output.WorldPosition = worldPos;
+	output.Depth = output.Position.zw;
 
 	return output;
 }
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+PixelShaderOutput MainPS(VertexShaderOutput input)
 {
 	const float4 baseColor = float4(0.392, 0.584, 0.929, 1);
 	const float4 lightColor = float4(116 / 255.0f, 163 / 255.0f, 245 / 255.0f, 1);
@@ -50,13 +51,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float4 result = lerp(baseColor, lightColor, saturate(map(input.TexCoord.y, 0.75, 0.9, 0, 1)));
 	result = lerp(result, darkColor, saturate(map(input.TexCoord.y, 0.3, 0.1, 0, 1)));
+    
+	PixelShaderOutput output;
+	output.Color = result;
+	output.Depth = input.Depth.x / input.Depth.y;
 
-	float dist = distance(CameraPosition, input.WorldPosition);
-    float fogBlend = clamp(map(dist, FogStart, FogEnd, 0, 1), 0, 1);
-
-    result = lerp(result, FogColor, fogBlend);
-
-	return result;
+	return output;
 }
 
 technique

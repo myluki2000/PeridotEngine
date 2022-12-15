@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics.Effects;
+using PeridotEngine.Graphics.PostProcessing;
 using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotEngine.Graphics
@@ -11,13 +12,9 @@ namespace PeridotEngine.Graphics
     public static class RenderTargetRenderer
     {
         private static VertexBuffer vbf;
-        private static BasicEffect effect;
 
         static RenderTargetRenderer()
         {
-            effect = new BasicEffect(Globals.Graphics.GraphicsDevice);
-            effect.TextureEnabled = true;
-
             vbf = new(Globals.Graphics.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
 
             vbf.SetData(new VertexPositionTexture[]
@@ -32,13 +29,11 @@ namespace PeridotEngine.Graphics
             });
         }
 
-        public static void RenderRenderTarget(RenderTarget2D rt)
+        public static void RenderRenderTarget(PostProcessingEffectBase effect)
         {
-            effect.Texture = rt;
-
             Globals.Graphics.GraphicsDevice.SetVertexBuffer(vbf);
 
-            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in effect.Technique.Passes)
             {
                 pass.Apply();
                 Globals.Graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);

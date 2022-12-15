@@ -20,6 +20,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/DepthEffect.fx
 
+#begin Effects/PostProcessing/SimplePostProcessingEffect.ufx
+/importer:UfxImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/PostProcessing/SimplePostProcessingEffect.ufx
+
 #begin Effects/SimpleEffect.ufx
 /importer:UfxImporter
 /processor:EffectProcessor

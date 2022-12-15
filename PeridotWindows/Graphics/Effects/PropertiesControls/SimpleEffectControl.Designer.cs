@@ -39,7 +39,6 @@
             this.nudTextureRepeatY = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.cbReceiveShadows = new System.Windows.Forms.CheckBox();
-            this.cbFog = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).BeginInit();
@@ -174,22 +173,10 @@
             this.cbReceiveShadows.UseVisualStyleBackColor = true;
             this.cbReceiveShadows.CheckedChanged += new System.EventHandler(this.cbReceiveShadows_CheckedChanged);
             // 
-            // cbFog
-            // 
-            this.cbFog.AutoSize = true;
-            this.cbFog.Location = new System.Drawing.Point(6, 144);
-            this.cbFog.Name = "cbFog";
-            this.cbFog.Size = new System.Drawing.Size(110, 19);
-            this.cbFog.TabIndex = 22;
-            this.cbFog.Text = "Affected by Fog";
-            this.cbFog.UseVisualStyleBackColor = true;
-            this.cbFog.CheckedChanged += new System.EventHandler(this.cbFog_CheckedChanged);
-            // 
             // SimpleEffectControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.cbFog);
             this.Controls.Add(this.cbReceiveShadows);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.nudTextureRepeatY);
@@ -224,6 +211,5 @@
         private NumericUpDown nudTextureRepeatY;
         private Label label4;
         private CheckBox cbReceiveShadows;
-        private CheckBox cbFog;
     }
 }

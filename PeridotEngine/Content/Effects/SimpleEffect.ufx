@@ -22,10 +22,6 @@ float2 TexturePosition;
 float2 TextureSize;
 float2 TextureRepeat;
 
-float FogStart;
-float FogEnd;
-float4 FogColor;
-
 float3 CameraPosition;
 
 float3 LightPosition;
@@ -45,7 +41,7 @@ float CalculateShadowPresence(float4 positionLightSpace)
     {
         for (float y = -1.5; y < 1.5; y++)
         {
-            float mapDepth = 1 - SAMPLE_TEXTURE(ShadowMap, uv + float2(x, y) * 0.0015).r;
+            float mapDepth = SAMPLE_TEXTURE(ShadowMap, uv + float2(x, y) * 0.0015).r;
             bool inLight = (mapDepth > (positionLightSpace.z - 0.0025f))
             || uv.x > 1 || uv.x < 0 || uv.y > 1 || uv.y < 0;
             
@@ -72,7 +68,7 @@ struct PixelOut
     float Depth : COLOR1;
 };
 
-$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, fogEnabled, diffuseShading)
+$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, diffuseShading)
 struct VertexIn$$
 {
 	float4 Position : POSITION0;
@@ -104,7 +100,7 @@ struct PixelIn$$
     $if diffuseShading
         float3 Normal : NORMAL0; 
     $endif
-    $if diffuseShading || fogEnabled
+    $if diffuseShading
         float4 WorldPosition : POSITION1;
     $endif
 };
@@ -129,7 +125,7 @@ PixelIn$$ VertexShader$$(in VertexIn$$ input)
     $if diffuseShading
         output.Normal = mul(input.Normal, (float3x3)TransposedInverseWorld);
     $endif
-    $if diffuseShading || fogEnabled
+    $if diffuseShading
         output.WorldPosition = worldPos;
     $endif
 
@@ -187,83 +183,43 @@ PixelOut PixelShader$$(PixelIn$$ input)
         result = result * (0.4 + lightIntensity * 0.6);
     $endif
 
-    $if fogEnabled
-        float dist = distance(CameraPosition, input.WorldPosition);
-        float fogBlend = clamp(map(dist, FogStart, FogEnd, 0, 1), 0, 1);
-
-        result = lerp(result, FogColor, fogBlend);
-    $endif
-
     PixelOut pout = (PixelOut)0;
     pout.Color = result;
-    pout.Depth = 1 - input.Depth.x / input.Depth.y;
-
+    pout.Depth = input.Depth.x / input.Depth.y;
     return pout;
 
 }
 $endblock
 
-// 00000 "none"
-$ubertechnique SimpleEffect(false, false, false, false, false)
-// 10000 vertex color
-$ubertechnique SimpleEffect(true, false, false, false, false)
-// 01000 textured
-$ubertechnique SimpleEffect(false, true, false, false, false)
-// 11000 vertex color + textured
-$ubertechnique SimpleEffect(true, true, false, false, false)
-// 00100 shadows
-$ubertechnique SimpleEffect(false, false, true, false, false)
-// 10100 vertex color + shadows
-$ubertechnique SimpleEffect(true, false, true, false, false)
-// 01100 textured + shadows
-$ubertechnique SimpleEffect(false, true, true, false, false)
-// 11100 vertex color + textured + shadows
-$ubertechnique SimpleEffect(true, true, true, false, false)
-// 00010 fog
-$ubertechnique SimpleEffect(false, false, false, true, false)
-// 10010 vertex color + fog
-$ubertechnique SimpleEffect(true, false, false, true, false)
-// 01010 textured + fog
-$ubertechnique SimpleEffect(false, true, false, true, false)
-// 11010 vertex color + textured + fog
-$ubertechnique SimpleEffect(true, true, false, true, false)
-// 00110 shadows + fog
-$ubertechnique SimpleEffect(false, false, true, true, false)
-// 10110 vertex color + shadows + fog
-$ubertechnique SimpleEffect(true, false, true, true, false)
-// 01110 textured + shadows + fog
-$ubertechnique SimpleEffect(false, true, true, true, false)
-// 11110 vertex color + textured + shadows + fog
-$ubertechnique SimpleEffect(true, true, true, true, false)
-// 00001 diffuse shading
-$ubertechnique SimpleEffect(false, false, false, false, true)
-// 10001 vertex color + diffuse shading
-$ubertechnique SimpleEffect(true, false, false, false, true)
-// 01001 textured + diffuse shading
-$ubertechnique SimpleEffect(false, true, false, false, true)
-// 11001 vertex color + textured + diffuse shading
-$ubertechnique SimpleEffect(true, true, false, false, true)
-// 00101 shadows + diffuse shading
-$ubertechnique SimpleEffect(false, false, true, false, true)
-// 10101 vertex color + shadows + diffuse shading
-$ubertechnique SimpleEffect(true, false, true, false, true)
-// 01101 textured + shadows + diffuse shading
-$ubertechnique SimpleEffect(false, true, true, false, true)
-// 11101 vertex color + textured + shadows + diffuse shading
-$ubertechnique SimpleEffect(true, true, true, false, true)
-// 00011 fog + diffuse shading
-$ubertechnique SimpleEffect(false, false, false, true, true)
-// 10011 vertex color + fog + diffuse shading
-$ubertechnique SimpleEffect(true, false, false, true, true)
-// 01011 textured + fog + diffuse shading
-$ubertechnique SimpleEffect(false, true, false, true, true)
-// 11011 vertex color + textured + fog + diffuse shading
-$ubertechnique SimpleEffect(true, true, false, true, true)
-// 00111 shadows + fog + diffuse shading
-$ubertechnique SimpleEffect(false, false, true, true, true)
-// 10111 vertex color + shadows + fog + diffuse shading
-$ubertechnique SimpleEffect(true, false, true, true, true)
-// 01111 textured + shadows + fog + diffuse shading
-$ubertechnique SimpleEffect(false, true, true, true, true)
-// 11111 vertex color + textured + shadows + fog + diffuse shading
-$ubertechnique SimpleEffect(true, true, true, true, true)
+// 0000 "none"
+$ubertechnique SimpleEffect(false, false, false, false)
+// 1000 vertex color
+$ubertechnique SimpleEffect(true, false, false, false)
+// 0100 textured
+$ubertechnique SimpleEffect(false, true, false, false)
+// 1100 vertex color + textured
+$ubertechnique SimpleEffect(true, true, false, false)
+// 0010 shadows
+$ubertechnique SimpleEffect(false, false, true, false)
+// 1010 vertex color + shadows
+$ubertechnique SimpleEffect(true, false, true, false)
+// 0110 textured + shadows
+$ubertechnique SimpleEffect(false, true, true, false)
+// 1110 vertex color + textured + shadows
+$ubertechnique SimpleEffect(true, true, true, false)
+// 0001 diffuse shading
+$ubertechnique SimpleEffect(false, false, false, true)
+// 1001 vertex color + diffuse shading
+$ubertechnique SimpleEffect(true, false, false, true)
+// 0101 textured + diffuse shading
+$ubertechnique SimpleEffect(false, true, false, true)
+// 1101 vertex color + textured + diffuse shading
+$ubertechnique SimpleEffect(true, true, false, true)
+// 0011 shadows + diffuse shading
+$ubertechnique SimpleEffect(false, false, true, true)
+// 1011 vertex color + shadows + diffuse shading
+$ubertechnique SimpleEffect(true, false, true, true)
+// 0111 textured + shadows + diffuse shading
+$ubertechnique SimpleEffect(false, true, true, true)
+// 1111 vertex color + textured + shadows + diffuse shading
+$ubertechnique SimpleEffect(true, true, true, true)

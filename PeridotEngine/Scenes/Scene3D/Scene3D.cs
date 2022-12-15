@@ -22,7 +22,6 @@ using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
-using IEffectFog = PeridotEngine.Graphics.Effects.IEffectFog;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -39,10 +38,11 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private RenderTarget2D colorRT;
         private RenderTarget2D depthRT;
-        private RenderTarget2D ambientOcclusionRT;
 
         private Skydome skydome;
         private SkydomeEffect.SkydomeEffectProperties skydomeEffectProperties;
+
+        private PostProcessingEffectBase postProcessingEffect;
 
         public Scene3D()
         {
@@ -78,17 +78,22 @@ namespace PeridotEngine.Scenes.Scene3D
             skydome = new();
             skydomeEffectProperties = Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties();
 
+            postProcessingEffect = new SimplePostProcessingEffect()
+            {
+                FogStart = 20f,
+                FogEnd = 50f,
+                FogColor = Color.CornflowerBlue,
+            };
+
+
             void InitRTs()
             {
                 colorRT?.Dispose();
                 depthRT?.Dispose();
-                ambientOcclusionRT?.Dispose();
                 colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
                 depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-                ambientOcclusionRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
             }
 
             InitRTs();
@@ -107,29 +112,6 @@ namespace PeridotEngine.Scenes.Scene3D
 
             UpdateCameraAspectRatio();
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => UpdateCameraAspectRatio();
-
-
-            // set fog params for effects
-            Resources.EffectPool.EffectInstantiated += (_, effect) =>
-            {
-                if (effect is IEffectFog fog)
-                {
-                    fog.FogStart = 20f;
-                    fog.FogEnd = 50f;
-                    fog.FogColor = Color.CornflowerBlue;
-                }
-            };
-            foreach (WeakReference<EffectBase> effectRef in Resources.EffectPool.Effects.Values)
-            {
-                if (!effectRef.TryGetTarget(out EffectBase? effect)) continue;
-
-                if (effect is IEffectFog fog)
-                {
-                    fog.FogStart = 20f;
-                    fog.FogEnd = 50f;
-                    fog.FogColor = Color.CornflowerBlue;
-                }
-            }
         }
 
         public override void Update(GameTime gameTime)
@@ -150,28 +132,30 @@ namespace PeridotEngine.Scenes.Scene3D
 
             // render color and depth buffers
             gd.SetRenderTargets(colorRT, depthRT);
-            gd.Clear(Color.Black);
+            gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
+                float.MaxValue, 0);
 
             MeshRenderingSystem.RenderMeshes();
 
             gd.SetVertexBuffer(skydome.VertexBuffer);
             gd.Indices = skydome.IndexBuffer;
 
+            Matrix projection = Camera.GetProjectionMatrix();
+
             skydomeEffectProperties.Effect.World = Matrix.Identity;
-            skydomeEffectProperties.Effect.ViewProjection = Camera.GetRotationMatrix() * Camera.GetProjectionMatrix();
+            skydomeEffectProperties.Effect.ViewProjection = Camera.GetRotationMatrix() * projection;
             skydomeEffectProperties.Effect.UpdateMatrices();
             foreach (EffectPass pass in skydomeEffectProperties.Technique.Passes)
             {
                 pass.Apply();
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, skydome.IndexBuffer.IndexCount / 3);
             }
-
-            // render ambient occlusion buffer
-            // TODO
-
+            
             // render target to screen
             gd.SetRenderTarget(null);
-            RenderTargetRenderer.RenderRenderTarget(colorRT);
+            postProcessingEffect.UpdateParameters(colorRT, depthRT, projection);
+
+            RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
         }
 
         public override void Deinitialize()

@@ -1,0 +1,73 @@
+﻿#if OPENGL
+	#define SV_POSITION POSITION
+	#define VS_SHADERMODEL vs_3_0
+	#define PS_SHADERMODEL ps_3_0
+#else
+	#define VS_SHADERMODEL vs_4_0
+	#define PS_SHADERMODEL ps_4_0
+#endif
+
+
+float4 FogColor;
+float FogStart;
+float FogEnd;
+
+matrix Projection;
+matrix InverseProjection;
+
+#include "../Macros.fxh"
+
+DECLARE_TEXTURE(ColorTexture, 0);
+DECLARE_TEXTURE(DepthTexture, 1);
+
+struct VertexShaderInput
+{
+	float4 Position : POSITION0;
+	float2 TexCoord : TEXCOORD0;
+};
+
+struct VertexShaderOutput
+{
+	float4 Position : SV_POSITION;
+	float2 TexCoord : TEXCOORD0;
+};
+
+VertexShaderOutput MainVS(in VertexShaderInput input)
+{
+	VertexShaderOutput output = (VertexShaderOutput)0;
+
+	output.Position = input.Position;
+	output.TexCoord = input.TexCoord;
+
+	return output;
+}
+
+float4 MainPS(VertexShaderOutput input) : COLOR
+{
+	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
+	float depth = SAMPLE_TEXTURE(DepthTexture, input.TexCoord).r;
+
+	float4 pos = float4(
+		map(input.TexCoord.x, 0, 1, -1, 1),
+		map(input.TexCoord.y, 0, 1, -1, 1),
+		depth,
+		1
+	);
+
+	pos = mul(pos, InverseProjection);
+	pos /= pos.w;
+	depth = length(pos);
+    float fogBlend = clamp(map(depth, FogStart, FogEnd, 0, 1), 0, 1);
+
+    color = lerp(color, FogColor, fogBlend);
+	return color;
+}
+
+technique
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL MainPS();
+	}
+};

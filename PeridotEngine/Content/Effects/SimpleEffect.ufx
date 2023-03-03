@@ -13,8 +13,9 @@ DECLARE_TEXTURE(Texture, 0);
 DECLARE_TEXTURE(ShadowMap, 1);
 
 matrix World;
+matrix View;
 matrix ViewProjection;
-matrix TransposedInverseWorld;
+matrix NormalMatrix;
 
 float4 MixColor;
 
@@ -55,7 +56,7 @@ float CalculateShadowPresence(float4 positionLightSpace)
 }
 
 float CalculateDiffuseShading(float3 position, float3 normal) {
-    float3 lightRay = position - LightPosition;
+    float3 lightRay = mul(position - LightPosition, View);
     lightRay = normalize(-lightRay);
     normal = normalize(normal);
 
@@ -66,6 +67,7 @@ struct PixelOut
 {
     float4 Color : COLOR0;
     float Depth : COLOR1;
+    float4 Normal : COLOR2;
 };
 
 $uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, diffuseShading)
@@ -78,6 +80,7 @@ struct VertexIn$$
     $if textureEnabled
         float2 TexCoord : TEXCOORD0;
     $endif
+    // TODO: Normals should be transmitted always (if mesh has normals), to be used to render the normal buffer
     $if diffuseShading
         float3 Normal : NORMAL0;
     $endif
@@ -100,6 +103,7 @@ struct PixelIn$$
     $if diffuseShading
         float3 Normal : NORMAL0; 
     $endif
+    // TODO: Normals should be transmitted always (if mesh has normals), to be used to render the normal buffer
     $if diffuseShading
         float4 WorldPosition : POSITION1;
     $endif
@@ -123,7 +127,7 @@ PixelIn$$ VertexShader$$(in VertexIn$$ input)
         output.PositionLightSpace = mul(input.Position, LightWorldViewProjection);
     $endif
     $if diffuseShading
-        output.Normal = mul(input.Normal, (float3x3)TransposedInverseWorld);
+        output.Normal = mul(input.Normal, (float3x3)NormalMatrix);
     $endif
     $if diffuseShading
         output.WorldPosition = worldPos;
@@ -134,6 +138,7 @@ PixelIn$$ VertexShader$$(in VertexIn$$ input)
 
 PixelOut PixelShader$$(PixelIn$$ input)
 {
+    PixelOut pout = (PixelOut)0;
     float4 result = MixColor;
 
     $if vertexColorEnabled
@@ -176,14 +181,16 @@ PixelOut PixelShader$$(PixelIn$$ input)
     $endif
 
     $if diffuseShading
-        lightIntensity = min(lightIntensity, CalculateDiffuseShading(input.WorldPosition.xyz / input.WorldPosition.w, input.Normal));
+        float3 normal = normalize(input.Normal);
+        lightIntensity = min(lightIntensity, CalculateDiffuseShading(input.WorldPosition.xyz / input.WorldPosition.w, normal.xyz));
+        pout.Normal = float4(normal, 0);
     $endif
 
     $if shadowsEnabled || diffuseShading
         result = result * (0.4 + lightIntensity * 0.6);
     $endif
 
-    PixelOut pout = (PixelOut)0;
+    
     pout.Color = result;
     pout.Depth = input.Depth.x / input.Depth.y;
     return pout;

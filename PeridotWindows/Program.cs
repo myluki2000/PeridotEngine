@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Globalization;
+using Microsoft.Xna.Framework;
 using PeridotEngine;
 using PeridotEngine.Graphics;
 
@@ -17,6 +20,24 @@ namespace PeridotWindows
             //Application.Run(new MainForm());
             using (var game = new Main())
             {
+                Random r = new();
+                Vector3[] kernel = new Vector3[256];
+
+                for (int i = 0; i < kernel.Length; i++)
+                {
+                    Vector3 v = new(
+                        r.NextSingle() * 2 - 1,
+                        r.NextSingle() * 2 - 1,
+                        r.NextSingle() * 2 - 1
+                    );
+
+                    v.Normalize();
+                    v *= MathF.Pow((float)i / kernel.Length, 2) * 0.9f + 0.1f;
+                    kernel[i] = v;
+                    Debug.WriteLine("float3(" + v.X.ToString(CultureInfo.InvariantCulture) + "f, "
+                                    + v.Y.ToString(CultureInfo.InvariantCulture) + "f, "
+                                    + v.Z.ToString(CultureInfo.InvariantCulture) + "f),");
+                }
                 ScreenManager.CurrentScreen = new EditorScreen.EditorScreen();
                 game.Run();
             }

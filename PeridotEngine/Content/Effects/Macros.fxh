@@ -24,6 +24,9 @@
 #define SAMPLE_TEXTURE(Name, texCoord)  Name.Sample(Name##Sampler, texCoord)
 #define SAMPLE_CUBEMAP(Name, texCoord)  Name.Sample(Name##Sampler, texCoord)
 
+#define PI 3.14159265f
+#define EULER 2.71828f
+
 float map(float value, float min1, float max1, float min2, float max2)
 {
     // Convert the current value to a percentage

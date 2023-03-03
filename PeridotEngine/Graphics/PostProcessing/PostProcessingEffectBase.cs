@@ -12,24 +12,33 @@ namespace PeridotEngine.Graphics.PostProcessing
 
         private readonly EffectParameter? colorTextureParam;
         private readonly EffectParameter? depthTextureParam;
+        private readonly EffectParameter? normalTextureParam;
         private readonly EffectParameter? projectionParam;
         private readonly EffectParameter? inverseProjectionParam;
+        private readonly EffectParameter? cameraNearPlaneParam;
+        private readonly EffectParameter? cameraFarPlaneParam;
 
         protected PostProcessingEffectBase(Effect cloneSource)
         {
             Effect = cloneSource;
             colorTextureParam = Effect.Parameters["ColorTexture"];
             depthTextureParam = Effect.Parameters["DepthTexture"];
+            normalTextureParam = Effect.Parameters["NormalTexture"];
             projectionParam = Effect.Parameters["Projection"];
             inverseProjectionParam = Effect.Parameters["InverseProjection"];
+            cameraNearPlaneParam = Effect.Parameters["NearPlane"];
+            cameraFarPlaneParam = Effect.Parameters["FarPlane"];
         }
 
-        public void UpdateParameters(Texture2D colorTexture, Texture2D depthTexture, Matrix projection)
+        public void UpdateParameters(Texture2D colorTexture, Texture2D depthTexture, Texture2D normalTexture, Matrix projection, float nearPlane, float farPlane)
         {
             colorTextureParam?.SetValue(colorTexture);
             depthTextureParam?.SetValue(depthTexture);
+            normalTextureParam?.SetValue(normalTexture);
             projectionParam?.SetValue(projection);
             inverseProjectionParam?.SetValue(Matrix.Invert(projection));
+            cameraNearPlaneParam?.SetValue(nearPlane);
+            cameraFarPlaneParam?.SetValue(farPlane);
         }
 
         protected abstract void ChooseTechnique();

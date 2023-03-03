@@ -14,29 +14,34 @@ namespace PeridotEngine.Graphics.Effects
     public abstract partial class EffectBase : Effect
     {
         public Matrix World { get; set; } = Matrix.Identity;
-        public Matrix ViewProjection { get; set; }
+        public Matrix View { get; set; } = Matrix.Identity;
+        public Matrix Projection { get; set; } = Matrix.Identity;
 
         [JsonIgnore]
         protected readonly EffectParameter WorldParam;
         [JsonIgnore]
-        protected readonly EffectParameter? TransposedInverseWorldParam;
+        protected readonly EffectParameter? NormalMatrixParam;
         [JsonIgnore]
         protected readonly EffectParameter ViewProjectionParam;
+
+        [JsonIgnore] protected readonly EffectParameter? ViewParam;
 
         protected EffectBase(Effect cloneSource) : base(cloneSource)
         {
             WorldParam = Parameters["World"];
+            ViewParam = Parameters["View"];
             ViewProjectionParam = Parameters["ViewProjection"];
-            TransposedInverseWorldParam = Parameters["TransposedInverseWorld"];
+            NormalMatrixParam = Parameters["NormalMatrix"];
         }
 
         public virtual void UpdateMatrices()
         {
             WorldParam.SetValue(World);
-            ViewProjectionParam.SetValue(ViewProjection);
+            ViewProjectionParam.SetValue(View * Projection);
             
-            // the matrix is only calculated if the TransposedInverseWorld parameter is defined in the shader code
-            TransposedInverseWorldParam?.SetValue(Matrix.Transpose(Matrix.Invert(World)));
+            // the matrix is only calculated if the NormalMatrix parameter is defined in the shader code
+            NormalMatrixParam?.SetValue(Matrix.Transpose(Matrix.Invert(World * View)));
+            ViewParam?.SetValue(View);
         }
 
         public abstract EffectProperties CreatePropertiesBase();

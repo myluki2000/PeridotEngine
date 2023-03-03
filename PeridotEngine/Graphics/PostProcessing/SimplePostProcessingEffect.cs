@@ -18,8 +18,36 @@ namespace PeridotEngine.Graphics.PostProcessing
 
         protected override void ChooseTechnique()
         {
-            Technique = Effect.Techniques[0];
+            int techniqueIndex = 0;
+
+            if (FogEnabled) techniqueIndex |= 0b01;
+            if (ScreenSpaceAmbientOcclusionEnabled) techniqueIndex |= 0b10;
+
+            Technique = Effect.Techniques[techniqueIndex];
         }
+
+        public bool FogEnabled
+        {
+            get => fogEnabled;
+            set
+            {
+                fogEnabled = value;
+                Technique = null!;
+            }
+        }
+
+        public bool ScreenSpaceAmbientOcclusionEnabled
+        {
+            get => screenSpaceAmbientOcclusionEnabled;
+            set
+            {
+                screenSpaceAmbientOcclusionEnabled = value;
+                Technique = null!;
+            }
+        }
+
+        private bool fogEnabled;
+        private bool screenSpaceAmbientOcclusionEnabled;
 
         private Color fogColor;
         public Color FogColor

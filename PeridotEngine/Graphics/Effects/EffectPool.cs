@@ -39,12 +39,12 @@ namespace PeridotEngine.Graphics.Effects
 
         public void UpdateEffectCameraData(Camera camera)
         {
-            Matrix m = camera.GetViewMatrix() * camera.GetProjectionMatrix();
             foreach (WeakReference<EffectBase> effectRef in Effects.Values)
             {
                 if (!effectRef.TryGetTarget(out EffectBase? effect)) continue;
 
-                effect.ViewProjection = m;
+                effect.View = camera.GetViewMatrix();
+                effect.Projection = camera.GetProjectionMatrix();
 
                 if (effect is IEffectCameraData cameraDataEffect)
                 {

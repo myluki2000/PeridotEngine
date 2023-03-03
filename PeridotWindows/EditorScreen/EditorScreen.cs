@@ -142,7 +142,8 @@ namespace PeridotWindows.EditorScreen
                 {
                     SimpleEffect effect = new();
                     effect.World = Matrix.Identity;
-                    effect.ViewProjection = Scene.Camera.GetViewMatrix() * Scene.Camera.GetProjectionMatrix();
+                    effect.View = Scene.Camera.GetViewMatrix();
+                    effect.Projection = Scene.Camera.GetProjectionMatrix();
                     effect.UpdateMatrices();
 
                     Vector3 direction = new Vector3(

@@ -63,7 +63,8 @@ namespace PeridotEngine.ECS.Systems
             });
 
             EffectBase depthEffect = scene.Resources.EffectPool.Effect<DepthEffect>();
-            depthEffect.ViewProjection = camera.GetViewMatrix() * camera.GetProjectionMatrix();
+            depthEffect.View = camera.GetViewMatrix();
+            depthEffect.Projection = camera.GetProjectionMatrix();
             
             scene.MeshRenderingSystem.Meshes.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
             {
@@ -73,7 +74,7 @@ namespace PeridotEngine.ECS.Systems
 
             gd.SetRenderTarget(null);
             
-            lightViewProjection = depthEffect.ViewProjection;
+            lightViewProjection = depthEffect.View * depthEffect.Projection;
 
             // for sunlights we don't use the light's actual position and instead use a sufficiently far away position in the opposite
             // direction of the light's ray direction, calculated from the world origin (0, 0, 0)

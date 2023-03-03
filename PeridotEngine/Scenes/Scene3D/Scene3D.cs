@@ -3,11 +3,13 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Globalization;
 using System.Text;
 using Accessibility;
 using Microsoft.Win32.SafeHandles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -38,6 +40,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private RenderTarget2D colorRT;
         private RenderTarget2D depthRT;
+        private RenderTarget2D normalRT;
 
         private Skydome skydome;
         private SkydomeEffect.SkydomeEffectProperties skydomeEffectProperties;
@@ -80,9 +83,11 @@ namespace PeridotEngine.Scenes.Scene3D
 
             postProcessingEffect = new SimplePostProcessingEffect()
             {
+                FogEnabled = true,
                 FogStart = 20f,
                 FogEnd = 50f,
                 FogColor = Color.CornflowerBlue,
+                ScreenSpaceAmbientOcclusionEnabled = true,
             };
 
 
@@ -90,10 +95,13 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 colorRT?.Dispose();
                 depthRT?.Dispose();
+                normalRT?.Dispose();
                 colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
                 depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
+                normalRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24);
             }
 
             InitRTs();
@@ -131,7 +139,7 @@ namespace PeridotEngine.Scenes.Scene3D
             Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
 
             // render color and depth buffers
-            gd.SetRenderTargets(colorRT, depthRT);
+            gd.SetRenderTargets(colorRT, depthRT, normalRT);
             gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
                 float.MaxValue, 0);
 
@@ -143,7 +151,8 @@ namespace PeridotEngine.Scenes.Scene3D
             Matrix projection = Camera.GetProjectionMatrix();
 
             skydomeEffectProperties.Effect.World = Matrix.Identity;
-            skydomeEffectProperties.Effect.ViewProjection = Camera.GetRotationMatrix() * projection;
+            skydomeEffectProperties.Effect.View = Camera.GetRotationMatrix();
+            skydomeEffectProperties.Effect.Projection = projection;
             skydomeEffectProperties.Effect.UpdateMatrices();
             foreach (EffectPass pass in skydomeEffectProperties.Technique.Passes)
             {
@@ -153,8 +162,7 @@ namespace PeridotEngine.Scenes.Scene3D
             
             // render target to screen
             gd.SetRenderTarget(null);
-            postProcessingEffect.UpdateParameters(colorRT, depthRT, projection);
-
+            postProcessingEffect.UpdateParameters(colorRT, depthRT, normalRT, projection, Camera.NearPlane, Camera.FarPlane);
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
         }
 
@@ -162,6 +170,7 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             colorRT?.Dispose();
             depthRT?.Dispose();
+            normalRT?.Dispose();
         }
     }
 }

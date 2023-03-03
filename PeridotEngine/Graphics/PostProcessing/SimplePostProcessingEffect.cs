@@ -9,11 +9,14 @@ namespace PeridotEngine.Graphics.PostProcessing
         private readonly EffectParameter? fogStartParam;
         private readonly EffectParameter? fogEndParam;
 
+        private readonly EffectParameter? ambientOcclusionTextureParam;
+
         public SimplePostProcessingEffect() : base(Globals.Content.Load<Effect>("Effects/PostProcessing/SimplePostProcessingEffect"))
         {
             fogColorParam = Effect.Parameters["FogColor"];
             fogStartParam = Effect.Parameters["FogStart"];
             fogEndParam = Effect.Parameters["FogEnd"];
+            ambientOcclusionTextureParam = Effect.Parameters["AmbientOcclusionTexture"];
         }
 
         protected override void ChooseTechnique()
@@ -24,6 +27,11 @@ namespace PeridotEngine.Graphics.PostProcessing
             if (ScreenSpaceAmbientOcclusionEnabled) techniqueIndex |= 0b10;
 
             Technique = Effect.Techniques[techniqueIndex];
+        }
+
+        public Texture2D AmbientOcclusionTexture
+        {
+            set => ambientOcclusionTextureParam?.SetValue(value);
         }
 
         public bool FogEnabled

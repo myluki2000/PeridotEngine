@@ -21,266 +21,7 @@ matrix InverseProjection;
 
 DECLARE_TEXTURE(ColorTexture, 0);
 DECLARE_TEXTURE(DepthTexture, 1);
-DECLARE_TEXTURE(NormalTexture, 2);
-
-static float3 ssaoKernel[256] = {
-	float3(-0.047273006f, -0.08306743f, -0.02941199f),
-float3(-0.043416638f, -0.043652873f, 0.07881731f),
-float3(-0.07506436f, -0.05233325f, -0.040466838f),
-float3(-0.08822179f, 0.041479334f, 0.022827934f),
-float3(-0.049381837f, -0.08684786f, 0.00792963f),
-float3(-0.0898049f, -0.043227747f, 0.011628549f),
-float3(0.023849513f, 0.033043634f, 0.09186098f),
-float3(0.073934086f, -0.01831371f, 0.06582854f),
-float3(0.066204f, 0.06813833f, -0.033922724f),
-float3(0.02068713f, -0.06725517f, -0.07261195f),
-float3(0.054012448f, -0.053027295f, 0.067433715f),
-float3(-0.025721017f, 0.086406425f, 0.04698357f),
-float3(0.012471767f, 0.08868536f, 0.04877273f),
-float3(0.011088876f, 0.09576503f, -0.03428782f),
-float3(-0.088150844f, -0.052590217f, -0.003045505f),
-float3(-0.04372971f, 0.066745155f, -0.06527116f),
-float3(-0.06903914f, -0.06318719f, -0.044231877f),
-float3(0.00955766f, -0.09905264f, 0.030112121f),
-float3(-0.078017205f, -0.0619132f, 0.0314605f),
-float3(-0.06979265f, 0.07407106f, -0.025662402f),
-float3(0.06351626f, -0.044824988f, -0.071310684f),
-float3(-0.0017202053f, -0.09072048f, 0.05490678f),
-float3(0.08900839f, -0.0073194434f, -0.058287706f),
-float3(-0.006377103f, -0.10541826f, -0.018762792f),
-float3(-0.020642716f, 0.090978116f, -0.054235253f),
-float3(0.03202573f, 0.088767044f, -0.05371263f),
-float3(-0.08910919f, 0.05785215f, 0.02560374f),
-float3(0.007259419f, -0.10078333f, 0.04350294f),
-float3(0.0036620297f, -0.09714391f, 0.053093217f),
-float3(0.08790278f, -0.06456437f, -0.023405291f),
-float3(-0.07295407f, 0.036665574f, 0.07718824f),
-float3(-0.08134799f, -0.008949464f, -0.078205146f),
-float3(0.049248185f, -0.020911468f, 0.1007352f),
-float3(-0.08264636f, -0.070822924f, -0.036991578f),
-float3(-0.037605613f, 0.071190275f, -0.083335675f),
-float3(-0.06659082f, 0.015219079f, 0.09477138f),
-float3(-0.067530155f, 0.07127536f, -0.0650833f),
-float3(-0.072036505f, -0.050364867f, 0.079922765f),
-float3(0.043351598f, -0.06690111f, -0.089466125f),
-float3(-0.03698202f, 0.066180944f, 0.09416085f),
-float3(-0.111841425f, -0.0004378078f, -0.048668582f),
-float3(0.09158403f, 0.073174804f, -0.03751984f),
-float3(0.023914514f, -0.0349474f, -0.11678437f),
-float3(0.050991643f, 0.08778908f, 0.0735943f),
-float3(0.08245146f, -0.09235733f, -0.026384225f),
-float3(0.0979662f, -0.017235346f, 0.080254234f),
-float3(0.08858453f, -0.077531844f, -0.05289404f),
-float3(-0.10776534f, 0.069888584f, -0.022129018f),
-float3(-0.060631115f, -0.1075064f, -0.04577661f),
-float3(-0.100181356f, 0.08712641f, -0.0073773703f),
-float3(-0.06381656f, 0.018190028f, -0.116797805f),
-float3(0.079639316f, -0.08147657f, -0.07374877f),
-float3(0.059021514f, 0.05510433f, 0.110840656f),
-float3(-0.059268698f, 0.11132165f, 0.05742777f),
-float3(-0.0067570037f, 0.10095234f, 0.09682777f),
-float3(0.10451807f, 0.047398124f, -0.08284647f),
-float3(0.073874414f, -0.07699549f, 0.0953009f),
-float3(-0.05937261f, 0.13049532f, -0.018981524f),
-float3(-0.12146832f, -0.053827807f, -0.061005984f),
-float3(-0.028765598f, -0.05577391f, -0.13382044f),
-float3(-0.057618275f, 0.09806204f, -0.09693206f),
-float3(0.07949535f, 0.12653118f, 0.0223966f),
-float3(-0.101246834f, 0.11279113f, -0.01928257f),
-float3(-0.03673989f, 0.12960097f, 0.07566933f),
-float3(0.105636984f, 0.010841487f, -0.11461828f),
-float3(-0.14687452f, 0.042627838f, 0.03976873f),
-float3(-0.0900409f, -0.108939186f, 0.07461572f),
-float3(0.11874769f, 0.06306642f, 0.089729466f),
-float3(0.12594426f, 0.104222104f, 0.0028920837f),
-float3(0.10063907f, 0.030022727f, -0.12775661f),
-float3(-0.10375759f, 0.113735296f, -0.06545995f),
-float3(-0.099294886f, 0.117304504f, -0.07083896f),
-float3(0.03767935f, 0.13423146f, -0.09934126f),
-float3(0.04632776f, 0.13683207f, 0.095514216f),
-float3(0.104165055f, 0.102297075f, 0.0968529f),
-float3(-0.12958366f, -0.10512557f, 0.059777934f),
-float3(-0.11541643f, -0.10048866f, 0.09347301f),
-float3(0.017708264f, -0.12091249f, 0.13409208f),
-float3(0.042284764f, -0.13584432f, -0.1159711f),
-float3(-0.12376077f, 0.08841252f, 0.10655339f),
-float3(0.15173692f, -0.036026847f, 0.10478959f),
-float3(-0.12966666f, 0.1343388f, 0.035752956f),
-float3(0.17038012f, 0.027309734f, -0.08496765f),
-float3(0.00528207f, 0.13197245f, 0.1429226f),
-float3(-0.17218192f, 0.033487562f, -0.08945027f),
-float3(-0.09284842f, 0.042128835f, 0.17115213f),
-float3(0.15655823f, 0.10608545f, 0.06975172f),
-float3(0.18496615f, 0.042857282f, -0.07445861f),
-float3(-0.13159737f, 0.1314549f, 0.089336954f),
-float3(0.10646029f, 0.043901864f, 0.1741472f),
-float3(-0.04007038f, -0.1827829f, 0.09800849f),
-float3(0.08162406f, -0.19678235f, 0.017070886f),
-float3(-0.107607126f, 0.1274177f, -0.13763417f),
-float3(0.13517751f, -0.049646832f, 0.16469713f),
-float3(-0.15079337f, -0.15896215f, 0.03139373f),
-float3(-0.1929601f, -0.091385f, -0.06755797f),
-float3(0.1828243f, 0.10979797f, -0.07648688f),
-float3(-0.0068827653f, 0.15486091f, 0.16884694f),
-float3(-0.109791376f, -0.12170151f, 0.16403647f),
-float3(-0.14249355f, 0.12634082f, 0.137f),
-float3(0.14395185f, 0.099462f, -0.16034423f),
-float3(-0.18549825f, 0.073235564f, -0.13367826f),
-float3(-0.052796822f, -0.23224163f, -0.047598895f),
-float3(0.1768558f, 0.16589582f, -0.039564885f),
-float3(-0.19445395f, 0.112145185f, -0.10668104f),
-float3(-0.13075063f, 0.07295987f, -0.20195489f),
-float3(0.055290233f, -0.23517726f, -0.079401776f),
-float3(0.19283162f, 0.13547254f, -0.10309918f),
-float3(0.03276925f, -0.18256024f, -0.18246071f),
-float3(-0.22956334f, -0.07192351f, -0.106682874f),
-float3(-0.094571605f, -0.15990895f, 0.19060655f),
-float3(-0.18818468f, -0.18956977f, 0.033468913f),
-float3(-0.09795501f, -0.20887133f, -0.14458954f),
-float3(-0.1685334f, 0.15055627f, -0.15732123f),
-float3(-0.055820595f, -0.16283605f, 0.21889643f),
-float3(0.06691117f, 0.17293683f, 0.21195354f),
-float3(-0.10832703f, 0.22112358f, 0.14309083f),
-float3(0.13555242f, 0.2389747f, 0.086340934f),
-float3(0.15744555f, 0.1628853f, -0.18299355f),
-float3(0.1311442f, -0.18816012f, -0.18469049f),
-float3(0.17198966f, 0.17817347f, -0.16532134f),
-float3(0.24253535f, 0.030560695f, -0.17573243f),
-float3(-0.16054623f, -0.23286834f, 0.1125033f),
-float3(-0.25489962f, 0.02071771f, 0.17122021f),
-float3(0.12375377f, -0.05712561f, 0.279715f),
-float3(-0.22150703f, 0.16125143f, -0.15456755f),
-float3(-0.17783318f, 0.22124976f, -0.14339794f),
-float3(-0.081353255f, -0.22302593f, -0.21679968f),
-float3(-0.21965216f, 0.23798595f, -0.027213998f),
-float3(0.22519346f, -0.23782998f, 0.025619432f),
-float3(-0.21340786f, 0.19141355f, 0.16762806f),
-float3(0.28341123f, 0.0015151529f, -0.17986229f),
-float3(0.23424065f, -0.18505298f, 0.16124246f),
-float3(-0.24700166f, -0.21515352f, 0.10146068f),
-float3(0.28655922f, -0.19212288f, -0.033105075f),
-float3(-0.18971549f, 0.29355758f, -0.023014596f),
-float3(0.0641864f, -0.29187664f, -0.18975475f),
-float3(0.29288977f, -0.20454839f, -0.019045696f),
-float3(0.21882217f, -0.25184885f, -0.13925737f),
-float3(0.3260696f, 0.11744826f, -0.11555573f),
-float3(-0.24206227f, -0.13839766f, 0.2419396f),
-float3(0.20307845f, -0.22569722f, 0.21671826f),
-float3(0.20040324f, -0.053427067f, -0.31471497f),
-float3(0.029232262f, -0.34808192f, -0.15169565f),
-float3(0.0326828f, -0.2774471f, -0.26457426f),
-float3(0.010467835f, -0.04353326f, 0.38614732f),
-float3(-0.30208588f, 0.083205365f, -0.23676656f),
-float3(0.22240095f, 0.2122672f, 0.25078785f),
-float3(0.06681683f, 0.16898982f, -0.35724378f),
-float3(0.16729745f, 0.36578593f, -0.046298444f),
-float3(-0.16455153f, 0.354504f, 0.1205111f),
-float3(0.1999967f, 0.3614869f, -0.00019629665f),
-float3(-0.26417464f, -0.25784454f, 0.19456317f),
-float3(0.31397814f, 0.19441162f, -0.20313029f),
-float3(0.21082114f, 0.29229477f, 0.22656105f),
-float3(-0.11373331f, 0.038172323f, 0.4128561f),
-float3(0.17390777f, -0.38139746f, 0.11324861f),
-float3(0.3839893f, -0.011952435f, -0.21140908f),
-float3(0.3097856f, -0.17159198f, 0.26586846f),
-float3(-0.097733274f, 0.4252028f, -0.098093115f),
-float3(0.2221414f, 0.25351766f, -0.300484f),
-float3(-0.18186907f, -0.30211958f, 0.28906175f),
-float3(-0.2617792f, 0.3227511f, -0.19818546f),
-float3(-0.03854113f, 0.46147972f, 0.040679906f),
-float3(-0.057903044f, 0.30759817f, -0.34975663f),
-float3(0.46166226f, -0.09981352f, -0.038288523f),
-float3(-0.25391835f, 0.25830543f, -0.3125594f),
-float3(-0.3724096f, 0.24315472f, 0.18834299f),
-float3(0.27683306f, 0.32224986f, -0.23931143f),
-float3(0.36573598f, -0.2718961f, 0.18599945f),
-float3(-0.2811944f, 0.35616982f, 0.20239466f),
-float3(-0.24093157f, -0.36535665f, 0.24501623f),
-float3(-0.25599313f, -0.06627472f, 0.4317279f),
-float3(-0.26455796f, -0.24486183f, -0.36219501f),
-float3(0.2790107f, -0.42193648f, -0.10074298f),
-float3(-0.2298642f, -0.33926067f, 0.32102683f),
-float3(-0.08474828f, -0.3999907f, 0.32994005f),
-float3(0.27312306f, 0.23136541f, -0.391186f),
-float3(-0.2015939f, 0.443965f, 0.22045742f),
-float3(-0.2717631f, 0.40374163f, -0.23399772f),
-float3(-0.2087773f, -0.3145045f, 0.39302096f),
-float3(-0.4387006f, 0.31046873f, -0.11638393f),
-float3(0.24660717f, 0.13063572f, 0.47960493f),
-float3(-0.34223455f, 0.33688897f, -0.2878731f),
-float3(0.24169967f, 0.51007056f, 0.023835158f),
-float3(-0.5188452f, 0.23567773f, -0.012876082f),
-float3(0.51587826f, 0.23780267f, -0.0897991f),
-float3(-0.32746297f, 0.29102823f, -0.38043782f),
-float3(-0.37761164f, 0.16490379f, -0.41578987f),
-float3(0.36588046f, 0.45182878f, -0.10361204f),
-float3(-0.5501023f, 0.2176503f, -0.07031059f),
-float3(-0.26442188f, -0.35890055f, -0.4030643f),
-float3(0.07300277f, 0.56274205f, -0.21337992f),
-float3(-0.15556824f, -0.5514216f, 0.21380019f),
-float3(-0.3682838f, 0.24175127f, -0.4317748f),
-float3(-0.19507483f, -0.5707547f, 0.15267667f),
-float3(-0.1251866f, -0.5856127f, 0.18767497f),
-float3(0.1885507f, 0.38201463f, -0.4681372f),
-float3(-0.48154464f, -0.34476504f, 0.23830062f),
-float3(0.452472f, -0.056834936f, -0.45449412f),
-float3(0.35776305f, 0.4458282f, -0.30798474f),
-float3(-0.55736375f, -0.32796213f, 0.10285978f),
-float3(-0.14747015f, -0.3506437f, 0.5397905f),
-float3(0.32539228f, -0.5101399f, 0.2780755f),
-float3(-0.13430637f, 0.51739067f, -0.40643907f),
-float3(0.037873607f, 0.40728915f, -0.5396111f),
-float3(0.24141344f, 0.06677434f, -0.6351655f),
-float3(0.505356f, 0.3537738f, 0.30563217f),
-float3(-0.37781098f, 0.17733961f, -0.5546537f),
-float3(-0.39063123f, -0.1585455f, 0.5586454f),
-float3(-0.13085072f, 0.56099665f, 0.40750748f),
-float3(0.4663518f, -0.51701564f, -0.1459621f),
-float3(-0.68774277f, 0.03071952f, -0.20114441f),
-float3(-0.5805019f, 0.31248376f, -0.29693496f),
-float3(-0.6844492f, -0.054356325f, -0.24472013f),
-float3(0.09810875f, 0.37226665f, -0.6258824f),
-float3(-0.45917383f, 0.009148048f, -0.58115894f),
-float3(-0.7106591f, -0.02345438f, 0.22787733f),
-float3(-0.40783244f, -0.53459865f, -0.33815405f),
-float3(-0.46278897f, -0.06384384f, 0.59773844f),
-float3(0.4009037f, -0.096723095f, 0.6439298f),
-float3(-0.4584756f, -0.14098768f, 0.60327923f),
-float3(-0.34430638f, -0.6843326f, 0.12876344f),
-float3(0.29764816f, 0.43550572f, -0.57854134f),
-float3(-0.31300563f, 0.34918123f, 0.6346019f),
-float3(0.5714276f, -0.23084804f, -0.5025616f),
-float3(-0.52551115f, 0.47811034f, -0.37084493f),
-float3(0.043788355f, 0.5911345f, -0.5485709f),
-float3(-0.26541907f, -0.3989068f, -0.65791005f),
-float3(-0.7832794f, -0.19513516f, -0.14515671f),
-float3(0.31110597f, -0.6297262f, -0.43555987f),
-float3(-0.7472029f, -0.32416195f, -0.1736831f),
-float3(0.5048204f, -0.64917463f, 0.16708785f),
-float3(-0.4816028f, -0.50141925f, -0.48123318f),
-float3(0.45438954f, -0.60388523f, 0.3933031f),
-float3(-0.5738978f, 0.26917624f, -0.5788229f),
-float3(0.06675808f, 0.71647775f, 0.47979155f),
-float3(0.8155977f, -0.20484932f, -0.22828041f),
-float3(0.71535945f, 0.46954146f, -0.19615588f),
-float3(-0.56125385f, -0.45609632f, -0.50911695f),
-float3(-0.6961328f, -0.06287185f, -0.5525896f),
-float3(0.26648784f, -0.83287114f, 0.20256753f),
-float3(-0.5273113f, -0.54784745f, -0.48936835f),
-float3(0.37878057f, -0.7100109f, -0.4268199f),
-float3(-0.051887605f, -0.20575565f, -0.89272994f),
-float3(0.2587519f, -0.35173243f, -0.81467515f),
-float3(0.64647025f, -0.37444466f, 0.55564535f),
-float3(-0.71341765f, -0.11216612f, -0.59831524f),
-float3(0.70311445f, -0.61716735f, 0.13060707f),
-float3(0.5704975f, 0.29267257f, -0.70295125f),
-float3(0.58971334f, -0.5806121f, 0.48319763f),
-float3(0.71087104f, -0.0029243473f, 0.65287054f),
-float3(-0.47136047f, 0.48509875f, 0.6981881f),
-float3(0.76724356f, 0.019819375f, -0.60781896f),
-float3(0.61572605f, -0.68914694f, 0.34371358f),
-float3(0.73892397f, -0.17894071f, 0.6387377f)
-};
+DECLARE_TEXTURE(AmbientOcclusionTexture, 2);
 
 struct VertexShaderInput
 {
@@ -293,12 +34,6 @@ struct VertexShaderOutput
 	float4 Position : SV_POSITION;
 	float2 TexCoord : TEXCOORD0;
 };
-
-float depthToAbsolute(float depth) {
-	float rel = (2.0f * NearPlane) / (FarPlane + NearPlane - depth * (FarPlane - NearPlane));
-    float abs = (FarPlane - NearPlane) * rel + NearPlane;
-	return abs;
-}
 
 float4 uvToProjPos(float2 uv)
 {
@@ -323,20 +58,19 @@ float gauss(float x, float sigma) {
 	return (1.0f / (sqrt(2 * PI) * sigma)) * pow(EULER, -pow(x, 2) / (2 * pow(sigma, 2)));
 }
 
-float linearDropoff(float x) {
-	return -2 * x + 2;
+float4 applyFog(VertexShaderOutput input, float4 color) {
+	float4 pos = uvToProjPos(input.TexCoord);
+	pos = mul(pos, InverseProjection);
+	pos /= pos.w;
+
+    float fogBlend = clamp(map(length(pos), FogStart, FogEnd, 0, 1), 0, 1);
+
+    color = lerp(color, FogColor, fogBlend);
+
+	return color;
 }
 
-float3 randomNormal(float2 tex)
-{
-    float noiseX = (frac(sin(dot(tex, float2(15.8989f, 76.132f) * 1.0f)) * 46336.23745f));
-    float noiseY = (frac(sin(dot(tex, float2(11.9899f, 62.223f) * 2.0f)) * 34748.34744f));
-    float noiseZ = (frac(sin(dot(tex, float2(13.3238f, 63.122f) * 3.0f)) * 59998.47362f));
-    return normalize(float3(noiseX, noiseY, noiseZ));
-}
-
-$uberblock SimplePpEffect(fogEnabled, ssaoEnabled)
-VertexShaderOutput VertexShader$$(in VertexShaderInput input)
+VertexShaderOutput VS(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
@@ -346,70 +80,51 @@ VertexShaderOutput VertexShader$$(in VertexShaderInput input)
 	return output;
 }
 
-float4 PixelShader$$(VertexShaderOutput input) : COLOR
-{
+float4 PS(VertexShaderOutput input) : COLOR {
 	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
-
-	$if ssaoEnabled || fogEnabled
-		float4 pos = uvToProjPos(input.TexCoord);
-		pos = mul(pos, InverseProjection);
-		pos /= pos.w;
-	$endif
-
-	$if ssaoEnabled
-		float ao = 0;
-
-		float3 random = randomNormal(input.TexCoord);
-
-		for(int i = 0; i < 256; i++)
-		{
-			float4 offset = float4(ssaoKernel[i], 0);
-			float offsetLength = length(offset);
-			offset = reflect(offset, float4(random, 0));
-
-			float4 samplePoint = pos + offset * 1.0f;
-			samplePoint = mul(samplePoint, Projection);
-			samplePoint /= samplePoint.w;
-			
-			float actualDepth = SAMPLE_TEXTURE(DepthTexture, saturate(projPosToUv(samplePoint.xyz)));
-			actualDepth = depthToAbsolute(actualDepth);
-			float sampleDepth = depthToAbsolute(samplePoint.z);
-
-			// this is a check which aborts if the actual depth is too different from the sample depth. This is necessary
-			// because otherwise you'd see a black shade around an object when another object is standing behind it but
-			// is far away.
-			if(actualDepth < sampleDepth - 1.5f)
-			{
-				ao += 1;
-				continue;
-			}
-
-			ao += (actualDepth > (sampleDepth - 0.001f)) * linearDropoff(offsetLength/*, 0.25f*/);
-		}
-
-		ao /= 256;
-
-		ao = saturate(ao * 2);
-
-		//return float4(ao, ao, ao, 1);
-		color *= ao;
-	$endif
-
-	$if fogEnabled
-    	float fogBlend = clamp(map(length(pos), FogStart, FogEnd, 0, 1), 0, 1);
-
-    	color = lerp(color, FogColor, fogBlend);
-	$endif
-
 	return color;
 }
-$endblock
 
-// no post processing
-$ubertechnique SimplePpEffect(false, false)
-// fog
-$ubertechnique SimplePpEffect(true, false)
-// ssao
-$ubertechnique SimplePpEffect(false, true)
-// fog + ssao
-$ubertechnique SimplePpEffect(true, true)
+float4 PSFog(VertexShaderOutput input) : COLOR {
+	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
+	color = applyFog(input, color);
+	return color;
+}
+
+float4 PSSsao(VertexShaderOutput input) : COLOR {
+	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
+	color *= SAMPLE_TEXTURE(AmbientOcclusionTexture, input.TexCoord).r;
+	return color;
+}
+
+float4 PSFogSsao(VertexShaderOutput input) : COLOR0 {
+	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
+	color = applyFog(input, color);
+	color *= SAMPLE_TEXTURE(AmbientOcclusionTexture, input.TexCoord).r;
+	return color;
+}
+
+technique {
+	pass {
+		VertexShader = compile VS_SHADERMODEL VS();
+		PixelShader = compile PS_SHADERMODEL PS();
+	}
+}
+technique {
+	pass {
+		VertexShader = compile VS_SHADERMODEL VS();
+		PixelShader = compile PS_SHADERMODEL PSFog();
+	}
+}
+technique {
+	pass {
+		VertexShader = compile VS_SHADERMODEL VS();
+		PixelShader = compile PS_SHADERMODEL PSSsao();
+	}
+}
+technique {
+	pass {
+		VertexShader = compile VS_SHADERMODEL VS();
+		PixelShader = compile PS_SHADERMODEL PSFogSsao();
+	}
+}

@@ -33,7 +33,6 @@ namespace PeridotEngine.Scenes.Scene3D
         public SceneResources Resources { get; }
 
         public Camera Camera { get; set; }
-        public List<PostProcessingEffectBase> PostProcessingEffects { get; set; } = new();
 
         public MeshRenderingSystem MeshRenderingSystem;
         public SunShadowMapSystem SunShadowMapSystem;
@@ -41,11 +40,14 @@ namespace PeridotEngine.Scenes.Scene3D
         private RenderTarget2D colorRT;
         private RenderTarget2D depthRT;
         private RenderTarget2D normalRT;
+        private RenderTarget2D ssaoRT;
 
         private Skydome skydome;
         private SkydomeEffect.SkydomeEffectProperties skydomeEffectProperties;
 
-        private PostProcessingEffectBase postProcessingEffect;
+        private SimplePostProcessingEffect postProcessingEffect;
+        private SsaoPostProcessingEffect ssaoPostProcessingEffect;
+        private DepthOfFieldPostProcessingEffect dofPostProcessingEffect;
 
         public Scene3D()
         {
@@ -90,18 +92,24 @@ namespace PeridotEngine.Scenes.Scene3D
                 ScreenSpaceAmbientOcclusionEnabled = true,
             };
 
+            ssaoPostProcessingEffect = new SsaoPostProcessingEffect();
+            dofPostProcessingEffect = new DepthOfFieldPostProcessingEffect();
+
 
             void InitRTs()
             {
                 colorRT?.Dispose();
                 depthRT?.Dispose();
                 normalRT?.Dispose();
+                ssaoRT?.Dispose();
                 colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
                 depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
                 normalRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24);
+                ssaoRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth / 2,
+                    Globals.Graphics.PreferredBackBufferHeight / 2, false, SurfaceFormat.Color, DepthFormat.Depth24);
             }
 
             InitRTs();
@@ -122,9 +130,18 @@ namespace PeridotEngine.Scenes.Scene3D
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => UpdateCameraAspectRatio();
         }
 
+        private KeyboardState lastKeyboardState;
         public override void Update(GameTime gameTime)
         {
             Camera.Update(gameTime);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.G) && lastKeyboardState.IsKeyUp(Keys.G))
+            {
+                postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled =
+                    !postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled;
+            }
+
+            lastKeyboardState = Keyboard.GetState();
         }
 
         public override void Draw(GameTime gameTime)
@@ -159,11 +176,25 @@ namespace PeridotEngine.Scenes.Scene3D
                 pass.Apply();
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, skydome.IndexBuffer.IndexCount / 3);
             }
-            
-            // render target to screen
-            gd.SetRenderTarget(null);
-            postProcessingEffect.UpdateParameters(colorRT, depthRT, normalRT, projection, Camera.NearPlane, Camera.FarPlane);
+
+            if (postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled)
+            {
+                gd.SetRenderTarget(ssaoRT);
+                ssaoPostProcessingEffect.UpdateParameters(colorRT, depthRT, normalRT, projection, Camera.NearPlane,
+                    Camera.FarPlane);
+                RenderTargetRenderer.RenderRenderTarget(ssaoPostProcessingEffect);
+            }
+
+            // combine
+            gd.SetRenderTarget(normalRT);
+            postProcessingEffect.UpdateParameters(colorRT, depthRT, null, projection, Camera.NearPlane, Camera.FarPlane);
+            postProcessingEffect.AmbientOcclusionTexture = ssaoRT;
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
+
+            // depth of field
+            gd.SetRenderTarget(null);
+            dofPostProcessingEffect.UpdateParameters(colorRT, depthRT, null, projection, Camera.NearPlane, Camera.FarPlane);
+            RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
         }
 
         public override void Deinitialize()
@@ -171,6 +202,7 @@ namespace PeridotEngine.Scenes.Scene3D
             colorRT?.Dispose();
             depthRT?.Dispose();
             normalRT?.Dispose();
+            ssaoRT?.Dispose();
         }
     }
 }

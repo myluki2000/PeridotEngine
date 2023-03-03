@@ -34,9 +34,10 @@ namespace PeridotWindows
                     v.Normalize();
                     v *= MathF.Pow((float)i / kernel.Length, 2) * 0.9f + 0.1f;
                     kernel[i] = v;
-                    Debug.WriteLine("float3(" + v.X.ToString(CultureInfo.InvariantCulture) + "f, "
+                    Debug.Write("float3(" + v.X.ToString(CultureInfo.InvariantCulture) + "f, "
                                     + v.Y.ToString(CultureInfo.InvariantCulture) + "f, "
                                     + v.Z.ToString(CultureInfo.InvariantCulture) + "f),");
+                    if(i % 4 == 0) Debug.WriteLine("");
                 }
                 ScreenManager.CurrentScreen = new EditorScreen.EditorScreen();
                 game.Run();

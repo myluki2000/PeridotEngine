@@ -33,8 +33,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\SkydomeEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\Mesh.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\MeshGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\DepthOfFieldPostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\SimplePostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\PostProcessingEffectBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\SsaoPostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\RenderTargetRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\ScreenManager.cs" />
@@ -45,6 +47,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\StaticMeshComponentJsonConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\ExtensionMethods.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\FpsMeasurer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\MeshResources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\Scene3D.cs" />

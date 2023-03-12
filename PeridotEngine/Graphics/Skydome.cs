@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
 using PeridotEngine.Misc;
 using Color = Microsoft.Xna.Framework.Color;
@@ -13,6 +14,8 @@ namespace PeridotEngine.Graphics
     {
         public VertexBuffer VertexBuffer { get; private set; }
         public IndexBuffer IndexBuffer { get; private set; }
+
+        public SkydomeEffect.SkydomeEffectProperties EffectProperties { get; set; }
 
         private int resolution = 100;
         public int Resolution
@@ -25,8 +28,10 @@ namespace PeridotEngine.Graphics
             }
         }
 
-        public Skydome()
+        public Skydome(SkydomeEffect.SkydomeEffectProperties effectProperties)
         {
+            EffectProperties = effectProperties;
+
             GenerateGeometry();
         }
 

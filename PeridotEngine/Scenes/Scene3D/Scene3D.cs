@@ -34,20 +34,10 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public Camera Camera { get; set; }
 
-        public MeshRenderingSystem MeshRenderingSystem;
-        public SunShadowMapSystem SunShadowMapSystem;
+        public Skydome Skydome { get; private set; }
 
-        private RenderTarget2D colorRT;
-        private RenderTarget2D depthRT;
-        private RenderTarget2D normalRT;
-        private RenderTarget2D ssaoRT;
-
-        private Skydome skydome;
-        private SkydomeEffect.SkydomeEffectProperties skydomeEffectProperties;
-
-        private SimplePostProcessingEffect postProcessingEffect;
-        private SsaoPostProcessingEffect ssaoPostProcessingEffect;
-        private DepthOfFieldPostProcessingEffect dofPostProcessingEffect;
+        private SceneRenderPipeline renderPipeline;
+        
 
         public Scene3D()
         {
@@ -77,43 +67,9 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public override void Initialize()
         {
-            MeshRenderingSystem = new(this);
-            SunShadowMapSystem = new(this);
+            renderPipeline = new(this);
 
-            skydome = new();
-            skydomeEffectProperties = Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties();
-
-            postProcessingEffect = new SimplePostProcessingEffect()
-            {
-                FogEnabled = true,
-                FogStart = 20f,
-                FogEnd = 50f,
-                FogColor = Color.CornflowerBlue,
-                ScreenSpaceAmbientOcclusionEnabled = true,
-            };
-
-            ssaoPostProcessingEffect = new SsaoPostProcessingEffect();
-            dofPostProcessingEffect = new DepthOfFieldPostProcessingEffect();
-
-
-            void InitRTs()
-            {
-                colorRT?.Dispose();
-                depthRT?.Dispose();
-                normalRT?.Dispose();
-                ssaoRT?.Dispose();
-                colorRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-                depthRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
-                normalRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24);
-                ssaoRT = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth / 2,
-                    Globals.Graphics.PreferredBackBufferHeight / 2, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            }
-
-            InitRTs();
-            Globals.GameMain.Window.ClientSizeChanged += (_, _) => InitRTs();
+            Skydome = new(Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties());
 
             Globals.Graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
@@ -137,8 +93,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             if (Keyboard.GetState().IsKeyDown(Keys.G) && lastKeyboardState.IsKeyUp(Keys.G))
             {
-                postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled =
-                    !postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled;
+                
             }
 
             lastKeyboardState = Keyboard.GetState();
@@ -146,63 +101,12 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public override void Draw(GameTime gameTime)
         {
-            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
-
-            Resources.EffectPool.UpdateEffectCameraData(Camera);
-
-            // TODO: It's only necessary to re-render the shadow map if scene geometry changes
-            Texture2D? shadowMap = SunShadowMapSystem.GenerateShadowMap(out Vector3 lightPosition, out Matrix lightViewProj);
-
-            Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
-
-            // render color and depth buffers
-            gd.SetRenderTargets(colorRT, depthRT, normalRT);
-            gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
-                float.MaxValue, 0);
-
-            MeshRenderingSystem.RenderMeshes();
-
-            gd.SetVertexBuffer(skydome.VertexBuffer);
-            gd.Indices = skydome.IndexBuffer;
-
-            Matrix projection = Camera.GetProjectionMatrix();
-
-            skydomeEffectProperties.Effect.World = Matrix.Identity;
-            skydomeEffectProperties.Effect.View = Camera.GetRotationMatrix();
-            skydomeEffectProperties.Effect.Projection = projection;
-            skydomeEffectProperties.Effect.UpdateMatrices();
-            foreach (EffectPass pass in skydomeEffectProperties.Technique.Passes)
-            {
-                pass.Apply();
-                gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, skydome.IndexBuffer.IndexCount / 3);
-            }
-
-            if (postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled)
-            {
-                gd.SetRenderTarget(ssaoRT);
-                ssaoPostProcessingEffect.UpdateParameters(colorRT, depthRT, normalRT, projection, Camera.NearPlane,
-                    Camera.FarPlane);
-                RenderTargetRenderer.RenderRenderTarget(ssaoPostProcessingEffect);
-            }
-
-            // combine
-            gd.SetRenderTarget(normalRT);
-            postProcessingEffect.UpdateParameters(colorRT, depthRT, null, projection, Camera.NearPlane, Camera.FarPlane);
-            postProcessingEffect.AmbientOcclusionTexture = ssaoRT;
-            RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
-
-            // depth of field
-            gd.SetRenderTarget(null);
-            dofPostProcessingEffect.UpdateParameters(colorRT, depthRT, null, projection, Camera.NearPlane, Camera.FarPlane);
-            RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
+           renderPipeline.Render(null);
         }
 
         public override void Deinitialize()
         {
-            colorRT?.Dispose();
-            depthRT?.Dispose();
-            normalRT?.Dispose();
-            ssaoRT?.Dispose();
+            renderPipeline.Dispose();
         }
     }
 }

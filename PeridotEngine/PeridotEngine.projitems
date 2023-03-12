@@ -51,6 +51,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\MeshResources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\Scene3D.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\SceneRenderPipeline.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\SceneResources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\TextureResources.cs" />
   </ItemGroup>

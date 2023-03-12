@@ -29,7 +29,7 @@ namespace PeridotEngine.ECS.Systems
                                          .Has<PositionRotationScaleComponent>();
         }
 
-        public Texture2D? GenerateShadowMap(out Vector3 lightPosition, out Matrix lightViewProjection)
+        public Texture2D? GenerateShadowMap(MeshRenderingSystem meshRenderingSystem, out Vector3 lightPosition, out Matrix lightViewProjection)
         {
             switch (sunLights.EntityCount)
             {
@@ -66,10 +66,10 @@ namespace PeridotEngine.ECS.Systems
             depthEffect.View = camera.GetViewMatrix();
             depthEffect.Projection = camera.GetProjectionMatrix();
             
-            scene.MeshRenderingSystem.Meshes.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
+            meshRenderingSystem.Meshes.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
             {
                 if (!meshC.CastShadows) return;
-                scene.MeshRenderingSystem.RenderMesh(meshC, posC, depthEffect);
+                meshRenderingSystem.RenderMesh(meshC, posC, depthEffect);
             });
 
             gd.SetRenderTarget(null);

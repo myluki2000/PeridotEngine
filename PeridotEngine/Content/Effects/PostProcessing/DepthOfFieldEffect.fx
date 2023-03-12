@@ -104,9 +104,13 @@ void BlurVertical(VertexShaderOutput input, inout float4 color : COLOR) {
 
 technique
 {
-	PixelShader = compile PS_SHADERMODEL BlurHorizontal();
+	pass {
+		PixelShader = compile PS_SHADERMODEL BlurHorizontal();
+	}
 };
 technique
 {
-	PixelShader = compile PS_SHADERMODEL BlurVertical();
+	pass {
+		PixelShader = compile PS_SHADERMODEL BlurVertical();
+	}
 };

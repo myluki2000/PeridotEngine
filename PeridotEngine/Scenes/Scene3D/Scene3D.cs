@@ -68,6 +68,7 @@ namespace PeridotEngine.Scenes.Scene3D
         public override void Initialize()
         {
             renderPipeline = new(this);
+            renderPipeline.AmbientOcclusionEnabled = true;
 
             Skydome = new(Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties());
 

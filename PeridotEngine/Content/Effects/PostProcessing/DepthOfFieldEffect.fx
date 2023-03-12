@@ -15,6 +15,8 @@ DECLARE_TEXTURE(DepthTexture, 1);
 float NearPlane;
 float FarPlane;
 
+#define SAMPLE_COUNT 50
+
 float depthToAbsolute(float depth) {
 	float rel = (2.0f * NearPlane) / (FarPlane + NearPlane - depth * (FarPlane - NearPlane));
     float abs = (FarPlane - NearPlane) * rel + NearPlane;
@@ -33,23 +35,12 @@ struct VertexShaderOutput
 	float2 TexCoord : TEXCOORD0;
 };
 
-VertexShaderOutput MainVS(in VertexShaderInput input)
-{
-	VertexShaderOutput output = (VertexShaderOutput)0;
-
-	output.Position = input.Position;
-	output.TexCoord = input.TexCoord;
-
-	return output;
-}
-
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 Main(VertexShaderOutput input) : COLOR
 {
 	float depth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, input.TexCoord).r);
 
 	float kernelSize = min(0.02, depth / 2000);
-	const int sampleCount = 100;
-	float stepSize = kernelSize / sqrt(sampleCount);
+	float stepSize = kernelSize / sqrt(SAMPLE_COUNT);
 
 	float3 result = float3(0, 0, 0);
 	int i = 0;
@@ -70,11 +61,52 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	return float4(result, 1);
 }
 
-technique BasicColorDrawing
-{
-	pass P0
-	{
-		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL MainPS();
+float4 BlurHorizontal(VertexShaderOutput input) : COLOR {
+	float depth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, input.TexCoord).r);
+	float kernelSize = min(0.02, depth / 2000);
+	float stepSize = kernelSize / SAMPLE_COUNT;
+
+	float3 result = float3(0, 0, 0);
+
+	[unroll(SAMPLE_COUNT)]
+	for(float x = -kernelSize / 2; x <= kernelSize / 2; x += stepSize) {
+		float sampleDepth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, input.TexCoord).r);
+
+		float4 sampleColor = SAMPLE_TEXTURE(ColorTexture, input.TexCoord + float2(x, 0));
+		result += sampleColor.xyz;
 	}
+
+	result /= SAMPLE_COUNT;
+	return float4(result, 1);
+}
+
+void BlurVertical(VertexShaderOutput input, inout float4 color : COLOR) {
+	color.r += 0.1;
+	return;
+
+	float depth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, input.TexCoord).r);
+	float kernelSize = min(0.02, depth / 2000);
+	float stepSize = kernelSize / SAMPLE_COUNT;
+
+	float3 result = float3(0, 0, 0);
+
+	[unroll(SAMPLE_COUNT)]
+	for(float x = -kernelSize / 2; x <= kernelSize / 2; x += stepSize) {
+		float sampleDepth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, input.TexCoord).r);
+
+		float4 sampleColor = SAMPLE_TEXTURE(ColorTexture, input.TexCoord + float2(x, 0));
+		result += sampleColor.xyz;
+	}
+
+	result /= SAMPLE_COUNT;
+	return;
+}
+
+technique
+{
+	PixelShader = compile PS_SHADERMODEL BlurHorizontal();
+};
+technique
+{
+	PixelShader = compile PS_SHADERMODEL BlurVertical();
 };

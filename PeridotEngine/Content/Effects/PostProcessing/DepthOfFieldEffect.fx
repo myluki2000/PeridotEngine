@@ -43,10 +43,11 @@ float4 BlurHorizontal(VertexShaderOutput input) : COLOR {
 
 	[unroll(SAMPLE_COUNT)]
 	for(float x = -kernelSize / 2; x <= kernelSize / 2; x += stepSize) {
-		float sampleDepth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, input.TexCoord + float2(x, 0)).r);
+		float2 sampleTexCoord = input.TexCoord + float2(x, 0);
+		float sampleDepth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, sampleTexCoord).r);
 
-		float4 sampleColor = SAMPLE_TEXTURE(ColorTexture, input.TexCoord + float2(x, 0));
-		bool included = sampleDepth > (depth * 0.50);
+		float4 sampleColor = SAMPLE_TEXTURE(ColorTexture, sampleTexCoord);
+		bool included = sampleDepth > (depth * (0.30 + random(sampleTexCoord) * 0.05));
 		result += sampleColor.xyz * included;
 		i += included;
 	}
@@ -66,10 +67,11 @@ float4 BlurVertical(VertexShaderOutput input) : COLOR {
 
 	[unroll(SAMPLE_COUNT)]
 	for(float x = -kernelSize / 2; x <= kernelSize / 2; x += stepSize) {
-		float sampleDepth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, input.TexCoord + float2(0, x)).r);
+		float2 sampleTexCoord = input.TexCoord + float2(0, x);
+		float sampleDepth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, sampleTexCoord).r);
 
-		float4 sampleColor = SAMPLE_TEXTURE(ColorTexture, input.TexCoord + float2(0, x));
-		bool included = sampleDepth > (depth * 0.50);
+		float4 sampleColor = SAMPLE_TEXTURE(ColorTexture, sampleTexCoord);
+		bool included = sampleDepth > (depth * (0.30 + random(sampleTexCoord) * 0.05));
 		result += sampleColor.xyz * included;
 		i += included;
 	}

@@ -67,7 +67,7 @@ float4 BlurVertical(VertexShaderOutput input) : COLOR {
 
 	[unroll(SAMPLE_COUNT)]
 	for(float x = -kernelSize / 2; x <= kernelSize / 2; x += stepSize) {
-		float2 sampleTexCoord = input.TexCoord + float2(0, x);
+		float2 sampleTexCoord = input.TexCoord + float2(0, x * AspectRatio);
 		float sampleDepth = depthToAbsolute(SAMPLE_TEXTURE(DepthTexture, sampleTexCoord).r);
 
 		float4 sampleColor = SAMPLE_TEXTURE(ColorTexture, sampleTexCoord);

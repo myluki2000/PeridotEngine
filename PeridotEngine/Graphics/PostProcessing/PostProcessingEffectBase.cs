@@ -17,6 +17,7 @@ namespace PeridotEngine.Graphics.PostProcessing
         private readonly EffectParameter? inverseProjectionParam;
         private readonly EffectParameter? cameraNearPlaneParam;
         private readonly EffectParameter? cameraFarPlaneParam;
+        private readonly EffectParameter? aspectRatioParam;
 
         protected PostProcessingEffectBase(Effect cloneSource)
         {
@@ -28,6 +29,7 @@ namespace PeridotEngine.Graphics.PostProcessing
             inverseProjectionParam = Effect.Parameters["InverseProjection"];
             cameraNearPlaneParam = Effect.Parameters["NearPlane"];
             cameraFarPlaneParam = Effect.Parameters["FarPlane"];
+            aspectRatioParam = Effect.Parameters["AspectRatio"];
         }
 
         public void UpdateParameters(Texture2D colorTexture, Texture2D depthTexture, Texture2D normalTexture, Matrix projection, float nearPlane, float farPlane)
@@ -39,6 +41,7 @@ namespace PeridotEngine.Graphics.PostProcessing
             inverseProjectionParam?.SetValue(Matrix.Invert(projection));
             cameraNearPlaneParam?.SetValue(nearPlane);
             cameraFarPlaneParam?.SetValue(farPlane);
+            aspectRatioParam?.SetValue(colorTexture.Width / colorTexture.Height);
         }
 
         protected abstract void ChooseTechnique();

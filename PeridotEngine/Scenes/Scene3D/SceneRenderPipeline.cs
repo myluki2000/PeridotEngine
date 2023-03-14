@@ -25,7 +25,7 @@ namespace PeridotEngine.Scenes.Scene3D
             }
         }
 
-        public bool DepthOfFieldEnabled { get; set; } = true;
+        public bool DepthOfFieldEnabled { get; set; } = false;
 
         private readonly Scene3D scene;
 
@@ -77,7 +77,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 FogStart = 20f,
                 FogEnd = 50f,
                 FogColor = Color.CornflowerBlue,
-                ScreenSpaceAmbientOcclusionEnabled = true,
+                ScreenSpaceAmbientOcclusionEnabled = false,
             };
             ssaoPostProcessingEffect = new SsaoPostProcessingEffect();
             dofPostProcessingEffect = new DepthOfFieldPostProcessingEffect();
@@ -86,6 +86,7 @@ namespace PeridotEngine.Scenes.Scene3D
         public void Render(RenderTarget2D? target)
         {
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+            gd.SamplerStates[0] = SamplerState.PointWrap;
 
             scene.Resources.EffectPool.UpdateEffectCameraData(scene.Camera);
 

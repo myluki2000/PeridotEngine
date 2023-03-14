@@ -32,12 +32,18 @@ namespace PeridotEngine.Scenes.Scene3D
         public Ecs Ecs { get; }
         public SceneResources Resources { get; }
 
-        public Camera Camera { get; set; }
+        public Camera Camera
+        {
+            get => camera;
+            set
+            {
+                camera = value;
+                UpdateCameraAspectRatio();
+            }
+        }
 
         public Skydome Skydome { get; private set; }
 
-        private SceneRenderPipeline renderPipeline;
-        
 
         public Scene3D()
         {
@@ -67,27 +73,17 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public override void Initialize()
         {
-            renderPipeline = new(this);
-            renderPipeline.AmbientOcclusionEnabled = true;
-
             Skydome = new(Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties());
 
-            Globals.Graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
-
             Camera.Position = new Vector3(0, 1, 1);
-
-            void UpdateCameraAspectRatio()
-            {
-                if (Camera is PerspectiveCamera perspectiveCamera)
-                    perspectiveCamera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
-                                                    Globals.Graphics.PreferredBackBufferHeight;
-            }
-
             UpdateCameraAspectRatio();
+
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => UpdateCameraAspectRatio();
         }
 
         private KeyboardState lastKeyboardState;
+        private Camera camera;
+
         public override void Update(GameTime gameTime)
         {
             Camera.Update(gameTime);
@@ -100,14 +96,18 @@ namespace PeridotEngine.Scenes.Scene3D
             lastKeyboardState = Keyboard.GetState();
         }
 
-        public override void Draw(GameTime gameTime)
-        {
-           renderPipeline.Render(null);
-        }
-
         public override void Deinitialize()
         {
-            renderPipeline.Dispose();
+            
+        }
+
+        private void UpdateCameraAspectRatio()
+        {
+            if (Camera is PerspectiveCamera perspectiveCamera)
+            {
+                perspectiveCamera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
+                                                Globals.Graphics.PreferredBackBufferHeight;
+            }
         }
     }
 }

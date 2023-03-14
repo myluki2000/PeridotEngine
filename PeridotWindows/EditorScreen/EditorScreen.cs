@@ -22,10 +22,8 @@ using Timer = System.Timers.Timer;
 
 namespace PeridotWindows.EditorScreen
 {
-    public class EditorScreen : PeridotEngine.Graphics.Screens.Screen
+    public class EditorScreen : Scene3DScreen
     {
-        public readonly Scene3D Scene;
-
         public ResourcesForm? FrmResources;
         public ToolboxForm? FrmToolbox;
         public EntityForm? FrmEntity;
@@ -35,18 +33,20 @@ namespace PeridotWindows.EditorScreen
 
         private Rectangle windowLastBounds;
 
-        public EditorScreen()
+        public EditorScreen() : base(new())
         {
-            Scene = new();
+
         }
 
-        public EditorScreen(Scene3D scene)
+        public EditorScreen(Scene3D scene) : base(scene)
         {
-            this.Scene = scene;
+
         }
 
         public override void Initialize()
         {
+            base.Initialize();
+
             Scene.Camera = new EditorCamera();
 
             Globals.GameMain.Window.AllowUserResizing = true;
@@ -63,8 +63,6 @@ namespace PeridotWindows.EditorScreen
             FrmScene.Show(mainWindowControl);
             
             FrmScene.SelectedEntityChanged += FrmScene_OnSelectedEntityChanged;
-
-            Scene.Initialize();
         }
 
         private void UpdateWindowLocations()
@@ -112,6 +110,8 @@ namespace PeridotWindows.EditorScreen
         private KeyboardState lastKeyboardState;
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             KeyboardState keyboardState = Keyboard.GetState();
 
             if (lastKeyboardState.IsKeyUp(Keys.J) && keyboardState.IsKeyDown(Keys.J))
@@ -124,8 +124,6 @@ namespace PeridotWindows.EditorScreen
                 selectedEntity?.Delete();
             }
 
-            Scene.Update(gameTime);
-
             UpdateWindowLocations();
 
             lastKeyboardState = keyboardState;
@@ -133,7 +131,7 @@ namespace PeridotWindows.EditorScreen
 
         public override void Draw(GameTime gameTime)
         {
-            Scene.Draw(gameTime);
+            base.Draw(gameTime);
 
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
@@ -172,7 +170,7 @@ namespace PeridotWindows.EditorScreen
 
         public override void Deinitialize()
         {
-            Scene.Deinitialize();
+            base.Deinitialize();
 
             FrmResources?.Dispose();
             FrmResources = null;

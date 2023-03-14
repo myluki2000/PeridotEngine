@@ -38,6 +38,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\PostProcessingEffectBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\SsaoPostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\RenderTargetRenderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Scene3DScreen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Screens\Screen.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\ScreenManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Skydome.cs" />

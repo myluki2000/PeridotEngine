@@ -14,13 +14,26 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class SceneRenderPipeline : IDisposable
     {
+        private bool ambientOcclusionEnabled;
+        public bool AmbientOcclusionEnabled
+        {
+            get => ambientOcclusionEnabled;
+            set
+            {
+                ambientOcclusionEnabled = value;
+                postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = value;
+            }
+        }
+
+        public bool DepthOfFieldEnabled { get; set; } = true;
+
         private readonly Scene3D scene;
 
         private readonly MeshRenderingSystem meshRenderingSystem;
         private readonly SunShadowMapSystem sunShadowMapSystem;
 
-        private RenderTarget2D colorRt;
-        private RenderTarget2D colorRt2;
+        private RenderTarget2D colorRtIn;
+        private RenderTarget2D colorRtOut;
         private RenderTarget2D depthRt;
         private RenderTarget2D normalRt;
         private RenderTarget2D ssaoRt;
@@ -38,21 +51,21 @@ namespace PeridotEngine.Scenes.Scene3D
 
             void InitRts()
             {
-                colorRt?.Dispose();
-                colorRt2?.Dispose();
+                colorRtIn?.Dispose();
+                colorRtOut?.Dispose();
                 depthRt?.Dispose();
                 normalRt?.Dispose();
                 ssaoRt?.Dispose();
-                colorRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                colorRtIn = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-                colorRt2 = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                colorRtOut = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
                 depthRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
                 normalRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                     Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24);
-                ssaoRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth / 2,
-                    Globals.Graphics.PreferredBackBufferHeight / 2, false, SurfaceFormat.Color, DepthFormat.Depth24);
+                ssaoRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
             }
 
             InitRts();
@@ -82,7 +95,7 @@ namespace PeridotEngine.Scenes.Scene3D
             scene.Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
 
             // render scene meshes to color, normal and depth buffers
-            gd.SetRenderTargets(colorRt, depthRt, normalRt);
+            gd.SetRenderTargets(colorRtIn, depthRt, normalRt);
             gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
                 float.MaxValue, 0);
 
@@ -107,37 +120,35 @@ namespace PeridotEngine.Scenes.Scene3D
             if (AmbientOcclusionEnabled)
             {
                 gd.SetRenderTarget(ssaoRt);
-                ssaoPostProcessingEffect.UpdateParameters(colorRt, depthRt, normalRt, projection, scene.Camera.NearPlane,
+                ssaoPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, normalRt, projection, scene.Camera.NearPlane,
                     scene.Camera.FarPlane);
                 RenderTargetRenderer.RenderRenderTarget(ssaoPostProcessingEffect);
             }
 
             // combine
-            gd.SetRenderTarget(colorRt2);
-            postProcessingEffect.UpdateParameters(colorRt, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+            gd.SetRenderTarget(DepthOfFieldEnabled ? colorRtOut : target);
+            postProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
             postProcessingEffect.AmbientOcclusionTexture = ssaoRt;
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
 
-            // depth of field
-            gd.SetRenderTarget(colorRt);
-            dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.HORIZONTAL;
-            dofPostProcessingEffect.UpdateParameters(colorRt2, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
-            RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
+            (colorRtIn, colorRtOut) = (colorRtOut, colorRtIn);
 
-            gd.SetRenderTarget(null);
-            dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.VERTICAL;
-            dofPostProcessingEffect.UpdateParameters(colorRt, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
-            RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
-        }
-
-        private bool ambientOcclusionEnabled;
-        public bool AmbientOcclusionEnabled
-        {
-            get => ambientOcclusionEnabled;
-            set
+            if (DepthOfFieldEnabled)
             {
-                ambientOcclusionEnabled = value;
-                postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = value;
+                // depth of field
+                gd.SetRenderTarget(colorRtOut);
+                dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.HORIZONTAL;
+                dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane,
+                    scene.Camera.FarPlane);
+                RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
+
+                (colorRtIn, colorRtOut) = (colorRtOut, colorRtIn);
+
+                // final render to target RT
+                gd.SetRenderTarget(target);
+                dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.VERTICAL;
+                dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+                RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
             }
         }
 
@@ -148,8 +159,8 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void Dispose()
         {
-            colorRt?.Dispose();
-            colorRt2?.Dispose();
+            colorRtIn?.Dispose();
+            colorRtOut?.Dispose();
             depthRt?.Dispose();
             normalRt?.Dispose();
             ssaoRt?.Dispose();

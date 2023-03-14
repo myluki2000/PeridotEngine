@@ -14,18 +14,9 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class SceneRenderPipeline : IDisposable
     {
-        private bool ambientOcclusionEnabled;
-        public bool AmbientOcclusionEnabled
-        {
-            get => ambientOcclusionEnabled;
-            set
-            {
-                ambientOcclusionEnabled = value;
-                postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = value;
-            }
-        }
-
+        public bool AmbientOcclusionEnabled { get; set; }
         public bool DepthOfFieldEnabled { get; set; } = false;
+        public bool FogEnabled { get; set; } = true;
 
         private readonly Scene3D scene;
 
@@ -88,6 +79,10 @@ namespace PeridotEngine.Scenes.Scene3D
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
             gd.SamplerStates[0] = SamplerState.PointWrap;
 
+            if(scene.Camera.AllowAutomaticAspectRatioAdjustment)
+                scene.Camera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
+                                           Globals.Graphics.PreferredBackBufferHeight;
+
             scene.Resources.EffectPool.UpdateEffectCameraData(scene.Camera);
 
             // TODO: It's only necessary to re-render the shadow map if scene geometry changes
@@ -127,8 +122,10 @@ namespace PeridotEngine.Scenes.Scene3D
             }
 
             // combine
-            gd.SetRenderTarget(DepthOfFieldEnabled ? colorRtOut : target);
+            gd.SetRenderTarget(colorRtOut);
             postProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+            postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = AmbientOcclusionEnabled;
+            postProcessingEffect.FogEnabled = FogEnabled;
             postProcessingEffect.AmbientOcclusionTexture = ssaoRt;
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
 
@@ -136,7 +133,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             if (DepthOfFieldEnabled)
             {
-                // depth of field
+                // depth of field horizontal blur pass
                 gd.SetRenderTarget(colorRtOut);
                 dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.HORIZONTAL;
                 dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane,
@@ -145,12 +142,22 @@ namespace PeridotEngine.Scenes.Scene3D
 
                 (colorRtIn, colorRtOut) = (colorRtOut, colorRtIn);
 
-                // final render to target RT
-                gd.SetRenderTarget(target);
+                // depth of field vertical blur pass
+                gd.SetRenderTarget(colorRtOut);
                 dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.VERTICAL;
                 dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
                 RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
+
+                (colorRtIn, colorRtOut) = (colorRtOut, colorRtIn);
             }
+
+            // final render to screen
+            gd.SetRenderTarget(target);
+            postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = false;
+            postProcessingEffect.FogEnabled = false;
+            postProcessingEffect.UpdateParameters(colorRtIn, null, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+            RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
+
         }
 
         ~SceneRenderPipeline()

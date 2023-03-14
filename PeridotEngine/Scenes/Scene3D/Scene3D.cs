@@ -32,15 +32,7 @@ namespace PeridotEngine.Scenes.Scene3D
         public Ecs Ecs { get; }
         public SceneResources Resources { get; }
 
-        public Camera Camera
-        {
-            get => camera;
-            set
-            {
-                camera = value;
-                UpdateCameraAspectRatio();
-            }
-        }
+        public Camera Camera { get; set; }
 
         public Skydome Skydome { get; private set; }
 
@@ -49,7 +41,7 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             Resources = new SceneResources(this);
             Ecs = new Ecs();
-            Camera = new PerspectiveCamera();
+            Camera = new PerspectiveCamera() { AllowAutomaticAspectRatioAdjustment = true };
         }
 
         public Scene3D(string json)
@@ -74,16 +66,9 @@ namespace PeridotEngine.Scenes.Scene3D
         public override void Initialize()
         {
             Skydome = new(Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties());
-
-            Camera.Position = new Vector3(0, 1, 1);
-            UpdateCameraAspectRatio();
-
-            Globals.GameMain.Window.ClientSizeChanged += (_, _) => UpdateCameraAspectRatio();
         }
 
         private KeyboardState lastKeyboardState;
-        private Camera camera;
-
         public override void Update(GameTime gameTime)
         {
             Camera.Update(gameTime);
@@ -99,15 +84,6 @@ namespace PeridotEngine.Scenes.Scene3D
         public override void Deinitialize()
         {
             
-        }
-
-        private void UpdateCameraAspectRatio()
-        {
-            if (Camera is PerspectiveCamera perspectiveCamera)
-            {
-                perspectiveCamera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
-                                                Globals.Graphics.PreferredBackBufferHeight;
-            }
         }
     }
 }

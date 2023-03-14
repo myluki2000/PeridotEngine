@@ -9,6 +9,9 @@ namespace PeridotEngine.Graphics.Cameras
 {
     public abstract class Camera
     {
+        public abstract float AspectRatio { get; set; }
+        public bool AllowAutomaticAspectRatioAdjustment { get; set; } = false;
+
         public Vector3 Position { get; set; }
 
         public float NearPlane

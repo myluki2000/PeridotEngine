@@ -15,6 +15,11 @@ namespace PeridotWindows.Graphics.Camera
 {
     public class EditorCamera : PeridotEngine.Graphics.Cameras.PerspectiveCamera
     {
+        public EditorCamera()
+        {
+            AllowAutomaticAspectRatioAdjustment = true;
+        }
+
         private MouseState lastMouseState;
         public override void Update(GameTime gameTime)
         {

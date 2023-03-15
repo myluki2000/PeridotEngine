@@ -177,6 +177,10 @@ namespace PeridotEngine.Graphics.Effects
                     SimpleEffect.textureRepeatParam.SetValue(new Vector2(TextureRepeatX, TextureRepeatY));
                 }
 
+                // TODO: I think this doesn't take into account whether the passed mesh has a different vertex declaration
+                // than the one originally used for ChooseTechnique(). However this usually doesn't matter because
+                // EffectProperties are kept by the MeshComponent, so an EffectProperty has some Mesh associated with it
+                // that doesn't change
                 if (Technique == null)
                 {
                     ChooseTechnique(mesh.GetVertexDeclaration());

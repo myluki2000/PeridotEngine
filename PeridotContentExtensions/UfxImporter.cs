@@ -66,24 +66,24 @@ namespace PeridotContentExtensions
 
                     uberTechniques.Add(uberTechnique);
                 }
-                else if (cmd.TrimStart().StartsWith("uberpermutations "))
+                else if (cmd.TrimStart().StartsWith("ubercombinations "))
                 {
-                    // remove $endpermutations line
+                    // remove $ubercombinations line
                     lines.RemoveAt(i--);
 
-                    // parse $uberpermutations line
-                    Match match = Regex.Match(cmd, @"uberpermutations ([a-zA-Z0-9]+) ?\(([^()]*)\)( constraint ?\((.*)\))? technique (.*)$");
+                    // parse $ubercombinations line
+                    Match match = Regex.Match(cmd, @"ubercombinations ([a-zA-Z0-9]+) ?\(([^()]*)\)( constraint ?\((.*)\))? technique (.*)$");
 
-                    UberArg[] permutationArgs = ParseUberArgsDefinition(match.Groups[2].Value);
+                    UberArg[] combinationArgs = ParseUberArgsDefinition(match.Groups[2].Value);
                     string constraintExpr = match.Groups[4].Value;
-                    string uberPermutationsIdentifier = match.Groups[1].Value;
+                    string combinationsIdentifier = match.Groups[1].Value;
 
                     foreach (IEnumerable<bool> combination in GetCombinations(new bool[] { false, true },
-                                 permutationArgs.Length))
+                                 combinationArgs.Length))
                     {
                         List<bool> combinationList = combination.ToList();
-                        Dictionary<string, bool> argValues = Enumerable.Range(0, permutationArgs.Length)
-                            .ToDictionary(i => permutationArgs[i].Name, i => combinationList[i]);
+                        Dictionary<string, bool> argValues = Enumerable.Range(0, combinationArgs.Length)
+                            .ToDictionary(i => combinationArgs[i].Name, i => combinationList[i]);
 
                         // sort arg dictionary by argument name length (decending), so that when replacing argument names with argument values in
                         // expressions we first replace the arguments with the longest name. This is to prevent wrong replacement if we for example
@@ -120,8 +120,8 @@ namespace PeridotContentExtensions
                         }
 
                         UberTechnique uberTechnique = ParseUberTechniqueArgs(uberTechniqueArgs);
-                        uberTechnique.Identifier = uberPermutationsIdentifier + "_" +
-                                                   string.Join("_", combinationList.Select(x => x.ToString()));
+                        uberTechnique.Identifier = combinationsIdentifier + "_" +
+                                                   string.Join("_", combinationList.Select(x => x ? "1" : "0"));
                         uberTechniques.Add(uberTechnique);
                     }
                 }

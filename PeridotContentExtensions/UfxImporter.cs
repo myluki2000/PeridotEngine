@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -46,46 +47,83 @@ namespace PeridotContentExtensions
                     // remove $endblock line
                     lines.RemoveAt(i);
 
-                    string blockName = cmd.Substring("uberblock ".Length).Split("(")[0].Trim();
+                    // parse uberblock line
+                    Match match = Regex.Match(cmd, @"uberblock ([a-zA-Z0-9]*)\(([^()]*)\)( constraint ?\((.*)\))?$");
 
-                    string[] blockArgs = cmd.Split("(")[1][..^1].Replace(" ", "").Split(",");
+                    string blockName = match.Groups[1].Value;
+                    string? argConstraint = match.Groups.Count >= 5 ? match.Groups[4].Value : null;
 
-                    uberBlocks.Add(new UberBlock() { Name = blockName, Args = blockArgs, Lines = uberBlockLines.ToArray() });
+                    UberArg[] uberArgs = ParseUberArgsDefinition(match.Groups[2].Value);
+
+                    uberBlocks.Add(new UberBlock() { Name = blockName, Args = uberArgs, Lines = uberBlockLines.ToArray(), ArgConstraint = argConstraint });
                 }
                 else if (cmd.TrimStart().StartsWith("ubertechnique "))
                 {
                     // remove $ubertechnique line
                     lines.RemoveAt(i--);
 
-                    UberTechnique uberTechnique = new();
-
-                    string[] techniqueArgs = cmd.Substring("ubertechnique ".Length).Split(" ");
-
-                    if (techniqueArgs.Length != 1 && techniqueArgs.Length != 2)
-                        throw new ArgumentException("$ubertechnique command requires 1 or 2 arguments (vertex and pixel shader).");
-
-                    if (techniqueArgs.Length == 1 && !techniqueArgs[0].Contains("("))
-                        throw new ArgumentException(
-                            "If $ubertechnique uses one argument that argument needs to be a uberblock invocation.");
-
-                    if (techniqueArgs[0].Contains("("))
-                        uberTechnique.VertexShader = UberBlockInvocation.Parse(techniqueArgs[0]);
-                    else
-                        uberTechnique.VertexShader = techniqueArgs[0];
-
-                    if (techniqueArgs.Length == 2)
-                    {
-                        if (techniqueArgs[1].Contains("("))
-                            uberTechnique.PixelShader = UberBlockInvocation.Parse(techniqueArgs[1]);
-                        else
-                            uberTechnique.PixelShader = techniqueArgs[1];
-                    }
-                    else
-                    {
-                        uberTechnique.PixelShader = uberTechnique.VertexShader;
-                    }
+                    UberTechnique uberTechnique = ParseUberTechniqueArgs(cmd.Substring("ubertechnique ".Length));
 
                     uberTechniques.Add(uberTechnique);
+                }
+                else if (cmd.TrimStart().StartsWith("uberpermutations "))
+                {
+                    // remove $endpermutations line
+                    lines.RemoveAt(i--);
+
+                    // parse $uberpermutations line
+                    Match match = Regex.Match(cmd, @"uberpermutations ([a-zA-Z0-9]+) ?\(([^()]*)\)( constraint ?\((.*)\))? technique (.*)$");
+
+                    UberArg[] permutationArgs = ParseUberArgsDefinition(match.Groups[2].Value);
+                    string constraintExpr = match.Groups[4].Value;
+                    string uberPermutationsIdentifier = match.Groups[1].Value;
+
+                    foreach (IEnumerable<bool> combination in GetCombinations(new bool[] { false, true },
+                                 permutationArgs.Length))
+                    {
+                        List<bool> combinationList = combination.ToList();
+                        Dictionary<string, bool> argValues = Enumerable.Range(0, permutationArgs.Length)
+                            .ToDictionary(i => permutationArgs[i].Name, i => combinationList[i]);
+
+                        // sort arg dictionary by argument name length (decending), so that when replacing argument names with argument values in
+                        // expressions we first replace the arguments with the longest name. This is to prevent wrong replacement if we for example
+                        // have two arguments named "Foo" and "FooBar" (where one argument name is contained in another argument name)
+                        argValues = argValues.OrderByDescending(x => x.Key.Length).ToDictionary(x => x.Key, x => x.Value);
+
+                        // check if this combination of argument values is allowed by the uberblock's constraint (if there is any)
+                        if (constraintExpr != "")
+                        {
+                            string expr = constraintExpr;
+                            foreach ((string argName, bool argValue) in argValues)
+                            {
+                                expr = expr.Replace(argName, argValue.ToString());
+                            }
+
+                            if (!BoolExpressionEvaluator.Evaluate(expr))
+                            {
+                                // if this isn't a valid combination of arguments, continue to the next combination
+                                continue;
+                            }
+                        }
+
+                        // add uber technique with this set of arguments to the list of uber techniques
+                        string uberTechniqueArgs = match.Groups[5].Value.Replace(", ", ",");
+
+                        // replace argument names with argument values
+                        foreach ((string argName, bool argValue) in argValues)
+                        {
+                            uberTechniqueArgs = Regex.Replace(uberTechniqueArgs, "[(,]" + argName + "[,)]", m =>
+                            {
+                                string s = m.Value;
+                                return s[0] + argValue.ToString() + s[^1];
+                            });
+                        }
+
+                        UberTechnique uberTechnique = ParseUberTechniqueArgs(uberTechniqueArgs);
+                        uberTechnique.Identifier = uberPermutationsIdentifier + "_" +
+                                                   string.Join("_", combinationList.Select(x => x.ToString()));
+                        uberTechniques.Add(uberTechnique);
+                    }
                 }
             }
 
@@ -109,6 +147,7 @@ namespace PeridotContentExtensions
                 sb.Append(File.ReadAllText(includePath));
             }
 
+            // put all uberblock invocations of the $ubertechnique calls into a hashset to remove duplicates
             HashSet<UberBlockInvocation> uberBlockInvocations = new();
             foreach (UberTechnique uberTechnique in uberTechniques)
             {
@@ -123,8 +162,10 @@ namespace PeridotContentExtensions
                 }
             }
 
+            // go through all uber invocations we need to write to the effect file
             foreach (UberBlockInvocation uberInvoc in uberBlockInvocations)
             {
+                // find the uberblock corresponding to the uber invocation
                 UberBlock uberBlock = uberBlocks.First(x => x.Name == uberInvoc.Name);
 
                 Dictionary<string, bool> argValues = new();
@@ -132,10 +173,32 @@ namespace PeridotContentExtensions
                     throw new Exception("Number of provided arguments for the uberblock invocation does not match expected number.");
                 for (int i = 0; i < uberBlock.Args.Length; i++)
                 {
-                    string argName = uberBlock.Args[i];
+                    string argName = uberBlock.Args[i].Name;
                     bool argValue = uberInvoc.ArgValues[i];
 
                     argValues.Add(argName, argValue);
+                }
+
+                // sort arg dictionary by argument name length (decending), so that when replacing argument names with argument values in
+                // expressions we first replace the arguments with the longest name. This is to prevent wrong replacement if we for example
+                // have two arguments named "Foo" and "FooBar" (where one argument name is contained in another argument name)
+                argValues = argValues.OrderByDescending(x => x.Key.Length).ToDictionary(x => x.Key, x => x.Value);
+
+                // check if this combination of argument values is allowed by the uberblock's constraint (if there is any)
+                if (uberBlock.ArgConstraint != "")
+                {
+                    string expr = uberBlock.ArgConstraint;
+                    foreach ((string argName, bool argValue) in argValues)
+                    {
+                        expr = expr.Replace(argName, argValue.ToString());
+                    }
+
+                    if (!BoolExpressionEvaluator.Evaluate(expr))
+                    {
+                        throw new Exception("Uberblock invocation with argument values "
+                                            + string.Join(", ", argValues.Select(x => x.Key + "=" + x.Value))
+                                            + " is not allowed by uberblock's constraint");
+                    }
                 }
 
                 for (int i = 0; i < uberBlock.Lines.Length; i++)
@@ -152,7 +215,7 @@ namespace PeridotContentExtensions
                     if (line.Trim().StartsWith("$if"))
                     {
                         string expr = line.Split("$if")[1];
-                        foreach ((string argName, bool argValue) in argValues.OrderByDescending(x => x.Key.Length))
+                        foreach ((string argName, bool argValue) in argValues)
                         {
                             expr = expr.Replace(argName, argValue.ToString());
                         }
@@ -180,7 +243,14 @@ namespace PeridotContentExtensions
             // write technique definitions
             foreach (UberTechnique technique in uberTechniques)
             {
-                sb.AppendLine("technique");
+                if (!string.IsNullOrEmpty(technique.Identifier))
+                {
+                    sb.AppendLine("technique " + technique.Identifier);
+                }
+                else
+                {
+                    sb.AppendLine("technique");
+                }
                 sb.AppendLine("{");
                 sb.AppendLine("pass P0");
                 sb.AppendLine("{");
@@ -228,11 +298,95 @@ namespace PeridotContentExtensions
             return effect;
         }
 
+        private static UberTechnique ParseUberTechniqueArgs(string argsString)
+        {
+            UberTechnique uberTechnique = new();
+
+            string[] techniqueArgs = argsString.Split(" ");
+
+            if (techniqueArgs.Length != 1 && techniqueArgs.Length != 2)
+                throw new ArgumentException("$ubertechnique command requires 1 or 2 arguments (vertex and pixel shader).");
+
+            if (techniqueArgs.Length == 1 && !techniqueArgs[0].Contains("("))
+                throw new ArgumentException(
+                    "If $ubertechnique uses one argument that argument needs to be a uberblock invocation.");
+
+            // first arg of the $ubertechnique is either a uber-invocation for a vertex shader or a regular vertex shader name
+            if (techniqueArgs[0].Contains("("))
+                uberTechnique.VertexShader = UberBlockInvocation.Parse(techniqueArgs[0]);
+            else
+                uberTechnique.VertexShader = techniqueArgs[0];
+
+            // If there is a second argument, it is either a uber-invocation for a pixel shader or a regular pixel shader
+            if (techniqueArgs.Length == 2)
+            {
+                if (techniqueArgs[1].Contains("("))
+                    uberTechnique.PixelShader = UberBlockInvocation.Parse(techniqueArgs[1]);
+                else
+                    uberTechnique.PixelShader = techniqueArgs[1];
+            }
+            else
+            {
+                // if there is only one argument, then the uber-invocation is used for both the vertex and the pixel shader
+                uberTechnique.PixelShader = uberTechnique.VertexShader;
+            }
+
+            return uberTechnique;
+        }
+
+        private static UberArg[] ParseUberArgsDefinition(string argsString)
+        {
+            List<UberArg> args = new();
+            // parse args
+            foreach (string s in argsString.Split(","))
+            {
+                string argString = s.Trim();
+                string argTypeString = s.Split(" ")[0];
+                string argName = s.Split(" ")[1];
+
+                if (!Enum.TryParse(argTypeString, true, out UberArgType argType))
+                {
+                    throw new ArgumentException("$ubertechnique command argument of invalid type: " +
+                                                argTypeString + " " + argName);
+                }
+
+                args.Add(new UberArg(argType, argName));
+            }
+
+            return args.ToArray();
+        }
+
+        static IEnumerable<IEnumerable<T>> GetCombinations<T>(IEnumerable<T> list, int length)
+        {
+            if (length == 1) return list.Select(t => new T[] { t });
+            return GetCombinations(list, length - 1)
+                .SelectMany(t => list,
+                    (t1, t2) => t1.Concat(new T[] { t2 }));
+        }
+
         private class UberBlock
         {
             public string Name;
-            public string[] Args;
+            public UberArg[] Args;
             public string[] Lines;
+            public string? ArgConstraint;
+        }
+
+        private class UberArg
+        {
+            public readonly UberArgType Type;
+            public readonly string Name;
+
+            public UberArg(UberArgType type, string name)
+            {
+                Type = type;
+                Name = name;
+            }
+        }
+
+        private enum UberArgType
+        {
+            BOOL,
         }
 
         private class UberBlockInvocation
@@ -278,6 +432,7 @@ namespace PeridotContentExtensions
 
         private class UberTechnique
         {
+            public string? Identifier = null;
             public object VertexShader;
             public object PixelShader;
         }

@@ -49,7 +49,7 @@ namespace PeridotContentExtensions
             {
                 Match match = regex.Match(expr);
 
-                // keep searching expr for the "literal & literal" expression until we can't find
+                // keep searching expr for the "literal | literal" expression until we can't find
                 // one anymore
                 if (!match.Success) break;
 

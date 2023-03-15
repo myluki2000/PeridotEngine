@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
 using SharpDX.Direct3D9;
 using Color = Microsoft.Xna.Framework.Color;
@@ -154,6 +155,16 @@ namespace PeridotEngine.Graphics.Effects
                 }
             }
 
+            public bool RandomTextureRotationEnabled
+            {
+                get => randomTextureRotationEnabled;
+                set
+                {
+                    randomTextureRotationEnabled = value;
+                    Technique = null;
+                }
+            }
+
             public uint TextureId { get; set; }
 
             public int TextureRepeatX { get; set; } = 1;
@@ -193,6 +204,9 @@ namespace PeridotEngine.Graphics.Effects
             private bool vertexColorEnabled;
             private bool shadowsEnabled = true;
             private bool diffuseShadingEnabled = true;
+            private bool randomTextureRotationEnabled = false;
+
+            private static readonly Dictionary<int, EffectTechnique> techniquesDict = new();
 
             private void ChooseTechnique(VertexDeclaration vertexDeclaration)
             {
@@ -217,12 +231,12 @@ namespace PeridotEngine.Graphics.Effects
                     if (vertexElements.All(x => x.VertexElementUsage != VertexElementUsage.TextureCoordinate))
                         throw new Exception("TextureEnabled is set to true but mesh does not contain UV data.");
 
-                    techniqueIndex |= 0b0010;
+                    techniqueIndex |= 0b00010;
                 }
 
                 if (ShadowsEnabled)
                 {
-                    techniqueIndex |= 0b0100;
+                    techniqueIndex |= 0b00100;
                 }
 
                 if (DiffuseShadingEnabled)
@@ -230,10 +244,25 @@ namespace PeridotEngine.Graphics.Effects
                     if (vertexElements.All(x => x.VertexElementUsage != VertexElementUsage.Normal))
                         throw new Exception("DiffuseShadingEnabled is set to true but mesh does not contain normal data.");
 
-                    techniqueIndex |= 0b1000;
+                    techniqueIndex |= 0b01000;
                 }
 
-                Technique = Effect.Techniques[techniqueIndex];
+                if (RandomTextureRotationEnabled)
+                {
+                    techniqueIndex |= 0b10000;
+                }
+
+                if (techniquesDict.TryGetValue(techniqueIndex, out EffectTechnique? technique))
+                {
+                    Technique = technique;
+                }
+                else
+                {
+                    Technique = Effect.Techniques[UfxHelper.GenerateTechniqueId("SimpleEffect",
+                        VertexColorEnabled, TextureEnabled, ShadowsEnabled,
+                        DiffuseShadingEnabled, RandomTextureRotationEnabled)];
+                    techniquesDict.Add(techniqueIndex, Technique);
+                }
             }
         }
     }

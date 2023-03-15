@@ -34,6 +34,7 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
             nudTextureRepeatX.Value = effectProperties.TextureRepeatX;
             nudTextureRepeatY.Value = effectProperties.TextureRepeatY;
             cbReceiveShadows.Checked = effectProperties.ShadowsEnabled;
+            cbRandomTextureRotation.Checked = effectProperties.RandomTextureRotationEnabled;
         }
 
         private void btnPickColor_Click(object sender, EventArgs e)
@@ -73,6 +74,11 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
         private void cbReceiveShadows_CheckedChanged(object sender, EventArgs e)
         {
             effectProperties.ShadowsEnabled = cbReceiveShadows.Checked;
+        }
+
+        private void cbRandomTextureRotation_CheckedChanged(object sender, EventArgs e)
+        {
+            effectProperties.RandomTextureRotationEnabled = cbRandomTextureRotation.Checked;
         }
     }
 }

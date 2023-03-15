@@ -39,6 +39,7 @@
             this.nudTextureRepeatY = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.cbReceiveShadows = new System.Windows.Forms.CheckBox();
+            this.cbRandomTextureRotation = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).BeginInit();
@@ -173,10 +174,22 @@
             this.cbReceiveShadows.UseVisualStyleBackColor = true;
             this.cbReceiveShadows.CheckedChanged += new System.EventHandler(this.cbReceiveShadows_CheckedChanged);
             // 
+            // cbRandomTextureRotation
+            // 
+            this.cbRandomTextureRotation.AutoSize = true;
+            this.cbRandomTextureRotation.Location = new System.Drawing.Point(6, 144);
+            this.cbRandomTextureRotation.Name = "cbRandomTextureRotation";
+            this.cbRandomTextureRotation.Size = new System.Drawing.Size(160, 19);
+            this.cbRandomTextureRotation.TabIndex = 22;
+            this.cbRandomTextureRotation.Text = "Random Texture Rotation";
+            this.cbRandomTextureRotation.UseVisualStyleBackColor = true;
+            this.cbRandomTextureRotation.CheckedChanged += new System.EventHandler(this.cbRandomTextureRotation_CheckedChanged);
+            // 
             // SimpleEffectControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbRandomTextureRotation);
             this.Controls.Add(this.cbReceiveShadows);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.nudTextureRepeatY);
@@ -211,5 +224,6 @@
         private NumericUpDown nudTextureRepeatY;
         private Label label4;
         private CheckBox cbReceiveShadows;
+        private CheckBox cbRandomTextureRotation;
     }
 }

@@ -70,7 +70,7 @@ struct PixelOut
     float4 Normal : COLOR2;
 };
 
-$uberblock SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, diffuseShading)
+$uberblock SimpleEffect(bool vertexColorEnabled, bool textureEnabled, bool shadowsEnabled, bool diffuseShading, bool randomTextureRotation) constraint (!randomTextureRotation | textureEnabled)
 struct VertexIn$$
 {
 	float4 Position : POSITION0;
@@ -144,13 +144,16 @@ PixelOut PixelShader$$(PixelIn$$ input)
     $if vertexColorEnabled
         result *= input.Color;
     $endif
+
     $if textureEnabled
         float2 internalTexCoord = frac(input.TexCoord * TextureRepeat);
 
         float2 texCoord = internalTexCoord;
 
         // random rotation for each tile for repeating textures
-        /*float rand = random(floor(input.TexCoord * TextureRepeat));
+    $endif
+    $if randomTextureRotation
+        float rand = random(floor(input.TexCoord * TextureRepeat));
         rand *= 4;
         rand = floor(rand);
         texCoord = float2(0, 0);
@@ -169,8 +172,9 @@ PixelOut PixelShader$$(PixelIn$$ input)
 
         // rotate 3 times
         texCoord.x += (internalTexCoord.y) * (rand == 3);
-        texCoord.y += (1 - internalTexCoord.x) * (rand == 3);*/
-
+        texCoord.y += (1 - internalTexCoord.x) * (rand == 3);
+    $endif
+    $if textureEnabled
         texCoord = TexturePosition + texCoord * TextureSize;
         result *= SAMPLE_TEXTURE(Texture, texCoord);
     $endif
@@ -198,35 +202,4 @@ PixelOut PixelShader$$(PixelIn$$ input)
 }
 $endblock
 
-// 0000 "none"
-$ubertechnique SimpleEffect(false, false, false, false)
-// 1000 vertex color
-$ubertechnique SimpleEffect(true, false, false, false)
-// 0100 textured
-$ubertechnique SimpleEffect(false, true, false, false)
-// 1100 vertex color + textured
-$ubertechnique SimpleEffect(true, true, false, false)
-// 0010 shadows
-$ubertechnique SimpleEffect(false, false, true, false)
-// 1010 vertex color + shadows
-$ubertechnique SimpleEffect(true, false, true, false)
-// 0110 textured + shadows
-$ubertechnique SimpleEffect(false, true, true, false)
-// 1110 vertex color + textured + shadows
-$ubertechnique SimpleEffect(true, true, true, false)
-// 0001 diffuse shading
-$ubertechnique SimpleEffect(false, false, false, true)
-// 1001 vertex color + diffuse shading
-$ubertechnique SimpleEffect(true, false, false, true)
-// 0101 textured + diffuse shading
-$ubertechnique SimpleEffect(false, true, false, true)
-// 1101 vertex color + textured + diffuse shading
-$ubertechnique SimpleEffect(true, true, false, true)
-// 0011 shadows + diffuse shading
-$ubertechnique SimpleEffect(false, false, true, true)
-// 1011 vertex color + shadows + diffuse shading
-$ubertechnique SimpleEffect(true, false, true, true)
-// 0111 textured + shadows + diffuse shading
-$ubertechnique SimpleEffect(false, true, true, true)
-// 1111 vertex color + textured + shadows + diffuse shading
-$ubertechnique SimpleEffect(true, true, true, true)
+$ubercombinations SimpleEffect (bool vertexColorEnabled, bool textureEnabled, bool shadowsEnabled, bool diffuseShading, bool randomTextureRotation) constraint (!randomTextureRotation | textureEnabled) technique SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, diffuseShading, randomTextureRotation)

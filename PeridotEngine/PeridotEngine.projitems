@@ -49,6 +49,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\FpsMeasurer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\UfxHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\MeshResources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Scenes\Scene3D\Scene3D.cs" />

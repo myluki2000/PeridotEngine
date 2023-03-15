@@ -14,7 +14,7 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class SceneRenderPipeline : IDisposable
     {
-        public bool AmbientOcclusionEnabled { get; set; }
+        public bool AmbientOcclusionEnabled { get; set; } = true;
         public bool DepthOfFieldEnabled { get; set; } = false;
         public bool FogEnabled { get; set; } = true;
 

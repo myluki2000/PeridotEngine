@@ -158,13 +158,14 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
 	float ao = 0;
 
-	float3 random = randomNormal(input.TexCoord);
+	//float3 random = randomNormal(input.TexCoord);
 
+	int actualKernelSize = 0;
 	for(int i = 0; i < KERNEL_SIZE; i++)
 	{
 		float4 offset = float4(ssaoKernel[i], 0);
 		float offsetLength = length(offset);
-		offset = reflect(offset, float4(random, 0));
+		//offset = reflect(offset, float4(random, 0));
 
 		float4 samplePoint = pos + offset * 1.5f;
 		samplePoint = mul(samplePoint, Projection);
@@ -177,18 +178,16 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 		// this is a check which aborts if the actual depth is too different from the sample depth. This is necessary
 		// because otherwise you'd see a black shade around an object when another object is standing behind it but
 		// is far away.
-		if(actualDepth < sampleDepth - 1.5f)
+		if(actualDepth < sampleDepth - 1.3f)
 		{
-			ao += 1;
 			continue;
 		}
 
+		++actualKernelSize;
 		ao += (actualDepth > (sampleDepth - 0.001f)) * linearDropoff(offsetLength/*, 0.25f*/);
 	}
 
-	ao /= (KERNEL_SIZE * 1.0f);
-
-	ao = saturate(ao * 2);
+	ao = map(ao, 0, actualKernelSize, 0, 2);
 
 	return float4(ao, ao, ao, 1);
 }

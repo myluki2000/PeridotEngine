@@ -14,24 +14,57 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class SceneRenderPipeline : IDisposable
     {
+        /// <summary>
+        /// Enables or disables screen space ambient occlusion for this render pipeline.
+        /// </summary>
         public bool AmbientOcclusionEnabled { get; set; } = true;
+        /// <summary>
+        /// Enables or disables post processing depth of field for this render pipeline.
+        /// </summary>
         public bool DepthOfFieldEnabled { get; set; } = false;
+        /// <summary>
+        /// Enables or disables post processing fog for this render pipeline.
+        /// </summary>
         public bool FogEnabled { get; set; } = true;
+
+        /// <summary>
+        /// Set to 0 to disable MSAA. Set to higher values to set the preferred sample count
+        /// for MSAA (a different sample) count may be chosen if the device does not support
+        /// the preferred sample count set using this property.
+        /// Defaults to 0.
+        /// </summary>
+        public int PreferredMultiSampleCount
+        {
+            get => preferredMultiSampleCount;
+            set
+            {
+                preferredMultiSampleCount = value;
+                // re-init render targets using the new sample count setting.
+                InitRts();
+            }
+        }
+
+        private int preferredMultiSampleCount = 0;
 
         private readonly Scene3D scene;
 
         private readonly MeshRenderingSystem meshRenderingSystem;
         private readonly SunShadowMapSystem sunShadowMapSystem;
 
-        private RenderTarget2D colorRtIn;
-        private RenderTarget2D colorRtOut;
+        
+        private RenderTarget2D colorRt;
         private RenderTarget2D depthRt;
         private RenderTarget2D normalRt;
+
+        // post processing render targets
+        private RenderTarget2D colorRtIn;
+        private RenderTarget2D colorRtOut;
         private RenderTarget2D ssaoRt;
 
         private SimplePostProcessingEffect postProcessingEffect;
         private SsaoPostProcessingEffect ssaoPostProcessingEffect;
         private DepthOfFieldPostProcessingEffect dofPostProcessingEffect;
+        
 
         public SceneRenderPipeline(Scene3D scene)
         {
@@ -39,25 +72,6 @@ namespace PeridotEngine.Scenes.Scene3D
 
             meshRenderingSystem = new MeshRenderingSystem(scene);
             sunShadowMapSystem = new SunShadowMapSystem(scene);
-
-            void InitRts()
-            {
-                colorRtIn?.Dispose();
-                colorRtOut?.Dispose();
-                depthRt?.Dispose();
-                normalRt?.Dispose();
-                ssaoRt?.Dispose();
-                colorRtIn = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-                colorRtOut = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-                depthRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24);
-                normalRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24);
-                ssaoRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                    Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            }
 
             InitRts();
             Globals.GameMain.Window.ClientSizeChanged += (_, _) => InitRts();
@@ -91,7 +105,7 @@ namespace PeridotEngine.Scenes.Scene3D
             scene.Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
 
             // render scene meshes to color, normal and depth buffers
-            gd.SetRenderTargets(colorRtIn, depthRt, normalRt);
+            gd.SetRenderTargets(colorRt, depthRt, normalRt);
             gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
                 float.MaxValue, 0);
 
@@ -116,14 +130,14 @@ namespace PeridotEngine.Scenes.Scene3D
             if (AmbientOcclusionEnabled)
             {
                 gd.SetRenderTarget(ssaoRt);
-                ssaoPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, normalRt, projection, scene.Camera.NearPlane,
+                ssaoPostProcessingEffect.UpdateParameters(colorRt, depthRt, normalRt, projection, scene.Camera.NearPlane,
                     scene.Camera.FarPlane);
                 RenderTargetRenderer.RenderRenderTarget(ssaoPostProcessingEffect);
             }
 
             // combine
             gd.SetRenderTarget(colorRtOut);
-            postProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+            postProcessingEffect.UpdateParameters(colorRt, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
             postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = AmbientOcclusionEnabled;
             postProcessingEffect.FogEnabled = FogEnabled;
             postProcessingEffect.AmbientOcclusionTexture = ssaoRt;
@@ -158,6 +172,33 @@ namespace PeridotEngine.Scenes.Scene3D
             postProcessingEffect.UpdateParameters(colorRtIn, null, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
 
+        }
+
+        private void InitRts()
+        {
+            colorRtIn?.Dispose();
+            colorRtOut?.Dispose();
+            depthRt?.Dispose();
+            normalRt?.Dispose();
+            ssaoRt?.Dispose();
+
+            // multisampling sample count must be the same on all render targets bound at the same time!
+            colorRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24,
+                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+            depthRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
+                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+            normalRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24,
+                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+
+            colorRtIn = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            colorRtOut = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            ssaoRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
         }
 
         ~SceneRenderPipeline()

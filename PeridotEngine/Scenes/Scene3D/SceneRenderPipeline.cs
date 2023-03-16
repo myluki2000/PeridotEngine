@@ -59,7 +59,6 @@ namespace PeridotEngine.Scenes.Scene3D
         // post processing render targets
         private RenderTarget2D colorRtIn;
         private RenderTarget2D colorRtOut;
-        private RenderTarget2D ssaoRt;
 
         private SimplePostProcessingEffect postProcessingEffect;
         private SsaoPostProcessingEffect ssaoPostProcessingEffect;
@@ -129,7 +128,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             if (AmbientOcclusionEnabled)
             {
-                gd.SetRenderTarget(ssaoRt);
+                gd.SetRenderTarget(colorRtIn);
                 ssaoPostProcessingEffect.UpdateParameters(colorRt, depthRt, normalRt, projection, scene.Camera.NearPlane,
                     scene.Camera.FarPlane);
                 RenderTargetRenderer.RenderRenderTarget(ssaoPostProcessingEffect);
@@ -140,7 +139,7 @@ namespace PeridotEngine.Scenes.Scene3D
             postProcessingEffect.UpdateParameters(colorRt, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
             postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = AmbientOcclusionEnabled;
             postProcessingEffect.FogEnabled = FogEnabled;
-            postProcessingEffect.AmbientOcclusionTexture = ssaoRt;
+            postProcessingEffect.AmbientOcclusionTexture = colorRtIn;
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
 
             (colorRtIn, colorRtOut) = (colorRtOut, colorRtIn);
@@ -180,7 +179,6 @@ namespace PeridotEngine.Scenes.Scene3D
             colorRtOut?.Dispose();
             depthRt?.Dispose();
             normalRt?.Dispose();
-            ssaoRt?.Dispose();
 
             // multisampling sample count must be the same on all render targets bound at the same time!
             colorRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
@@ -197,8 +195,6 @@ namespace PeridotEngine.Scenes.Scene3D
                 Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
             colorRtOut = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                 Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            ssaoRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
         }
 
         ~SceneRenderPipeline()
@@ -212,7 +208,6 @@ namespace PeridotEngine.Scenes.Scene3D
             colorRtOut?.Dispose();
             depthRt?.Dispose();
             normalRt?.Dispose();
-            ssaoRt?.Dispose();
         }
     }
 }

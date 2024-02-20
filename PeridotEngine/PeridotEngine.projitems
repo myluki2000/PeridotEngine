@@ -33,6 +33,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Effects\SkydomeEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\Mesh.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Geometry\MeshGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\BlurPostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\DepthOfFieldPostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\SimplePostProcessingEffect.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\PostProcessing\PostProcessingEffectBase.cs" />

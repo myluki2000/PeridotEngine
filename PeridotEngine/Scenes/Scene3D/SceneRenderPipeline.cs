@@ -81,7 +81,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 FogStart = 20f,
                 FogEnd = 50f,
                 FogColor = Color.CornflowerBlue,
-                ScreenSpaceAmbientOcclusionEnabled = false,
+                ScreenSpaceAmbientOcclusionEnabled = false, // set later during render according to property
             };
             ssaoPostProcessingEffect = new SsaoPostProcessingEffect();
             dofPostProcessingEffect = new DepthOfFieldPostProcessingEffect();

@@ -82,7 +82,7 @@ namespace PeridotEngine.Graphics.Effects
             set => lightPositionParam.SetValue(value);
         }
 
-        private void TextureAtlasChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
+        private void TextureAtlasChanged(object? sender, IEnumerable<TextureResources.ITextureInfo> textureInfos)
         {
             textureParam?.SetValue(textureResources?.TextureAtlas);
         }
@@ -165,7 +165,7 @@ namespace PeridotEngine.Graphics.Effects
                 }
             }
 
-            public uint TextureId { get; set; }
+            public int TextureId { get; set; }
 
             public int TextureRepeatX { get; set; } = 1;
             public int TextureRepeatY { get; set; } = 1;

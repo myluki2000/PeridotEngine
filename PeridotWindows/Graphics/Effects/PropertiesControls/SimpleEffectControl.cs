@@ -49,7 +49,7 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
 
         private void nudTextureId_ValueChanged(object sender, EventArgs e)
         {
-            effectProperties.TextureId = (uint)nudTextureId.Value;
+            effectProperties.TextureId = (int)nudTextureId.Value;
         }
 
         private void cbTexture_CheckedChanged(object sender, EventArgs e)

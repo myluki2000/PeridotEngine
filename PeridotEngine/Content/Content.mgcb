@@ -88,3 +88,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/well.obj
 
+#begin Textures/missing_texture.png
+/copy:Textures/missing_texture.png
+

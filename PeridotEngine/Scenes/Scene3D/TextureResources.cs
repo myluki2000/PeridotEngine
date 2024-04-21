@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -15,19 +16,52 @@ namespace PeridotEngine.Scenes.Scene3D
         [JsonProperty]
         private TextureInfo?[] textures = new TextureInfo[] { };
 
-        public event EventHandler<IEnumerable<TextureInfo>>? TextureAtlasChanged;
+        [JsonIgnore]
+        private RectangleF missingTextureBounds;
 
-        public RectangleF GetTextureBoundsInAtlas(uint textureId)
+        public event EventHandler<IEnumerable<ITextureInfo>>? TextureAtlasChanged;
+
+        public RectangleF GetTextureBoundsInAtlas(int textureId)
         {
-            if (textureId >= textures.Length) return RectangleF.Empty;
+            if (textureId >= textures.Length) return missingTextureBounds;
 
             TextureInfo? tex = textures[textureId];
-            return tex?.Bounds ?? RectangleF.Empty;
+            return tex?.Bounds ?? missingTextureBounds;
         }
 
-        public IEnumerable<TextureInfo> GetAllTextures()
+        public ITextureInfo GetTexture(int textureId)
         {
-            return textures.Where(x => x != null)!;
+            // if we try to query texture outside of array bounds, resize array and add dummy texture info object
+            if (textureId >= textures.Length)
+            {
+                Array.Resize(ref textures, textureId + 1);
+                TextureInfo texInfo = new(textureId, null)
+                {
+                    Bounds = missingTextureBounds
+                };
+                textures[textureId] = texInfo;
+                return texInfo;
+            }
+
+            // if we're inside the array, get the texture info
+            TextureInfo? tex = textures[textureId];
+
+            // it it is null, create an new one with the "missing texture" texture
+            if (tex == null)
+            {
+                tex = new TextureInfo(textureId, null)
+                {
+                    Bounds = missingTextureBounds,
+                };
+                textures[textureId] = tex;
+            }
+
+            return tex;
+        }
+
+        public IEnumerable<ITextureInfo> GetAllTextures()
+        {
+            return textures.Where(x => x != null && x.FilePath != null)!;
         }
 
         public void AddTexture(string filePath)
@@ -49,38 +83,60 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private void AddTextureWithoutRefreshingAtlas(string filePath)
         {
-            TextureInfo texInfo = new(filePath);
-            bool spotFound = false;
+            TextureInfo? texInfo = null;
             for (int i = 0; i < textures.Length; i++)
             {
                 if (textures[i] == null)
                 {
-                    texInfo.TextureId = (uint)i;
+                    texInfo = new(i, filePath);
                     textures[i] = texInfo;
-                    spotFound = true;
                     break;
                 }
             }
 
 
-            if (spotFound) return;
+            if (texInfo != null) return;
 
             // if we couldn't find a free spot we'll have to increase the size of the array
             int length = textures.Length;
             Array.Resize(ref textures, (length * 2 > 0) ? (length * 2) : 1);
-            texInfo.TextureId = (uint)length;
+            texInfo = new(length, filePath);
             textures[length] = texInfo;
+        }
+
+        public void RemoveTexture(uint textureId)
+        {
+            textures[textureId] = null;
+            GenerateAtlas();
+        }
+
+        public void ReloadTextures()
+        {
+            GenerateAtlas();
         }
 
         public void GenerateAtlas()
         {
-            List<(uint id, Bitmap bitmap)>[] bitmaps = new List<(uint id, Bitmap bitmap)>[16];
+            // create 16 bins for 16 different texture heights: 0-2, 3-4, 5-8, 9-16, 17-32, 33-64, and so on
+            List<(int id, Bitmap bitmap)>[] bitmaps = new List<(int id, Bitmap bitmap)>[16];
             for (int i = 0; i < bitmaps.Length; i++)
             {
-                bitmaps[i] = new List<(uint id, Bitmap bitmap)>();
+                bitmaps[i] = new List<(int id, Bitmap bitmap)>();
             }
 
-            for (uint texId = 0; texId < textures.Length; texId++)
+            // add the "missing texture" texture to its bin
+            {
+                Bitmap bitmap = new Bitmap(Globals.Content.RootDirectory + "/Textures/missing_texture.png");
+
+                // k is chosen such that k is the smallest value possible for which 2^k > bitmap.Height is true 
+                int k = (int)Math.Ceiling(Math.Log2(bitmap.Height));
+
+                List<(int id, Bitmap bitmap)> bin = bitmaps[k];
+                bin.Add((-1, bitmap));
+            }
+
+            // add all textures we have to the different bins
+            for (int texId = 0; texId < textures.Length; texId++)
             {
                 TextureInfo? texInfo = textures[texId];
                 if (texInfo == null) continue;
@@ -90,7 +146,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 // k is chosen such that k is the smallest value possible for which 2^k > bitmap.Height is true 
                 int k = (int)Math.Ceiling(Math.Log2(bitmap.Height));
 
-                List<(uint id, Bitmap bitmap)> bin = bitmaps[k];
+                List<(int id, Bitmap bitmap)> bin = bitmaps[k];
                 bin.Add((texId, bitmap));
             }
 
@@ -132,7 +188,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
                 for (int i = 0; i < bitmaps.Length; i++)
                 {
-                    List<(uint id, Bitmap bitmap)> bin = bitmaps[i];
+                    List<(int id, Bitmap bitmap)> bin = bitmaps[i];
 
                     if (bin.Count == 0) continue;
 
@@ -175,7 +231,7 @@ namespace PeridotEngine.Scenes.Scene3D
             int currentY = 0;
             for (int i = 0; i < bitmaps.Length; i++)
             {
-                List<(uint id, Bitmap bitmap)> bin = bitmaps[i];
+                List<(int id, Bitmap bitmap)> bin = bitmaps[i];
 
                 if (bin.Count == 0) continue;
 
@@ -185,15 +241,28 @@ namespace PeridotEngine.Scenes.Scene3D
                 int texIndex = 0;
                 while (true)
                 {
-                    (uint texId, Bitmap bitmap) = bin[texIndex];
+                    (int texId, Bitmap bitmap) = bin[texIndex];
                     if (currentX + bitmap.Width <= atlasSize)
                     {
                         graphics.DrawImage(bitmap, currentX, currentY, bitmap.Width, bitmap.Height);
-                        TextureInfo texInfo = textures[texId];
-                        if (texInfo == null) throw new Exception();
 
-                        texInfo.Bounds = new RectangleF(currentX / (float)atlasSize, currentY / (float)atlasSize,
+                        RectangleF bounds = new(currentX / (float)atlasSize, currentY / (float)atlasSize,
                             bitmap.Width / (float)atlasSize, bitmap.Height / (float)atlasSize);
+
+
+                        if (texId < 0)
+                        {
+                            // the "missing texture" texture has id -1
+                            missingTextureBounds = bounds;
+                        }
+                        else
+                        {
+                            // for regular textures, set their bounds in their texture info object
+                            TextureInfo? texInfo = textures[texId];
+                            if (texInfo == null) throw new Exception();
+                            texInfo.Bounds = bounds;
+                        }
+
                         currentX += bitmap.Width;
                         texIndex++;
                     }
@@ -222,15 +291,23 @@ namespace PeridotEngine.Scenes.Scene3D
             TextureAtlasChanged?.Invoke(this, GetAllTextures());
         }
 
-        public class TextureInfo
+        public interface ITextureInfo
         {
-            public string FilePath;
-            [JsonIgnore]
-            public RectangleF Bounds;
-            public uint TextureId;
+            public int Id { get; }
+            public string? FilePath { get; }
+            public RectangleF Bounds { get; }
+        }
 
-            public TextureInfo(string filePath)
+        private class TextureInfo : ITextureInfo
+        {
+            public int Id { get; }
+            public string? FilePath { get; }
+            [JsonIgnore]
+            public RectangleF Bounds { get; set; }
+
+            public TextureInfo(int id, string? filePath)
             {
+                this.Id = id;
                 this.FilePath = filePath;
                 this.Bounds = RectangleF.Empty;
             }

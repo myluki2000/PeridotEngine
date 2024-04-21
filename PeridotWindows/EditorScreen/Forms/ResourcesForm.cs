@@ -47,13 +47,13 @@ namespace PeridotWindows.EditorScreen.Forms
             }
         }
 
-        private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.TextureInfo> textureInfos)
+        private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.ITextureInfo> textureInfos)
         {
             lvTextures.Items.Clear();
 
             ImageList imgList = new();
 
-            foreach (TextureResources.TextureInfo texInfo in textureInfos)
+            foreach (TextureResources.ITextureInfo texInfo in textureInfos)
             {
                 lvTextures.LargeImageList = imgList;
                 lvTextures.SmallImageList = imgList;

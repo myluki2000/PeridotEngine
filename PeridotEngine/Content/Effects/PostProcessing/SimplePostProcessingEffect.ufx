@@ -80,51 +80,20 @@ VertexShaderOutput VS(in VertexShaderInput input)
 	return output;
 }
 
-float4 PS(VertexShaderOutput input) : COLOR {
+$uberblock SimplePostProcessingEffect(bool fogEnabled, bool ssaoEnabled)
+float4 PixelShader$$(VertexShaderOutput input) : COLOR {
 	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
+
+	$if(fogEnabled)
+		color = applyFog(input, color);
+	$endif
+
+	$if(ssaoEnabled)
+		color *= SAMPLE_TEXTURE(AmbientOcclusionTexture, input.TexCoord).r;
+	$endif
+
 	return color;
 }
+$endblock
 
-float4 PSFog(VertexShaderOutput input) : COLOR {
-	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
-	color = applyFog(input, color);
-	return color;
-}
-
-float4 PSSsao(VertexShaderOutput input) : COLOR {
-	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
-	color *= SAMPLE_TEXTURE(AmbientOcclusionTexture, input.TexCoord).r;
-	return color;
-}
-
-float4 PSFogSsao(VertexShaderOutput input) : COLOR0 {
-	float4 color = SAMPLE_TEXTURE(ColorTexture, input.TexCoord);
-	color = applyFog(input, color);
-	color *= SAMPLE_TEXTURE(AmbientOcclusionTexture, input.TexCoord).r;
-	return color;
-}
-
-technique {
-	pass {
-		VertexShader = compile VS_SHADERMODEL VS();
-		PixelShader = compile PS_SHADERMODEL PS();
-	}
-}
-technique {
-	pass {
-		VertexShader = compile VS_SHADERMODEL VS();
-		PixelShader = compile PS_SHADERMODEL PSFog();
-	}
-}
-technique {
-	pass {
-		VertexShader = compile VS_SHADERMODEL VS();
-		PixelShader = compile PS_SHADERMODEL PSSsao();
-	}
-}
-technique {
-	pass {
-		VertexShader = compile VS_SHADERMODEL VS();
-		PixelShader = compile PS_SHADERMODEL PSFogSsao();
-	}
-}
+$ubercombinations SimplePostProcessingEffect (bool fogEnabled, bool ssaoEnabled) technique VS SimplePostProcessingEffect(fogEnabled, ssaoEnabled)

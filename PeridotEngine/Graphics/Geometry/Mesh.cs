@@ -99,7 +99,6 @@ namespace PeridotEngine.Graphics.Geometry
                     }
 
                     Vector3 pos = *((Vector3*)elePtr);
-                    Debug.WriteLine(pos);
 
                     if (pos.X < newBounds.Min.X)
                         newBounds.Min.X = pos.X;

@@ -42,6 +42,11 @@ namespace PeridotWindows.ECS
             entities = new();
         }
 
+        public bool HasComponent<T>() where T : ComponentBase
+        {
+            return ComponentTypes.Contains(typeof(T));
+        }
+
         public Entity? EntityById(uint entityId)
         {
             int index = Ids.IndexOf(entityId);

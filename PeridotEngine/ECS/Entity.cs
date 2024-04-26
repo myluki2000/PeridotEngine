@@ -32,6 +32,13 @@ namespace PeridotWindows.ECS
             private int index;
             private Archetype archetype;
 
+            public T GetComponent<T>() where T : ComponentBase
+            {
+                int componentIndex = Array.IndexOf(archetype.ComponentTypes, typeof(T));
+
+                return (T)Archetype.Components[componentIndex][index];
+            }
+
             public static Entity FromIndex(int index, Archetype archetype)
             {
                 Entity e = new(archetype);

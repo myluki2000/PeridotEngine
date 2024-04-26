@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PeridotEngine.Graphics.Geometry
 {
+    /// <summary>
+    /// Static helper class to generate basic mesh shapes.
+    /// </summary>
     public static class MeshGenerator
     {
         public static (VertexPositionNormalTexture[] vertices, uint[] indices) GenerateTriangle()

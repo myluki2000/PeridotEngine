@@ -22,26 +22,33 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public MeshResources()
         {
+            void CreateDefaultMesh(VertexPositionNormalTexture[] verts, uint[] indices, string name)
+            {
+                BoundingBox bounds = new();
+                bounds.Min.X = verts.Min(x => x.Position.X);
+                bounds.Max.X = verts.Max(x => x.Position.X);
+
+                bounds.Min.Y = verts.Min(x => x.Position.Y);
+                bounds.Max.Y = verts.Max(x => x.Position.Y);
+
+                bounds.Min.Z = verts.Min(x => x.Position.Z);
+                bounds.Max.Z = verts.Max(x => x.Position.Z);
+
+                AddDefaultMesh(new MeshInfo(
+                    name,
+                    null,
+                    new Mesh<VertexPositionNormalTexture>(verts, indices, bounds)
+                ));
+            }
+
             (VertexPositionNormalTexture[] quadVerts, uint[] quadIndices) = MeshGenerator.GenerateQuad();
-            AddDefaultMesh(new MeshInfo(
-                "quad",
-                null,
-                new Mesh<VertexPositionNormalTexture>(quadVerts, quadIndices)
-            ));
+            CreateDefaultMesh(quadVerts, quadIndices, "quad");
 
             (VertexPositionNormalTexture[] triVerts, uint[] triIndices) = MeshGenerator.GenerateTriangle();
-            AddDefaultMesh(new MeshInfo(
-                "tri",
-                null,
-                new Mesh<VertexPositionNormalTexture>(triVerts, triIndices)
-            ));
+            CreateDefaultMesh(triVerts, triIndices, "tri");
 
             (VertexPositionNormalTexture[] sphereVerts, uint[] sphereIndices) = MeshGenerator.GenerateSphere();
-            AddDefaultMesh(new MeshInfo(
-                "sphere",
-                null,
-                new Mesh<VertexPositionNormalTexture>(sphereVerts, sphereIndices)
-            ));
+            CreateDefaultMesh(sphereVerts, sphereIndices, "sphere");
         }
 
         public IEnumerable<MeshInfo> GetAllMeshes()

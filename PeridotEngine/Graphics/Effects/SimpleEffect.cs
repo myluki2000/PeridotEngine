@@ -102,9 +102,9 @@ namespace PeridotEngine.Graphics.Effects
             return new SimpleEffectProperties(this);
         }
 
-        public override void UpdateMatrices()
+        public override void Apply()
         {
-            base.UpdateMatrices();
+            base.Apply();
 
             Matrix lightWorldViewProj = World * LightViewProjection;
 
@@ -165,6 +165,16 @@ namespace PeridotEngine.Graphics.Effects
                 }
             }
 
+            public bool ObjectPickingEnabled
+            {
+                get => objectPickingEnabled;
+                set
+                {
+                    objectPickingEnabled = value;
+                    Technique = null;
+                }
+            }
+
             public int TextureId { get; set; }
 
             public int TextureRepeatX { get; set; } = 1;
@@ -205,6 +215,7 @@ namespace PeridotEngine.Graphics.Effects
             private bool shadowsEnabled = true;
             private bool diffuseShadingEnabled = true;
             private bool randomTextureRotationEnabled = false;
+            private bool objectPickingEnabled = true;
 
             private static readonly Dictionary<int, EffectTechnique> techniquesDict = new();
 
@@ -252,6 +263,11 @@ namespace PeridotEngine.Graphics.Effects
                     techniqueIndex |= 0b10000;
                 }
 
+                if (ObjectPickingEnabled)
+                {
+                    techniqueIndex |= 0b100000;
+                }
+
                 if (techniquesDict.TryGetValue(techniqueIndex, out EffectTechnique? technique))
                 {
                     Technique = technique;
@@ -260,7 +276,7 @@ namespace PeridotEngine.Graphics.Effects
                 {
                     Technique = Effect.Techniques[UfxHelper.GenerateTechniqueId("SimpleEffect",
                         VertexColorEnabled, TextureEnabled, ShadowsEnabled,
-                        DiffuseShadingEnabled, RandomTextureRotationEnabled)];
+                        DiffuseShadingEnabled, RandomTextureRotationEnabled, ObjectPickingEnabled)];
                     techniquesDict.Add(techniqueIndex, Technique);
                 }
             }

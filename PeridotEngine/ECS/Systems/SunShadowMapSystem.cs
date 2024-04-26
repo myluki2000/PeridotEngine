@@ -54,7 +54,7 @@ namespace PeridotEngine.ECS.Systems
 
             Camera camera = new OrthographicCamera();
 
-            sunLights.ForEach((PositionRotationScaleComponent posC) =>
+            sunLights.ForEach((uint _, PositionRotationScaleComponent posC) =>
             {
                 camera.Position = posC.Position;
                 camera.Yaw = posC.Rotation.Y;
@@ -66,10 +66,10 @@ namespace PeridotEngine.ECS.Systems
             depthEffect.View = camera.GetViewMatrix();
             depthEffect.Projection = camera.GetProjectionMatrix();
             
-            meshRenderingSystem.Meshes.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
+            meshRenderingSystem.Meshes.ForEach((uint entityId, StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
             {
                 if (!meshC.CastShadows) return;
-                meshRenderingSystem.RenderMesh(meshC, posC, depthEffect);
+                meshRenderingSystem.RenderMesh(entityId, meshC, posC, depthEffect);
             });
 
             gd.SetRenderTarget(null);

@@ -28,13 +28,13 @@ namespace PeridotEngine.ECS.Systems
         {
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
-            Meshes!.ForEach((StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
+            Meshes!.ForEach((uint entityId, StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
             {
-                RenderMesh(meshC, posC);
+                RenderMesh(entityId, meshC, posC);
             });
         }
 
-        public void RenderMesh(StaticMeshComponent meshC, PositionRotationScaleComponent posC, EffectBase? effectOverride = null)
+        public void RenderMesh(uint objectId, StaticMeshComponent meshC, PositionRotationScaleComponent posC, EffectBase? effectOverride = null)
         {
             if (meshC.EffectProperties == null || meshC.Mesh == null) return;
 
@@ -43,11 +43,12 @@ namespace PeridotEngine.ECS.Systems
             if (effectOverride == null)
             {
                 meshC.EffectProperties.Effect.World = posC.Transformation;
+                meshC.EffectProperties.Effect.ObjectId = objectId;
             }
             else
             {
                 effectOverride.World = posC.Transformation;
-                effectOverride.UpdateMatrices();
+                effectOverride.Apply();
             }
 
             if (meshC.Mesh.Mesh.VertexBuffer == null)

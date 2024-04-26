@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using PeridotEngine.Scenes.Scene3D;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace PeridotEngine.Graphics.Screens
 {
@@ -48,6 +50,12 @@ namespace PeridotEngine.Graphics.Screens
             renderPipeline?.Dispose();
             renderPipeline = null;
             scene.Deinitialize();
+        }
+
+        public int GetObjectIdAtScreenPos(Point screenPos)
+        {
+            return renderPipeline?.GetObjectIdAtScreenPos(screenPos) 
+                   ?? throw new Exception("Can only get object at screen pos after render pipeline has been initialized!");
         }
     }
 }

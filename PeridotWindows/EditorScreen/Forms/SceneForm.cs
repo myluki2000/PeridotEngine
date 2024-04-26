@@ -14,26 +14,44 @@ namespace PeridotWindows.EditorScreen.Forms
 {
     public partial class SceneForm : Form
     {
-        public Archetype.Entity? SelectedEntity;
-        public event EventHandler<Archetype.Entity?>? SelectedEntityChanged;
+        private readonly EditorScreen screen;
 
-        private readonly Scene3D scene;
-
-        public SceneForm(Scene3D scene)
+        public SceneForm(EditorScreen screen)
         {
             InitializeComponent();
 
-            this.scene = scene;
-            scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
+            this.screen = screen;
+            screen.Scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
+            screen.SelectedEntityChanged += ScreenOnSelectedEntityChanged;
             Populate();
+        }
+
+        private void ScreenOnSelectedEntityChanged(object? sender, Archetype.Entity? entity)
+        {
+            lvScene.SelectedIndexChanged -= lvScene_SelectedIndexChanged;
+            foreach (ListViewItem listItem in lvScene.Items)
+            {
+                listItem.Selected = false;
+            }
+
+            if (entity != null)
+            {
+                foreach (ListViewItem listItem in lvScene.Items)
+                {
+                    Archetype.Entity itemEntity = (Archetype.Entity)listItem.Tag;
+                    if (itemEntity.Id == entity.Id)
+                        listItem.Selected = true;
+                }
+            }
+            lvScene.SelectedIndexChanged += lvScene_SelectedIndexChanged;
         }
 
         private void EcsOnEntityListChanged(object? sender, Archetype e)
         {
-            if (SelectedEntity != null && SelectedEntity.IsDeleted)
+            // TODO: This check should be in EditorScreen class
+            if (screen.SelectedEntity != null && screen.SelectedEntity.IsDeleted)
             {
-                SelectedEntity = null;
-                SelectedEntityChanged?.Invoke(this, null);
+                screen.SelectedEntity = null;
             }
             Populate();
         }
@@ -41,7 +59,7 @@ namespace PeridotWindows.EditorScreen.Forms
         public void Populate()
         {
             List<ListViewItem> items = new();
-            scene.Ecs.Query().ForEach((Archetype.Entity entity) =>
+            screen.Scene.Ecs.Query().ForEach((Archetype.Entity entity) =>
             {
                 string name = string.IsNullOrEmpty(entity.Name)
                     ? string.Join(", ", entity.Components.Select(x => x.GetType().Name))
@@ -57,12 +75,10 @@ namespace PeridotWindows.EditorScreen.Forms
             lvScene.Items.AddRange(items.ToArray());
         }
 
-        private void lvScene_SelectedIndexChanged(object sender, EventArgs e)
+        private void lvScene_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            if (lvScene.SelectedItems.Count == 0) SelectedEntity = null;
-            else SelectedEntity = (Archetype.Entity)lvScene.SelectedItems[0].Tag;
-
-            SelectedEntityChanged?.Invoke(this, SelectedEntity);
+            if (lvScene.SelectedItems.Count == 0) screen.SelectedEntity = null;
+            else screen.SelectedEntity = (Archetype.Entity)lvScene.SelectedItems[0].Tag;
         }
     }
 }

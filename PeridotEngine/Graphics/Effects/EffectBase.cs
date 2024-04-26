@@ -16,15 +16,18 @@ namespace PeridotEngine.Graphics.Effects
         public Matrix World { get; set; } = Matrix.Identity;
         public Matrix View { get; set; } = Matrix.Identity;
         public Matrix Projection { get; set; } = Matrix.Identity;
+        /// <summary>
+        /// Object ID rendered to the object picking output. Should be set to uint.MaxValue to represent no particular ECS object.
+        /// </summary>
+        public uint ObjectId { get; set; } = uint.MaxValue;
 
-        [JsonIgnore]
         protected readonly EffectParameter WorldParam;
-        [JsonIgnore]
         protected readonly EffectParameter? NormalMatrixParam;
-        [JsonIgnore]
         protected readonly EffectParameter ViewProjectionParam;
 
-        [JsonIgnore] protected readonly EffectParameter? ViewParam;
+        protected readonly EffectParameter? ObjectIdParam;
+
+        protected readonly EffectParameter? ViewParam;
 
         protected EffectBase(Effect cloneSource) : base(cloneSource)
         {
@@ -32,9 +35,10 @@ namespace PeridotEngine.Graphics.Effects
             ViewParam = Parameters["View"];
             ViewProjectionParam = Parameters["ViewProjection"];
             NormalMatrixParam = Parameters["NormalMatrix"];
+            ObjectIdParam = Parameters["ObjectId"];
         }
 
-        public virtual void UpdateMatrices()
+        public virtual void Apply()
         {
             WorldParam.SetValue(World);
             ViewProjectionParam.SetValue(View * Projection);
@@ -42,6 +46,9 @@ namespace PeridotEngine.Graphics.Effects
             // the matrix is only calculated if the NormalMatrix parameter is defined in the shader code
             NormalMatrixParam?.SetValue(Matrix.Transpose(Matrix.Invert(World * View)));
             ViewParam?.SetValue(View);
+
+            // TODO: currently, only int and not uint supported. Probably a monogame effects translator limitation
+            ObjectIdParam?.SetValue((int)ObjectId);
         }
 
         public abstract EffectProperties CreatePropertiesBase();
@@ -56,7 +63,7 @@ namespace PeridotEngine.Graphics.Effects
 
             public virtual void Apply(Mesh mesh)
             {
-                Effect.UpdateMatrices();
+                Effect.Apply();
             }
 
             [JsonIgnore]

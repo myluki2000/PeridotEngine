@@ -17,7 +17,8 @@ namespace PeridotWindows.ECS
 					.Select(x => "int c" + x + "Index = Array.IndexOf(archetype.ComponentTypes, typeof(T" + x + "));"));
 			string args = string.Join(", ", Enumerable.Range(1, i).Select(x => "(T" + x + ")archetype.Components[c" + x +"Index][i]"));
 		#>
-		public void ForEach<<#= genericTypes #>>(Action<<#= genericTypes #>> action) <#= genericConstraints #> {
+
+		public void ForEach<<#= genericTypes #>>(Action<uint, <#= genericTypes #>> action) <#= genericConstraints #> {
 			if (archetypesOutdated) UpdateMatchingArchetypes();
 
 			foreach (Archetype archetype in matchingArchetypes)
@@ -26,12 +27,14 @@ namespace PeridotWindows.ECS
 
 				for (int i = 0; i < archetype.EntityCount; i++)
 				{
-					action.Invoke(<#= args #>);
+					uint entityId = archetype.Ids[i];
+
+					action.Invoke(entityId, <#= args #>);
 				}
 			}
 		}
 
-		public void First<<#= genericTypes #>>(Action<<#= genericTypes #>> action) <#= genericConstraints #> {
+		public void First<<#= genericTypes #>>(Action<uint, <#= genericTypes #>> action) <#= genericConstraints #> {
 			if (archetypesOutdated) UpdateMatchingArchetypes();
 
 			foreach (Archetype archetype in matchingArchetypes)
@@ -40,7 +43,9 @@ namespace PeridotWindows.ECS
 
 				for (int i = 0; i < archetype.EntityCount; i++)
 				{
-					action.Invoke(<#= args #>);
+					uint entityId = archetype.Ids[i];
+
+					action.Invoke(entityId, <#= args #>);
 					return;
 				}
 			}

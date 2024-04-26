@@ -9,6 +9,8 @@ using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.PostProcessing;
 using static PeridotEngine.Graphics.Effects.SkydomeEffect;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
+using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -55,6 +57,7 @@ namespace PeridotEngine.Scenes.Scene3D
         private RenderTarget2D colorRt;
         private RenderTarget2D depthRt;
         private RenderTarget2D normalRt;
+        private RenderTarget2D objectPickingRt;
 
         // post processing render targets
         private RenderTarget2D colorRtIn;
@@ -104,7 +107,7 @@ namespace PeridotEngine.Scenes.Scene3D
             scene.Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
 
             // render scene meshes to color, normal and depth buffers
-            gd.SetRenderTargets(colorRt, depthRt, normalRt);
+            gd.SetRenderTargets(colorRt, depthRt, normalRt, objectPickingRt);
             gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
                 float.MaxValue, 0);
 
@@ -119,7 +122,7 @@ namespace PeridotEngine.Scenes.Scene3D
             scene.Skydome.EffectProperties.Effect.World = Matrix.Identity;
             scene.Skydome.EffectProperties.Effect.View = scene.Camera.GetRotationMatrix();
             scene.Skydome.EffectProperties.Effect.Projection = projection;
-            scene.Skydome.EffectProperties.Effect.UpdateMatrices();
+            scene.Skydome.EffectProperties.Effect.Apply();
             foreach (EffectPass pass in scene.Skydome.EffectProperties.Technique.Passes)
             {
                 pass.Apply();
@@ -173,6 +176,13 @@ namespace PeridotEngine.Scenes.Scene3D
 
         }
 
+        public int GetObjectIdAtScreenPos(Point screenPos)
+        {
+            int[] objectIds = new int[1];
+            objectPickingRt.GetData(0, new Rectangle(screenPos, new(1, 1)), objectIds, 0, 1);
+            return objectIds[0];
+        }
+
         private void InitRts()
         {
             colorRtIn?.Dispose();
@@ -190,6 +200,9 @@ namespace PeridotEngine.Scenes.Scene3D
             normalRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                 Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24,
                 preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+            objectPickingRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
+                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.None,
+                preferredMultiSampleCount, RenderTargetUsage.PlatformContents);
 
             colorRtIn = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
                 Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
@@ -208,6 +221,7 @@ namespace PeridotEngine.Scenes.Scene3D
             colorRtOut?.Dispose();
             depthRt?.Dispose();
             normalRt?.Dispose();
+            objectPickingRt?.Dispose();
         }
     }
 }

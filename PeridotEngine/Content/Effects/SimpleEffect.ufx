@@ -28,6 +28,8 @@ float3 CameraPosition;
 float3 LightPosition;
 matrix LightWorldViewProjection;
 
+int ObjectId;
+
 float CalculateShadowPresence(float4 positionLightSpace)
 {
     positionLightSpace /= positionLightSpace.w;
@@ -63,14 +65,19 @@ float CalculateDiffuseShading(float3 position, float3 normal) {
     return clamp(dot(normal, lightRay), 0, 1);
 }
 
-struct PixelOut
+$uberblock SimpleEffect(bool vertexColorEnabled, bool textureEnabled, bool shadowsEnabled, bool diffuseShading, bool randomTextureRotation, bool objectPickingEnabled) constraint (!randomTextureRotation | textureEnabled)
+
+struct PixelOut$$
 {
     float4 Color : COLOR0;
     float Depth : COLOR1;
     float4 Normal : COLOR2;
+
+    $if objectPickingEnabled
+        float ObjectId : COLOR3;
+    $endif
 };
 
-$uberblock SimpleEffect(bool vertexColorEnabled, bool textureEnabled, bool shadowsEnabled, bool diffuseShading, bool randomTextureRotation) constraint (!randomTextureRotation | textureEnabled)
 struct VertexIn$$
 {
 	float4 Position : POSITION0;
@@ -136,9 +143,9 @@ PixelIn$$ VertexShader$$(in VertexIn$$ input)
 	return output;
 }
 
-PixelOut PixelShader$$(PixelIn$$ input)
+PixelOut$$ PixelShader$$(PixelIn$$ input)
 {
-    PixelOut pout = (PixelOut)0;
+    PixelOut$$ pout = (PixelOut$$)0;
     float4 result = MixColor;
 
     $if vertexColorEnabled
@@ -193,13 +200,17 @@ PixelOut PixelShader$$(PixelIn$$ input)
     $if shadowsEnabled || diffuseShading
         result = result * (0.4 + lightIntensity * 0.6);
     $endif
-
     
     pout.Color = result;
     pout.Depth = input.Depth.x / input.Depth.y;
+
+    $if objectPickingEnabled
+        pout.ObjectId = asfloat(ObjectId);
+    $endif
+
     return pout;
 
 }
 $endblock
 
-$ubercombinations SimpleEffect (bool vertexColorEnabled, bool textureEnabled, bool shadowsEnabled, bool diffuseShading, bool randomTextureRotation) constraint (!randomTextureRotation | textureEnabled) technique SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, diffuseShading, randomTextureRotation)
+$ubercombinations SimpleEffect (bool vertexColorEnabled, bool textureEnabled, bool shadowsEnabled, bool diffuseShading, bool randomTextureRotation, bool objectPickingEnabled) constraint (!randomTextureRotation | textureEnabled) technique SimpleEffect(vertexColorEnabled, textureEnabled, shadowsEnabled, diffuseShading, randomTextureRotation, objectPickingEnabled)

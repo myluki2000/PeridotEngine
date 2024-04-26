@@ -15,6 +15,7 @@ using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 using PeridotWindows.EditorScreen.Forms;
 using PeridotWindows.Graphics.Camera;
+using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 using Point = System.Drawing.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -30,6 +31,22 @@ namespace PeridotWindows.EditorScreen
         public SceneForm? FrmScene;
 
         private Archetype.Entity? selectedEntity = null;
+
+        public Archetype.Entity? SelectedEntity
+        {
+            get => selectedEntity;
+            set
+            {
+                if (value?.Id != selectedEntity?.Id)
+                {
+                    selectedEntity = value;
+                    SelectedEntityChanged?.Invoke(this, selectedEntity);
+                    if (FrmEntity != null) FrmEntity.Entity = value;
+                }
+            }
+        }
+
+        public event EventHandler<Archetype.Entity?>? SelectedEntityChanged;
 
         private Rectangle windowLastBounds;
 
@@ -59,10 +76,8 @@ namespace PeridotWindows.EditorScreen
             FrmToolbox.Show(mainWindowControl);
             FrmEntity = new(this);
             FrmEntity.Show(mainWindowControl);
-            FrmScene = new(Scene);
+            FrmScene = new(this);
             FrmScene.Show(mainWindowControl);
-            
-            FrmScene.SelectedEntityChanged += FrmScene_OnSelectedEntityChanged;
         }
 
         private void UpdateWindowLocations()
@@ -100,19 +115,14 @@ namespace PeridotWindows.EditorScreen
             windowLastBounds = bounds;
         }
 
-        private void FrmScene_OnSelectedEntityChanged(object? sender, Archetype.Entity? e)
-        {
-            selectedEntity = e;
-
-            if (FrmEntity != null) FrmEntity.Entity = e;
-        }
-
         private KeyboardState lastKeyboardState;
+        private MouseState lastMouseState;
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
             KeyboardState keyboardState = Keyboard.GetState();
+            MouseState mouseState = Mouse.GetState();
 
             if (lastKeyboardState.IsKeyUp(Keys.J) && keyboardState.IsKeyDown(Keys.J))
             {
@@ -121,12 +131,24 @@ namespace PeridotWindows.EditorScreen
 
             if (lastKeyboardState.IsKeyUp(Keys.Delete) && keyboardState.IsKeyDown(Keys.Delete))
             {
-                selectedEntity?.Delete();
+                SelectedEntity?.Delete();
+            }
+
+            if (mouseState.LeftButton == ButtonState.Pressed 
+                && lastMouseState.LeftButton == ButtonState.Released
+                && mouseState.X > 0
+                && mouseState.X < Globals.Graphics.PreferredBackBufferWidth
+                && mouseState.Y > 0
+                && mouseState.Y < Globals.Graphics.PreferredBackBufferHeight)
+            {
+                int clickedObjectId = GetObjectIdAtScreenPos(mouseState.Position);
+                SelectedEntity = Scene.Ecs.EntityById((uint)clickedObjectId);
             }
 
             UpdateWindowLocations();
 
             lastKeyboardState = keyboardState;
+            lastMouseState = mouseState;
         }
 
         public override void Draw(GameTime gameTime)
@@ -136,13 +158,13 @@ namespace PeridotWindows.EditorScreen
             GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
 
             Scene.Ecs.Query().Has<SunLightComponent>().Has<PositionRotationScaleComponent>().ForEach(
-                (PositionRotationScaleComponent posC) =>
+                (uint _, PositionRotationScaleComponent posC) =>
                 {
                     SimpleEffect effect = new();
                     effect.World = Matrix.Identity;
                     effect.View = Scene.Camera.GetViewMatrix();
                     effect.Projection = Scene.Camera.GetProjectionMatrix();
-                    effect.UpdateMatrices();
+                    effect.Apply();
 
                     Vector3 direction = new Vector3(
                         (float)Math.Sin(posC.Rotation.Y),

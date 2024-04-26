@@ -28,149 +28,158 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tpTextures = new System.Windows.Forms.TabPage();
-            this.lvTextures = new System.Windows.Forms.ListView();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnAddTexture = new System.Windows.Forms.Button();
-            this.tpMeshes = new System.Windows.Forms.TabPage();
-            this.lvMeshes = new System.Windows.Forms.ListView();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btnAddModel = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
-            this.tpTextures.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.tpMeshes.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.SuspendLayout();
+            tabControl1 = new TabControl();
+            tpTextures = new TabPage();
+            lvTextures = new ListView();
+            panel1 = new Panel();
+            btnAddTexture = new Button();
+            tpMeshes = new TabPage();
+            lvMeshes = new ListView();
+            panel2 = new Panel();
+            btnAddModel = new Button();
+            button1 = new Button();
+            btnRemoveTexture = new Button();
+            tabControl1.SuspendLayout();
+            tpTextures.SuspendLayout();
+            panel1.SuspendLayout();
+            tpMeshes.SuspendLayout();
+            panel2.SuspendLayout();
+            SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tpTextures);
-            this.tabControl1.Controls.Add(this.tpMeshes);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(911, 227);
-            this.tabControl1.TabIndex = 0;
+            tabControl1.Controls.Add(tpTextures);
+            tabControl1.Controls.Add(tpMeshes);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(0, 0);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(911, 227);
+            tabControl1.TabIndex = 0;
             // 
             // tpTextures
             // 
-            this.tpTextures.Controls.Add(this.lvTextures);
-            this.tpTextures.Controls.Add(this.panel1);
-            this.tpTextures.Location = new System.Drawing.Point(4, 24);
-            this.tpTextures.Name = "tpTextures";
-            this.tpTextures.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTextures.Size = new System.Drawing.Size(903, 199);
-            this.tpTextures.TabIndex = 0;
-            this.tpTextures.Text = "Textures";
-            this.tpTextures.UseVisualStyleBackColor = true;
+            tpTextures.Controls.Add(lvTextures);
+            tpTextures.Controls.Add(panel1);
+            tpTextures.Location = new Point(4, 24);
+            tpTextures.Name = "tpTextures";
+            tpTextures.Padding = new Padding(3);
+            tpTextures.Size = new Size(903, 199);
+            tpTextures.TabIndex = 0;
+            tpTextures.Text = "Textures";
+            tpTextures.UseVisualStyleBackColor = true;
             // 
             // lvTextures
             // 
-            this.lvTextures.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvTextures.Location = new System.Drawing.Point(3, 3);
-            this.lvTextures.Name = "lvTextures";
-            this.lvTextures.Size = new System.Drawing.Size(830, 193);
-            this.lvTextures.TabIndex = 0;
-            this.lvTextures.UseCompatibleStateImageBehavior = false;
+            lvTextures.Dock = DockStyle.Fill;
+            lvTextures.Location = new Point(3, 3);
+            lvTextures.Name = "lvTextures";
+            lvTextures.Size = new Size(830, 193);
+            lvTextures.TabIndex = 0;
+            lvTextures.UseCompatibleStateImageBehavior = false;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.btnAddTexture);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(833, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(67, 193);
-            this.panel1.TabIndex = 1;
+            panel1.Controls.Add(btnRemoveTexture);
+            panel1.Controls.Add(btnAddTexture);
+            panel1.Dock = DockStyle.Right;
+            panel1.Location = new Point(833, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(67, 193);
+            panel1.TabIndex = 1;
             // 
             // btnAddTexture
             // 
-            this.btnAddTexture.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddTexture.Location = new System.Drawing.Point(3, 3);
-            this.btnAddTexture.Name = "btnAddTexture";
-            this.btnAddTexture.Size = new System.Drawing.Size(61, 42);
-            this.btnAddTexture.TabIndex = 0;
-            this.btnAddTexture.Text = "Add Texture";
-            this.btnAddTexture.UseVisualStyleBackColor = true;
-            this.btnAddTexture.Click += new System.EventHandler(this.btnAddTexture_Click);
+            btnAddTexture.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnAddTexture.Location = new Point(3, 3);
+            btnAddTexture.Name = "btnAddTexture";
+            btnAddTexture.Size = new Size(61, 42);
+            btnAddTexture.TabIndex = 0;
+            btnAddTexture.Text = "Add Texture";
+            btnAddTexture.UseVisualStyleBackColor = true;
+            btnAddTexture.Click += btnAddTexture_Click;
             // 
             // tpMeshes
             // 
-            this.tpMeshes.Controls.Add(this.lvMeshes);
-            this.tpMeshes.Controls.Add(this.panel2);
-            this.tpMeshes.Location = new System.Drawing.Point(4, 24);
-            this.tpMeshes.Name = "tpMeshes";
-            this.tpMeshes.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMeshes.Size = new System.Drawing.Size(903, 199);
-            this.tpMeshes.TabIndex = 1;
-            this.tpMeshes.Text = "Models";
-            this.tpMeshes.UseVisualStyleBackColor = true;
+            tpMeshes.Controls.Add(lvMeshes);
+            tpMeshes.Controls.Add(panel2);
+            tpMeshes.Location = new Point(4, 24);
+            tpMeshes.Name = "tpMeshes";
+            tpMeshes.Padding = new Padding(3);
+            tpMeshes.Size = new Size(903, 199);
+            tpMeshes.TabIndex = 1;
+            tpMeshes.Text = "Models";
+            tpMeshes.UseVisualStyleBackColor = true;
             // 
             // lvMeshes
             // 
-            this.lvMeshes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvMeshes.Location = new System.Drawing.Point(3, 3);
-            this.lvMeshes.MultiSelect = false;
-            this.lvMeshes.Name = "lvMeshes";
-            this.lvMeshes.Size = new System.Drawing.Size(830, 193);
-            this.lvMeshes.TabIndex = 3;
-            this.lvMeshes.UseCompatibleStateImageBehavior = false;
-            this.lvMeshes.DoubleClick += new System.EventHandler(this.lvMeshes_DoubleClick);
+            lvMeshes.Dock = DockStyle.Fill;
+            lvMeshes.Location = new Point(3, 3);
+            lvMeshes.MultiSelect = false;
+            lvMeshes.Name = "lvMeshes";
+            lvMeshes.Size = new Size(830, 193);
+            lvMeshes.TabIndex = 3;
+            lvMeshes.UseCompatibleStateImageBehavior = false;
+            lvMeshes.DoubleClick += lvMeshes_DoubleClick;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.btnAddModel);
-            this.panel2.Controls.Add(this.button1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(833, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(67, 193);
-            this.panel2.TabIndex = 2;
+            panel2.Controls.Add(btnAddModel);
+            panel2.Controls.Add(button1);
+            panel2.Dock = DockStyle.Right;
+            panel2.Location = new Point(833, 3);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(67, 193);
+            panel2.TabIndex = 2;
             // 
             // btnAddModel
             // 
-            this.btnAddModel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAddModel.Location = new System.Drawing.Point(3, 3);
-            this.btnAddModel.Name = "btnAddModel";
-            this.btnAddModel.Size = new System.Drawing.Size(61, 42);
-            this.btnAddModel.TabIndex = 1;
-            this.btnAddModel.Text = "Add Model";
-            this.btnAddModel.UseVisualStyleBackColor = true;
-            this.btnAddModel.Click += new System.EventHandler(this.btnAddModel_Click);
+            btnAddModel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnAddModel.Location = new Point(3, 3);
+            btnAddModel.Name = "btnAddModel";
+            btnAddModel.Size = new Size(61, 42);
+            btnAddModel.TabIndex = 1;
+            btnAddModel.Text = "Add Model";
+            btnAddModel.UseVisualStyleBackColor = true;
+            btnAddModel.Click += btnAddModel_Click;
             // 
             // button1
             // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(0, 42);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Add Texture";
-            this.button1.UseVisualStyleBackColor = true;
+            button1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            button1.Location = new Point(3, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(0, 42);
+            button1.TabIndex = 0;
+            button1.Text = "Add Texture";
+            button1.UseVisualStyleBackColor = true;
+            // 
+            // btnRemoveTexture
+            // 
+            btnRemoveTexture.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnRemoveTexture.Location = new Point(3, 51);
+            btnRemoveTexture.Name = "btnRemoveTexture";
+            btnRemoveTexture.Size = new Size(61, 42);
+            btnRemoveTexture.TabIndex = 1;
+            btnRemoveTexture.Text = "Remove Texture";
+            btnRemoveTexture.UseVisualStyleBackColor = true;
+            btnRemoveTexture.Click += btnRemoveTexture_Click;
             // 
             // ResourcesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(911, 227);
-            this.Controls.Add(this.tabControl1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "ResourcesForm";
-            this.ShowInTaskbar = false;
-            this.Text = "ResourcesForm";
-            this.tabControl1.ResumeLayout(false);
-            this.tpTextures.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.tpMeshes.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(911, 227);
+            Controls.Add(tabControl1);
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Name = "ResourcesForm";
+            ShowInTaskbar = false;
+            Text = "ResourcesForm";
+            tabControl1.ResumeLayout(false);
+            tpTextures.ResumeLayout(false);
+            panel1.ResumeLayout(false);
+            tpMeshes.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion
@@ -185,5 +194,6 @@
         private Button btnAddModel;
         private Button button1;
         private ListView lvMeshes;
+        private Button btnRemoveTexture;
     }
 }

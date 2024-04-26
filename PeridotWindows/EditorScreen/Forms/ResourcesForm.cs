@@ -38,7 +38,7 @@ namespace PeridotWindows.EditorScreen.Forms
         {
             lvMeshes.Items.Clear();
 
-            foreach(MeshResources.MeshInfo meshInfo in meshInfos)
+            foreach (MeshResources.MeshInfo meshInfo in meshInfos)
             {
                 ListViewItem item = new(meshInfo.Name);
                 item.Tag = meshInfo;
@@ -57,7 +57,7 @@ namespace PeridotWindows.EditorScreen.Forms
             {
                 lvTextures.LargeImageList = imgList;
                 lvTextures.SmallImageList = imgList;
-                
+
                 imgList.Images.Add(Image.FromFile(Globals.Content.RootDirectory + "/" + texInfo.FilePath));
 
                 ListViewItem item = new();
@@ -97,6 +97,16 @@ namespace PeridotWindows.EditorScreen.Forms
             }
         }
 
+        private void btnRemoveTexture_Click(object sender, EventArgs e)
+        {
+            if (lvTextures.SelectedItems.Count == 0)
+                return;
+
+            TextureResources.ITextureInfo texInfo = (TextureResources.ITextureInfo)lvTextures.SelectedItems[0].Tag;
+
+            scene.Resources.TextureResources.RemoveTexture(texInfo.Id);
+        }
+
         private void btnAddModel_Click(object sender, EventArgs e)
         {
             string rootPath = Path.GetDirectoryName(Application.ExecutablePath)!;
@@ -119,7 +129,7 @@ namespace PeridotWindows.EditorScreen.Forms
                 trimmedPath = trimmedPath.Replace("\\", "/");
                 if (trimmedPath.StartsWith("/"))
                     trimmedPath = trimmedPath.Substring(1);
-                
+
                 // remove ".xnb" extension
                 trimmedPath = trimmedPath.Substring(0, trimmedPath.Length - 4);
 

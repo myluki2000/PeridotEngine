@@ -104,7 +104,7 @@ namespace PeridotEngine.Scenes.Scene3D
             textures[length] = texInfo;
         }
 
-        public void RemoveTexture(uint textureId)
+        public void RemoveTexture(int textureId)
         {
             textures[textureId] = null;
             GenerateAtlas();

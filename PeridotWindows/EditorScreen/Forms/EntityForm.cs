@@ -38,6 +38,7 @@ namespace PeridotWindows.EditorScreen.Forms
             {
                 entity = value;
                 Populate();
+                Text = "EntityForm - Selected Entity ID: " + entity?.Id;
             }
         }
 

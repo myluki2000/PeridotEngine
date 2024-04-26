@@ -17,8 +17,10 @@ namespace PeridotWindows.ECS
         }
 
         [JsonConstructor]
-        public Ecs(List<Archetype> archetypes)
+        public Ecs(Func<Ecs, List<Archetype>> createArchetypes)
         {
+            List<Archetype> archetypes = createArchetypes(this);
+
             Archetypes = archetypes;
 
             foreach (Archetype archetype in Archetypes)

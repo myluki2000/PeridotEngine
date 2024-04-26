@@ -61,45 +61,49 @@ namespace PeridotEngine.IO.JsonConverters
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            Ecs ecs = new();
-
             JToken root = JToken.ReadFrom(reader);
 
-            foreach (JToken jArchetype in root["Archetypes"])
+            Ecs ecs = new(ecs =>
             {
-                Type[] componentTypes = jArchetype["ComponentTypes"]!.Values<string>().Select(x =>
+                List<Archetype> archetypes = new();
+                foreach (JToken jArchetype in root["Archetypes"])
                 {
-                    Type? type = Assembly.GetExecutingAssembly().GetType(x!);
+                    Type[] componentTypes = jArchetype["ComponentTypes"]!.Values<string>().Select(x =>
+                    {
+                        Type? type = Assembly.GetExecutingAssembly().GetType(x!);
 
-                    if (type == null)
-                        throw new Exception("Could not find component type with name " + x);
+                        if (type == null)
+                            throw new Exception("Could not find component type with name " + x);
 
-                    return type;
-                }).ToArray();
+                        return type;
+                    }).ToArray();
 
-                List<uint> ids = jArchetype["Ids"].Values<uint>().ToList();
-                List<string?> names = jArchetype["Names"].Values<string?>().ToList();
+                    List<uint> ids = jArchetype["Ids"].Values<uint>().ToList();
+                    List<string?> names = jArchetype["Names"].Values<string?>().ToList();
 
-                List<IList> components = new();
+                    List<IList> components = new();
 
-                JArray jComponents = (jArchetype["Components"] as JArray)!;
+                    JArray jComponents = (jArchetype["Components"] as JArray)!;
 
-                for (int i = 0; i < jComponents.Count; i++)
-                {
-                    ComponentBase[] componentsOfType = jComponents[i].Children()
-                        .Select(x =>
-                        {
-                            object? component = serializer.Deserialize(x.CreateReader(), componentTypes[i]);
-                            component.GetType().GetProperty("Scene").SetValue(component, scene);
-                            return (ComponentBase)component;
-                        })
-                        .ToArray();
+                    for (int i = 0; i < jComponents.Count; i++)
+                    {
+                        ComponentBase[] componentsOfType = jComponents[i].Children()
+                            .Select(x =>
+                            {
+                                object? component = serializer.Deserialize(x.CreateReader(), componentTypes[i]);
+                                component.GetType().GetProperty("Scene").SetValue(component, scene);
+                                return (ComponentBase)component;
+                            })
+                            .ToArray();
 
-                    components.Add(new ArrayList(componentsOfType));
+                        components.Add(new ArrayList(componentsOfType));
+                    }
+
+                    archetypes.Add(new Archetype(ecs, componentTypes, ids, names, components));
                 }
 
-                ecs.Archetypes.Add(new Archetype(ecs, componentTypes, ids, names, components));
-            }
+                return archetypes;
+            });
 
             return ecs;
         }

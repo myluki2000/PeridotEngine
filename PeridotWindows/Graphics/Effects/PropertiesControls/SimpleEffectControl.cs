@@ -7,9 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PeridotEngine;
+using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Misc;
 using PeridotWindows.ECS.Components;
+using PeridotWindows.EditorScreen.Forms;
 
 namespace PeridotWindows.Graphics.Effects.PropertiesControls
 {
@@ -79,6 +82,18 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
         private void cbRandomTextureRotation_CheckedChanged(object sender, EventArgs e)
         {
             effectProperties.RandomTextureRotationEnabled = cbRandomTextureRotation.Checked;
+        }
+
+        private void btnPickTexture_Click(object sender, EventArgs e)
+        {
+            // TODO: Scene should instead be passed down into this control
+            TexturePickerForm frmPicker = new(((EditorScreen.EditorScreen)ScreenManager.CurrentScreen).Scene);
+            frmPicker.ShowDialog();
+
+            if (frmPicker.DialogResult == DialogResult.OK && frmPicker.SelectedTexture != null)
+            {
+                nudTextureId.Value = frmPicker.SelectedTexture.Id;
+            }
         }
     }
 }

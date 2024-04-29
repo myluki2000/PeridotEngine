@@ -28,187 +28,174 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cbTexture = new System.Windows.Forms.CheckBox();
-            this.pnlColor = new System.Windows.Forms.Panel();
-            this.btnPickColor = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.nudTextureId = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.nudTextureRepeatX = new System.Windows.Forms.NumericUpDown();
-            this.nudTextureRepeatY = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.cbReceiveShadows = new System.Windows.Forms.CheckBox();
-            this.cbRandomTextureRotation = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).BeginInit();
-            this.SuspendLayout();
+            cbTexture = new CheckBox();
+            pnlColor = new Panel();
+            btnPickColor = new Button();
+            label1 = new Label();
+            nudTextureId = new NumericUpDown();
+            label2 = new Label();
+            label3 = new Label();
+            nudTextureRepeatX = new NumericUpDown();
+            nudTextureRepeatY = new NumericUpDown();
+            label4 = new Label();
+            cbReceiveShadows = new CheckBox();
+            cbRandomTextureRotation = new CheckBox();
+            btnPickTexture = new Button();
+            ((System.ComponentModel.ISupportInitialize)nudTextureId).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudTextureRepeatX).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudTextureRepeatY).BeginInit();
+            SuspendLayout();
             // 
             // cbTexture
             // 
-            this.cbTexture.AutoSize = true;
-            this.cbTexture.Location = new System.Drawing.Point(6, 34);
-            this.cbTexture.Name = "cbTexture";
-            this.cbTexture.Size = new System.Drawing.Size(64, 19);
-            this.cbTexture.TabIndex = 13;
-            this.cbTexture.Text = "Texture";
-            this.cbTexture.UseVisualStyleBackColor = true;
-            this.cbTexture.CheckedChanged += new System.EventHandler(this.cbTexture_CheckedChanged);
+            cbTexture.AutoSize = true;
+            cbTexture.Location = new Point(6, 34);
+            cbTexture.Name = "cbTexture";
+            cbTexture.Size = new Size(64, 19);
+            cbTexture.TabIndex = 13;
+            cbTexture.Text = "Texture";
+            cbTexture.UseVisualStyleBackColor = true;
+            cbTexture.CheckedChanged += cbTexture_CheckedChanged;
             // 
             // pnlColor
             // 
-            this.pnlColor.Location = new System.Drawing.Point(74, 3);
-            this.pnlColor.Name = "pnlColor";
-            this.pnlColor.Size = new System.Drawing.Size(34, 23);
-            this.pnlColor.TabIndex = 12;
+            pnlColor.Location = new Point(74, 3);
+            pnlColor.Name = "pnlColor";
+            pnlColor.Size = new Size(34, 23);
+            pnlColor.TabIndex = 12;
             // 
             // btnPickColor
             // 
-            this.btnPickColor.Location = new System.Drawing.Point(114, 3);
-            this.btnPickColor.Name = "btnPickColor";
-            this.btnPickColor.Size = new System.Drawing.Size(74, 23);
-            this.btnPickColor.TabIndex = 11;
-            this.btnPickColor.Text = "Pick Color";
-            this.btnPickColor.UseVisualStyleBackColor = true;
-            this.btnPickColor.Click += new System.EventHandler(this.btnPickColor_Click);
+            btnPickColor.Location = new Point(114, 3);
+            btnPickColor.Name = "btnPickColor";
+            btnPickColor.Size = new Size(74, 23);
+            btnPickColor.TabIndex = 11;
+            btnPickColor.Text = "Pick Color";
+            btnPickColor.UseVisualStyleBackColor = true;
+            btnPickColor.Click += btnPickColor_Click;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(62, 15);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Mix Color:";
+            label1.AutoSize = true;
+            label1.Location = new Point(6, 7);
+            label1.Name = "label1";
+            label1.Size = new Size(62, 15);
+            label1.TabIndex = 14;
+            label1.Text = "Mix Color:";
             // 
             // nudTextureId
             // 
-            this.nudTextureId.Location = new System.Drawing.Point(142, 32);
-            this.nudTextureId.Name = "nudTextureId";
-            this.nudTextureId.Size = new System.Drawing.Size(63, 23);
-            this.nudTextureId.TabIndex = 15;
-            this.nudTextureId.ValueChanged += new System.EventHandler(this.nudTextureId_ValueChanged);
+            nudTextureId.Location = new Point(142, 32);
+            nudTextureId.Name = "nudTextureId";
+            nudTextureId.Size = new Size(63, 23);
+            nudTextureId.TabIndex = 15;
+            nudTextureId.ValueChanged += nudTextureId_ValueChanged;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(74, 35);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 15);
-            this.label2.TabIndex = 16;
-            this.label2.Text = "Texture ID:";
+            label2.AutoSize = true;
+            label2.Location = new Point(74, 35);
+            label2.Name = "label2";
+            label2.Size = new Size(62, 15);
+            label2.TabIndex = 16;
+            label2.Text = "Texture ID:";
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(39, 63);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(97, 15);
-            this.label3.TabIndex = 17;
-            this.label3.Text = "Texture Repeat X:";
+            label3.AutoSize = true;
+            label3.Location = new Point(39, 63);
+            label3.Name = "label3";
+            label3.Size = new Size(97, 15);
+            label3.TabIndex = 17;
+            label3.Text = "Texture Repeat X:";
             // 
             // nudTextureRepeatX
             // 
-            this.nudTextureRepeatX.Location = new System.Drawing.Point(142, 61);
-            this.nudTextureRepeatX.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.nudTextureRepeatX.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudTextureRepeatX.Name = "nudTextureRepeatX";
-            this.nudTextureRepeatX.Size = new System.Drawing.Size(63, 23);
-            this.nudTextureRepeatX.TabIndex = 18;
-            this.nudTextureRepeatX.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudTextureRepeatX.ValueChanged += new System.EventHandler(this.nudTextureRepeatX_ValueChanged);
+            nudTextureRepeatX.Location = new Point(142, 61);
+            nudTextureRepeatX.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            nudTextureRepeatX.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudTextureRepeatX.Name = "nudTextureRepeatX";
+            nudTextureRepeatX.Size = new Size(63, 23);
+            nudTextureRepeatX.TabIndex = 18;
+            nudTextureRepeatX.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudTextureRepeatX.ValueChanged += nudTextureRepeatX_ValueChanged;
             // 
             // nudTextureRepeatY
             // 
-            this.nudTextureRepeatY.Location = new System.Drawing.Point(142, 90);
-            this.nudTextureRepeatY.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.nudTextureRepeatY.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudTextureRepeatY.Name = "nudTextureRepeatY";
-            this.nudTextureRepeatY.Size = new System.Drawing.Size(63, 23);
-            this.nudTextureRepeatY.TabIndex = 19;
-            this.nudTextureRepeatY.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudTextureRepeatY.ValueChanged += new System.EventHandler(this.nudTextureRepeatY_ValueChanged);
+            nudTextureRepeatY.Location = new Point(142, 90);
+            nudTextureRepeatY.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            nudTextureRepeatY.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudTextureRepeatY.Name = "nudTextureRepeatY";
+            nudTextureRepeatY.Size = new Size(63, 23);
+            nudTextureRepeatY.TabIndex = 19;
+            nudTextureRepeatY.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudTextureRepeatY.ValueChanged += nudTextureRepeatY_ValueChanged;
             // 
             // label4
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(39, 92);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 15);
-            this.label4.TabIndex = 20;
-            this.label4.Text = "Texture Repeat Y:";
+            label4.AutoSize = true;
+            label4.Location = new Point(39, 92);
+            label4.Name = "label4";
+            label4.Size = new Size(97, 15);
+            label4.TabIndex = 20;
+            label4.Text = "Texture Repeat Y:";
             // 
             // cbReceiveShadows
             // 
-            this.cbReceiveShadows.AutoSize = true;
-            this.cbReceiveShadows.Location = new System.Drawing.Point(6, 119);
-            this.cbReceiveShadows.Name = "cbReceiveShadows";
-            this.cbReceiveShadows.Size = new System.Drawing.Size(116, 19);
-            this.cbReceiveShadows.TabIndex = 21;
-            this.cbReceiveShadows.Text = "Receive Shadows";
-            this.cbReceiveShadows.UseVisualStyleBackColor = true;
-            this.cbReceiveShadows.CheckedChanged += new System.EventHandler(this.cbReceiveShadows_CheckedChanged);
+            cbReceiveShadows.AutoSize = true;
+            cbReceiveShadows.Location = new Point(6, 119);
+            cbReceiveShadows.Name = "cbReceiveShadows";
+            cbReceiveShadows.Size = new Size(116, 19);
+            cbReceiveShadows.TabIndex = 21;
+            cbReceiveShadows.Text = "Receive Shadows";
+            cbReceiveShadows.UseVisualStyleBackColor = true;
+            cbReceiveShadows.CheckedChanged += cbReceiveShadows_CheckedChanged;
             // 
             // cbRandomTextureRotation
             // 
-            this.cbRandomTextureRotation.AutoSize = true;
-            this.cbRandomTextureRotation.Location = new System.Drawing.Point(6, 144);
-            this.cbRandomTextureRotation.Name = "cbRandomTextureRotation";
-            this.cbRandomTextureRotation.Size = new System.Drawing.Size(160, 19);
-            this.cbRandomTextureRotation.TabIndex = 22;
-            this.cbRandomTextureRotation.Text = "Random Texture Rotation";
-            this.cbRandomTextureRotation.UseVisualStyleBackColor = true;
-            this.cbRandomTextureRotation.CheckedChanged += new System.EventHandler(this.cbRandomTextureRotation_CheckedChanged);
+            cbRandomTextureRotation.AutoSize = true;
+            cbRandomTextureRotation.Location = new Point(6, 144);
+            cbRandomTextureRotation.Name = "cbRandomTextureRotation";
+            cbRandomTextureRotation.Size = new Size(160, 19);
+            cbRandomTextureRotation.TabIndex = 22;
+            cbRandomTextureRotation.Text = "Random Texture Rotation";
+            cbRandomTextureRotation.UseVisualStyleBackColor = true;
+            cbRandomTextureRotation.CheckedChanged += cbRandomTextureRotation_CheckedChanged;
+            // 
+            // btnPickTexture
+            // 
+            btnPickTexture.Location = new Point(211, 32);
+            btnPickTexture.Name = "btnPickTexture";
+            btnPickTexture.Size = new Size(40, 23);
+            btnPickTexture.TabIndex = 23;
+            btnPickTexture.Text = "Pick";
+            btnPickTexture.UseVisualStyleBackColor = true;
+            btnPickTexture.Click += btnPickTexture_Click;
             // 
             // SimpleEffectControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.cbRandomTextureRotation);
-            this.Controls.Add(this.cbReceiveShadows);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.nudTextureRepeatY);
-            this.Controls.Add(this.nudTextureRepeatX);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.nudTextureId);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.cbTexture);
-            this.Controls.Add(this.pnlColor);
-            this.Controls.Add(this.btnPickColor);
-            this.Name = "SimpleEffectControl";
-            this.Size = new System.Drawing.Size(394, 193);
-            ((System.ComponentModel.ISupportInitialize)(this.nudTextureId)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudTextureRepeatY)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(btnPickTexture);
+            Controls.Add(cbRandomTextureRotation);
+            Controls.Add(cbReceiveShadows);
+            Controls.Add(label4);
+            Controls.Add(nudTextureRepeatY);
+            Controls.Add(nudTextureRepeatX);
+            Controls.Add(label3);
+            Controls.Add(label2);
+            Controls.Add(nudTextureId);
+            Controls.Add(label1);
+            Controls.Add(cbTexture);
+            Controls.Add(pnlColor);
+            Controls.Add(btnPickColor);
+            Name = "SimpleEffectControl";
+            Size = new Size(394, 193);
+            ((System.ComponentModel.ISupportInitialize)nudTextureId).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudTextureRepeatX).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudTextureRepeatY).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -225,5 +212,6 @@
         private Label label4;
         private CheckBox cbReceiveShadows;
         private CheckBox cbRandomTextureRotation;
+        private Button btnPickTexture;
     }
 }

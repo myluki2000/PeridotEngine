@@ -28,37 +28,45 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lvScene = new System.Windows.Forms.ListView();
-            this.SuspendLayout();
+            lvScene = new ListView();
+            chName = new ColumnHeader();
+            SuspendLayout();
             // 
             // lvScene
             // 
-            this.lvScene.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvScene.Location = new System.Drawing.Point(0, 0);
-            this.lvScene.MultiSelect = false;
-            this.lvScene.Name = "lvScene";
-            this.lvScene.Size = new System.Drawing.Size(308, 525);
-            this.lvScene.TabIndex = 0;
-            this.lvScene.UseCompatibleStateImageBehavior = false;
-            this.lvScene.View = System.Windows.Forms.View.List;
-            this.lvScene.SelectedIndexChanged += new System.EventHandler(this.lvScene_SelectedIndexChanged);
+            lvScene.Columns.AddRange(new ColumnHeader[] { chName });
+            lvScene.Dock = DockStyle.Fill;
+            lvScene.FullRowSelect = true;
+            lvScene.Location = new Point(0, 0);
+            lvScene.MultiSelect = false;
+            lvScene.Name = "lvScene";
+            lvScene.Size = new Size(308, 525);
+            lvScene.TabIndex = 0;
+            lvScene.UseCompatibleStateImageBehavior = false;
+            lvScene.View = View.Details;
+            lvScene.SelectedIndexChanged += lvScene_SelectedIndexChanged;
+            // 
+            // chName
+            // 
+            chName.Text = "Name";
+            chName.Width = 500;
             // 
             // SceneForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(308, 525);
-            this.Controls.Add(this.lvScene);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "SceneForm";
-            this.ShowInTaskbar = false;
-            this.Text = "SceneForm";
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(308, 525);
+            Controls.Add(lvScene);
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Name = "SceneForm";
+            ShowInTaskbar = false;
+            Text = "SceneForm";
+            ResumeLayout(false);
         }
 
         #endregion
 
         private ListView lvScene;
+        private ColumnHeader chName;
     }
 }

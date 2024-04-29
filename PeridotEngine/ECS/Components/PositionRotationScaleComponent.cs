@@ -36,6 +36,14 @@ namespace PeridotEngine.ECS.Components
             }
         }
 
+        /// <summary>
+        /// A counter which is incremented each time the transformation matrix is updated. Can be
+        /// used by other systems to check if the matrix has been updated since last retrieval.
+        /// Overflows back to 0 when it reaches uint.MaxValue.
+        /// </summary>
+        [JsonIgnore]
+        public uint MatrixVersion { get; private set; } = 0;
+
         [JsonIgnore]
         public Matrix Transformation
         {
@@ -48,6 +56,9 @@ namespace PeridotEngine.ECS.Components
                                      * Matrix.CreateRotationY(rotation.Y)
                                      * Matrix.CreateRotationZ(rotation.Z)
                                      * Matrix.CreateTranslation(position);
+
+                    // unchecked increment by 1, overflows back to 0 when it reaches uint.MaxValue
+                    MatrixVersion = unchecked(MatrixVersion + 1);
                 }
 
                 return transformation;

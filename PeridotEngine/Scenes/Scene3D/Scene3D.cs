@@ -34,6 +34,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public Camera Camera { get; set; }
 
+        [JsonIgnore]
         public Skydome Skydome { get; private set; }
 
 

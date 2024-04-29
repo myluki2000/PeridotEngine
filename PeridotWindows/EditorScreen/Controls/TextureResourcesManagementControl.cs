@@ -20,11 +20,18 @@ namespace PeridotWindows.EditorScreen.Controls
 
         public event EventHandler<TextureResources.ITextureInfo?>? SelectedItemChanged;
 
-        public event EventHandler<TextureResources.ITextureInfo>? ItemDoubleClicked; 
+        public event EventHandler<TextureResources.ITextureInfo>? ItemDoubleClicked;
+
+        private readonly ImageList listViewImageList = new();
 
         public TextureResourcesManagementControl(Scene3D scene)
         {
             InitializeComponent();
+
+            listViewImageList.ColorDepth = ColorDepth.Depth32Bit;
+            listViewImageList.ImageSize = new Size(tbImageSize.Value, tbImageSize.Value);
+            lvTextures.LargeImageList = listViewImageList;
+            lvTextures.SmallImageList = listViewImageList;
 
             this.scene = scene;
         }
@@ -88,21 +95,22 @@ namespace PeridotWindows.EditorScreen.Controls
         private void PopulateTextureList(IEnumerable<TextureResources.ITextureInfo> textureInfos)
         {
             lvTextures.Items.Clear();
-            ImageList imgList = new();
+
+            foreach (Image img in listViewImageList.Images)
+            {
+                img.Dispose();
+            }
+            listViewImageList.Images.Clear();
 
             foreach (TextureResources.ITextureInfo texInfo in textureInfos)
             {
-                lvTextures.LargeImageList = imgList;
-                lvTextures.SmallImageList = imgList;
-
-                imgList.Images.Add(Image.FromFile(Globals.Content.RootDirectory + "/" + texInfo.FilePath));
+                listViewImageList.Images.Add(Image.FromFile(Globals.Content.RootDirectory + "/" + texInfo.FilePath));
 
                 ListViewItem item = new();
                 item.Text = texInfo.FilePath;
-                item.ImageIndex = imgList.Images.Count - 1;
+                item.ImageIndex = listViewImageList.Images.Count - 1;
                 item.Tag = texInfo;
-
-
+                
                 lvTextures.Items.Add(item);
             }
         }
@@ -125,6 +133,17 @@ namespace PeridotWindows.EditorScreen.Controls
         private void lvTextures_DoubleClick(object sender, EventArgs e)
         {
             ItemDoubleClicked?.Invoke(this, SelectedItem!);
+        }
+
+        private void tbImageSize_Scroll(object sender, EventArgs e)
+        {
+            listViewImageList.ImageSize = new Size(tbImageSize.Value, tbImageSize.Value);
+            PopulateTextureList(scene.Resources.TextureResources.GetAllTextures());
+        }
+
+        ~TextureResourcesManagementControl()
+        {
+            listViewImageList.Dispose();
         }
     }
 }

@@ -14,6 +14,7 @@ using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS.Components;
+using PeridotWindows.EditorScreen.Controls;
 
 namespace PeridotWindows.EditorScreen.Forms
 {
@@ -21,16 +22,20 @@ namespace PeridotWindows.EditorScreen.Forms
     {
         private Scene3D scene;
 
+        private TextureResourcesManagementControl textureResourcesControl;
+
         public ResourcesForm(Scene3D scene)
         {
             InitializeComponent();
 
+            textureResourcesControl = new(scene);
+            textureResourcesControl.Dock = DockStyle.Fill;
+            tpTextures.Controls.Add(textureResourcesControl);
+
             this.scene = scene;
 
-            scene.Resources.TextureResources.TextureAtlasChanged += OnTextureAtlasChanged;
             scene.Resources.MeshResources.MeshListChanged += OnMeshListChanged;
 
-            OnTextureAtlasChanged(null, scene.Resources.TextureResources.GetAllTextures());
             OnMeshListChanged(null, scene.Resources.MeshResources.GetAllMeshes());
         }
 
@@ -45,66 +50,6 @@ namespace PeridotWindows.EditorScreen.Forms
 
                 lvMeshes.Items.Add(item);
             }
-        }
-
-        private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.ITextureInfo> textureInfos)
-        {
-            lvTextures.Items.Clear();
-
-            ImageList imgList = new();
-
-            foreach (TextureResources.ITextureInfo texInfo in textureInfos)
-            {
-                lvTextures.LargeImageList = imgList;
-                lvTextures.SmallImageList = imgList;
-
-                imgList.Images.Add(Image.FromFile(Globals.Content.RootDirectory + "/" + texInfo.FilePath));
-
-                ListViewItem item = new();
-                item.Text = texInfo.FilePath;
-                item.ImageIndex = imgList.Images.Count - 1;
-                item.Tag = texInfo;
-
-
-                lvTextures.Items.Add(item);
-            }
-        }
-
-        private void btnAddTexture_Click(object sender, EventArgs e)
-        {
-            string rootPath = Path.GetDirectoryName(Application.ExecutablePath)!;
-            string contentPath = Path.Combine(rootPath, Globals.Content.RootDirectory);
-
-            OpenFileDialog ofd = new();
-            ofd.Multiselect = true;
-            ofd.Filter = "Image files (*.png, *.jpg, *.jpeg)|*.png;*.jpg;*.jpeg";
-
-            if (ofd.ShowDialog() != DialogResult.OK) return;
-
-            if (ofd.FileNames.Any(x => !x.StartsWith(contentPath)))
-            {
-                MessageBox.Show("Could not import asset. Asset files need to be contained within the 'Content' directory of the game.");
-                return;
-            }
-
-            foreach (string path in ofd.FileNames)
-            {
-                string trimmedPath = path.Substring(contentPath.Length);
-                trimmedPath = trimmedPath.Replace("\\", "/");
-                if (trimmedPath.StartsWith("/"))
-                    trimmedPath = trimmedPath.Substring(1);
-                scene.Resources.TextureResources.AddTexture(trimmedPath);
-            }
-        }
-
-        private void btnRemoveTexture_Click(object sender, EventArgs e)
-        {
-            if (lvTextures.SelectedItems.Count == 0)
-                return;
-
-            TextureResources.ITextureInfo texInfo = (TextureResources.ITextureInfo)lvTextures.SelectedItems[0].Tag;
-
-            scene.Resources.TextureResources.RemoveTexture(texInfo.Id);
         }
 
         private void btnAddModel_Click(object sender, EventArgs e)

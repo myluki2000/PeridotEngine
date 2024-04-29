@@ -24,7 +24,13 @@ namespace PeridotWindows.EditorScreen.Forms
 
             textureResourcesControl = new(scene);
             textureResourcesControl.Dock = DockStyle.Fill;
+            textureResourcesControl.ItemDoubleClicked += TextureResourcesControlOnItemDoubleClicked;
             pnlList.Controls.Add(textureResourcesControl);
+        }
+
+        private void TextureResourcesControlOnItemDoubleClicked(object? sender, TextureResources.ITextureInfo e)
+        {
+            DialogResult = DialogResult.OK;
         }
 
         private void btnSelect_Click(object sender, EventArgs e)

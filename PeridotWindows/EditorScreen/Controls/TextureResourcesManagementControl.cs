@@ -18,7 +18,9 @@ namespace PeridotWindows.EditorScreen.Controls
 
         public TextureResources.ITextureInfo? SelectedItem { get; private set; }
 
-        public event EventHandler<TextureResources.ITextureInfo>? SelectedItemChanged;
+        public event EventHandler<TextureResources.ITextureInfo?>? SelectedItemChanged;
+
+        public event EventHandler<TextureResources.ITextureInfo>? ItemDoubleClicked; 
 
         public TextureResourcesManagementControl(Scene3D scene)
         {
@@ -66,9 +68,16 @@ namespace PeridotWindows.EditorScreen.Controls
 
         private void lvTextures_SelectedIndexChanged(object sender, EventArgs e)
         {
-            TextureResources.ITextureInfo texInfo = (TextureResources.ITextureInfo)lvTextures.SelectedItems[0].Tag;
-            SelectedItem = texInfo;
-            SelectedItemChanged?.Invoke(this, texInfo);
+            if (lvTextures.SelectedItems.Count > 0)
+            {
+                TextureResources.ITextureInfo texInfo = (TextureResources.ITextureInfo)lvTextures.SelectedItems[0].Tag;
+                SelectedItem = texInfo;
+            }
+            else
+            {
+                SelectedItem = null;
+            }
+            SelectedItemChanged?.Invoke(this, SelectedItem);
         }
 
         private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.ITextureInfo> textureInfos)
@@ -111,6 +120,11 @@ namespace PeridotWindows.EditorScreen.Controls
             base.OnHandleDestroyed(e);
 
             scene.Resources.TextureResources.TextureAtlasChanged -= OnTextureAtlasChanged;
+        }
+
+        private void lvTextures_DoubleClick(object sender, EventArgs e)
+        {
+            ItemDoubleClicked?.Invoke(this, SelectedItem!);
         }
     }
 }

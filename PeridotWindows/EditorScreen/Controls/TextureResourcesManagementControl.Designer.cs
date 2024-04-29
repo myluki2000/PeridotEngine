@@ -44,6 +44,7 @@
             lvTextures.TabIndex = 2;
             lvTextures.UseCompatibleStateImageBehavior = false;
             lvTextures.SelectedIndexChanged += lvTextures_SelectedIndexChanged;
+            lvTextures.DoubleClick += lvTextures_DoubleClick;
             // 
             // panel1
             // 

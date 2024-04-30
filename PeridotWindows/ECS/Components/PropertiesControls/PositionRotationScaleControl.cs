@@ -12,19 +12,17 @@ using PeridotEngine.ECS.Components;
 
 namespace PeridotWindows.ECS.Components.PropertiesControls
 {
-    public partial class PositionRotationScaleControl : UserControl, IComponentControl
+    public partial class PositionRotationScaleControl : ComponentControlBase
     {
         private readonly PositionRotationScaleComponent component;
 
-        public PositionRotationScaleControl(PositionRotationScaleComponent component)
+        public PositionRotationScaleControl(Archetype.Entity entity) : base(entity)
         {
             InitializeComponent();
 
-            this.component = component;
+            this.component = entity.GetComponent<PositionRotationScaleComponent>();
             titleBar.Tag = component;
         }
-
-
 
         private void NudPosition_ValueChanged(object? sender, EventArgs eventArgs)
         {
@@ -68,6 +66,17 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudScaleY.Value = (decimal)component.Scale.Y;
             nudScaleZ.Value = (decimal)component.Scale.Z;
 
+            int noneItemIndex = cbParent.Items.Add("<None>");
+            component.Scene.Ecs.Query().Has<PositionRotationScaleComponent>().ForEach(
+                (Archetype.Entity entity) =>
+                {
+                    // skip adding the entity to the combobox if it is the entity the component is a part of
+                    if (entity.Id == Entity.Id)
+                        return;
+
+                    cbParent.Items.Add(entity);
+                });
+            cbParent.SelectedIndex = noneItemIndex;
 
             nudPositionX.ValueChanged += NudPosition_ValueChanged;
             nudPositionY.ValueChanged += NudPosition_ValueChanged;
@@ -82,7 +91,12 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudScaleZ.ValueChanged += NudScale_ValueChanged;
         }
 
-        public ContextMenuStrip? OptionsMenu
+        private void cbParent_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            component.ParentEntityId = (cbParent.SelectedItem as Archetype.Entity)?.Id;
+        }
+
+        public override ContextMenuStrip? OptionsMenu
         {
             get => titleBar.OptionsMenu;
             set => titleBar.OptionsMenu = value;

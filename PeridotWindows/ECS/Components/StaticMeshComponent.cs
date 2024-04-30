@@ -7,13 +7,19 @@ using System.Threading.Tasks;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
 using PeridotEngine.Scenes.Scene3D;
+using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components.PropertiesControls;
 
 namespace PeridotEngine.ECS.Components
 {
     public partial class StaticMeshComponent
     {
-        private IComponentControl? propertiesControl;
-        public override IComponentControl? PropertiesControl => propertiesControl ??= new StaticMeshControl(this);
+        private ComponentControlBase? propertiesControl;
+
+        public override ComponentControlBase? GetPropertiesControl(Archetype.Entity entity)
+        {
+            propertiesControl ??= new StaticMeshControl(entity);
+            return propertiesControl;
+        }
     }
 }

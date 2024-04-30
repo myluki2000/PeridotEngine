@@ -16,15 +16,15 @@ using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotWindows.ECS.Components.PropertiesControls
 {
-    public partial class StaticMeshControl : UserControl, IComponentControl
+    public partial class StaticMeshControl : ComponentControlBase
     {
         private readonly StaticMeshComponent component;
 
-        public StaticMeshControl(StaticMeshComponent component)
+        public StaticMeshControl(Archetype.Entity entity) : base(entity)
         {
             InitializeComponent();
 
-            this.component = component;
+            this.component = entity.GetComponent<StaticMeshComponent>();
             titleBar.Tag = component;
 
             component.Scene.Resources.MeshResources.MeshListChanged += (_, _) => UpdateMeshList();
@@ -85,7 +85,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             component.CastShadows = cbCastShadows.Checked;
         }
 
-        public ContextMenuStrip? OptionsMenu
+        public override ContextMenuStrip? OptionsMenu
         {
             get => titleBar.OptionsMenu;
             set => titleBar.OptionsMenu = value;

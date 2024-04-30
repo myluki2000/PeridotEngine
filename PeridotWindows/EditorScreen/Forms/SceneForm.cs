@@ -61,11 +61,7 @@ namespace PeridotWindows.EditorScreen.Forms
             List<ListViewItem> items = new();
             screen.Scene.Ecs.Query().ForEach((Archetype.Entity entity) =>
             {
-                string name = string.IsNullOrEmpty(entity.Name)
-                    ? string.Join(", ", entity.Components.Select(x => x.GetType().Name))
-                    : entity.Name;
-
-                ListViewItem item = new(name)
+                ListViewItem item = new(entity.ToString())
                 {
                     Tag = entity,
                 };

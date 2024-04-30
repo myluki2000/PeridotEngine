@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.ComponentModel;
 using PeridotEngine.ECS.Components;
+using static PeridotWindows.ECS.Archetype;
 
 namespace PeridotWindows.ECS
 {
@@ -133,6 +134,13 @@ namespace PeridotWindows.ECS
                 oldArchetype.RemoveEntityAtInternal(index);
                 
                 Archetype.EntityListChanged?.Invoke();
+            }
+
+            public override string ToString()
+            {
+                return string.IsNullOrEmpty(Name)
+                    ? string.Join(", ", Components.Select(x => x.GetType().Name))
+                    : Name;
             }
         }
     }

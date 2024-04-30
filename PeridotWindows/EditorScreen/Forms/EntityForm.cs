@@ -70,11 +70,11 @@ namespace PeridotWindows.EditorScreen.Forms
 
             foreach (ComponentBase component in entity.Components.Reverse())
             {
-                UserControl? control = (UserControl?)component.PropertiesControl;
+                UserControl? control = (UserControl?)component.GetPropertiesControl(entity);
                 
                 if (control == null) continue;
 
-                if (control is IComponentControl componentControl)
+                if (control is ComponentControlBase componentControl)
                 {
                     componentControl.OptionsMenu = cmsComponentOptions;
                 }

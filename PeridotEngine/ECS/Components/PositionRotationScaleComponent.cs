@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
 using PeridotEngine.Scenes.Scene3D;
+using PeridotWindows.ECS;
 
 namespace PeridotEngine.ECS.Components
 {
@@ -44,22 +45,51 @@ namespace PeridotEngine.ECS.Components
         [JsonIgnore]
         public uint MatrixVersion { get; private set; } = 0;
 
+        [JsonIgnore] public bool HasParent => parentEntityPosRotScaleComponent != null;
+
+        public uint? ParentEntityId
+        {
+            get => parentEntityId;
+            set
+            {
+                parentEntityId = value;
+                parentEntityPosRotScaleComponent = (value != null)
+                    ? Scene.Ecs.EntityById(value.Value)?.GetComponent<PositionRotationScaleComponent>()
+                    : null;
+                parentEntityMatrixVersion = 0;
+                matrixOutdated = true;
+            }
+        }
+
+        private PositionRotationScaleComponent? parentEntityPosRotScaleComponent;
+        private uint parentEntityMatrixVersion = 0;
+        private uint? parentEntityId;
+
         [JsonIgnore]
         public Matrix Transformation
         {
             get
             {
-                if (matrixOutdated)
-                {
-                    transformation = Matrix.CreateScale(scale)
-                                     * Matrix.CreateRotationX(rotation.X)
-                                     * Matrix.CreateRotationY(rotation.Y)
-                                     * Matrix.CreateRotationZ(rotation.Z)
-                                     * Matrix.CreateTranslation(position);
+                bool refresh = matrixOutdated 
+                               || (parentEntityPosRotScaleComponent != null 
+                                   && parentEntityMatrixVersion != parentEntityPosRotScaleComponent.MatrixVersion);
 
-                    // unchecked increment by 1, overflows back to 0 when it reaches uint.MaxValue
-                    MatrixVersion = unchecked(MatrixVersion + 1);
+                if (!refresh) return transformation;
+
+                transformation = Matrix.CreateScale(scale)
+                                 * Matrix.CreateRotationX(rotation.X)
+                                 * Matrix.CreateRotationY(rotation.Y)
+                                 * Matrix.CreateRotationZ(rotation.Z)
+                                 * Matrix.CreateTranslation(position);
+
+                if (parentEntityPosRotScaleComponent != null)
+                {
+                    transformation *= parentEntityPosRotScaleComponent.Transformation;
+                    parentEntityMatrixVersion = parentEntityPosRotScaleComponent.MatrixVersion;
                 }
+
+                // unchecked increment by 1, overflows back to 0 when it reaches uint.MaxValue
+                MatrixVersion = unchecked(MatrixVersion + 1);
 
                 return transformation;
             }

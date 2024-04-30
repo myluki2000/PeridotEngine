@@ -93,6 +93,19 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
         private void cbParent_SelectedIndexChanged(object sender, EventArgs e)
         {
+            uint? parentId = (cbParent.SelectedItem as Archetype.Entity)?.Id;
+
+            while (parentId != null)
+            {
+                if (parentId == Entity.Id)
+                {
+                    MessageBox.Show("Cannot reference parent entities in a loop!");
+                    return;
+                }
+
+                parentId = component.Scene.Ecs.EntityById(parentId.Value)?.GetComponent<PositionRotationScaleComponent>().ParentEntityId;
+            }
+
             component.ParentEntityId = (cbParent.SelectedItem as Archetype.Entity)?.Id;
         }
 

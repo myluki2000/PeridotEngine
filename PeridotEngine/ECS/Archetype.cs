@@ -157,6 +157,6 @@ namespace PeridotWindows.ECS
         }
 
         [JsonIgnore]
-        public int EntityCount => Components[0].Count;
+        public int EntityCount => Ids.Count;
     }
 }

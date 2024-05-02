@@ -138,9 +138,13 @@ namespace PeridotWindows.ECS
 
             public override string ToString()
             {
-                return string.IsNullOrEmpty(Name)
-                    ? string.Join(", ", Components.Select(x => x.GetType().Name))
-                    : Name;
+                if (!string.IsNullOrEmpty(Name))
+                    return Name;
+
+                if (Components.Count > 0)
+                    return string.Join(", ", Components.Select(x => x.GetType().Name));
+
+                return "<empty entity>";
             }
         }
     }

@@ -43,9 +43,9 @@ namespace PeridotWindows.EditorScreen
                 // save original object pos in case we abort the move
                 originalObjectPos = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
 
-                lockToX = false;
-                lockToY = false;
-                lockToZ = false;
+                lockToX = true;
+                lockToY = true;
+                lockToZ = true;
             }
             else if (editor.Mode == EditorScreen.EditorMode.OBJECT_MOVE)
             {
@@ -62,27 +62,60 @@ namespace PeridotWindows.EditorScreen
                 }
                 else if (keyboardState.IsKeyDown(Keys.X) && lastKeyboardState.IsKeyUp(Keys.X))
                 {
+                    // lock to x axis
                     lockToX = true;
+                    lockToY = false;
+                    lockToZ = false;
+
+                    // lock to yz plane
+                    if (keyboardState.IsKeyDown(Keys.LeftControl))
+                    {
+                        lockToX = false;
+                        lockToY = true;
+                        lockToZ = true;
+                    }
                 }
                 else if (keyboardState.IsKeyDown(Keys.Y) && lastKeyboardState.IsKeyUp(Keys.Y))
                 {
+                    // lock to y axis
+                    lockToX = false;
                     lockToY = true;
+                    lockToZ = false;
+
+                    // lock to xz plane
+                    if (keyboardState.IsKeyDown(Keys.LeftControl))
+                    {
+                        lockToX = true;
+                        lockToY = false;
+                        lockToZ = true;
+                    }
                 }
                 else if (keyboardState.IsKeyDown(Keys.Z) && lastKeyboardState.IsKeyUp(Keys.Z))
                 {
+                    // lock to z axis
+                    lockToX = false;
+                    lockToY = false;
                     lockToZ = true;
+
+                    // lock to xy plane
+                    if (keyboardState.IsKeyDown(Keys.LeftControl))
+                    {
+                        lockToX = true;
+                        lockToY = true;
+                        lockToZ = false;
+                    }
                 }
                 else
                 {
                     PositionRotationScaleComponent posC = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>();
 
-                    Vector4 pos = new(posC.Position, 1);
+                    Vector4 movePos = new(posC.Position, 1);
 
                     // from world space into view space
-                    pos = pos.Transform(editor.Scene.Camera.GetViewMatrix());
+                    movePos = movePos.Transform(editor.Scene.Camera.GetViewMatrix());
 
                     // translate model matrix in view space by mouse movement
-                    pos = pos.Transform(
+                    movePos = movePos.Transform(
                         Matrix.CreateTranslation(
                             new Vector3((mouseState.X - lastMouseState.X) / 100f,
                                 (lastMouseState.Y - mouseState.Y) / 100f,
@@ -91,26 +124,22 @@ namespace PeridotWindows.EditorScreen
                     );
 
                     // back from view space to world space
-                    pos = pos.Transform(Matrix.Invert(editor.Scene.Camera.GetViewMatrix()));
+                    movePos = movePos.Transform(Matrix.Invert(editor.Scene.Camera.GetViewMatrix()));
 
-                    pos /= pos.W;
+                    movePos /= movePos.W;
+
+                    Vector3 newPos = originalObjectPos;
 
                     if (lockToX)
-                    {
-                        posC.Position = new Vector3(pos.X, originalObjectPos.Y, originalObjectPos.Z);
-                    }
-                    else if (lockToY)
-                    {
-                        posC.Position = new Vector3(originalObjectPos.X, pos.Y, originalObjectPos.Z);
-                    }
-                    else if (lockToZ)
-                    {
-                        posC.Position = new Vector3(originalObjectPos.X, originalObjectPos.Y, pos.Z);
-                    }
-                    else
-                    {
-                        posC.Position = new Vector3(pos.X, pos.Y, pos.Z);
-                    }
+                        newPos.X = movePos.X;
+
+                    if (lockToY)
+                        newPos.Y = movePos.Y;
+
+                    if (lockToZ)
+                        newPos.Z = movePos.Z;
+
+                    posC.Position = newPos;
                 }
 
                 if(mouseState.Position.X > Globals.Graphics.PreferredBackBufferWidth - 10)

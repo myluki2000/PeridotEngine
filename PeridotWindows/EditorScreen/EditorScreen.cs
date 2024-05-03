@@ -7,9 +7,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PeridotEngine;
 using PeridotEngine.ECS.Components;
+using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Graphics.Geometry;
 using PeridotEngine.Graphics.Screens;
+using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
@@ -50,6 +52,8 @@ namespace PeridotWindows.EditorScreen
 
         private Rectangle windowLastBounds;
 
+        public EditorMode Mode { get; set; }
+
         public EditorScreen() : base(new())
         {
 
@@ -69,7 +73,7 @@ namespace PeridotWindows.EditorScreen
             Globals.GameMain.Window.AllowUserResizing = true;
 
             Control mainWindowControl = Control.FromHandle(Globals.GameMain.Window.Handle);
-            
+
             FrmResources = new(Scene);
             FrmResources.Show(mainWindowControl);
             FrmToolbox = new(Scene);
@@ -134,7 +138,8 @@ namespace PeridotWindows.EditorScreen
                 SelectedEntity?.Delete();
             }
 
-            if (mouseState.LeftButton == ButtonState.Pressed 
+            if (Mode == EditorMode.NONE
+                && mouseState.LeftButton == ButtonState.Pressed
                 && lastMouseState.LeftButton == ButtonState.Released
                 && mouseState.X > 0
                 && mouseState.X < Globals.Graphics.PreferredBackBufferWidth
@@ -144,6 +149,8 @@ namespace PeridotWindows.EditorScreen
                 int clickedObjectId = GetObjectIdAtScreenPos(mouseState.Position);
                 SelectedEntity = Scene.Ecs.EntityById((uint)clickedObjectId);
             }
+
+            EditorObjectMoveHandler.HandleObjectMove(this);
 
             UpdateWindowLocations();
 
@@ -284,6 +291,14 @@ namespace PeridotWindows.EditorScreen
             FrmEntity = null;
             FrmScene?.Dispose();
             FrmScene = null;
+        }
+
+        public enum EditorMode
+        {
+            NONE,
+            OBJECT_MOVE,
+            OBJECT_ROTATE,
+            OBJECT_SCALE
         }
     }
 }

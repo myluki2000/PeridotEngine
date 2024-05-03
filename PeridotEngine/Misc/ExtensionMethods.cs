@@ -13,6 +13,11 @@ namespace PeridotEngine.Misc
             return Vector3.Transform(v, matrix);
         }
 
+        public static Vector4 Transform(this Vector4 v, Matrix matrix)
+        {
+            return Vector4.Transform(v, matrix);
+        }
+
         public static System.Drawing.Color ToSystemColor(this Color value)
         {
             System.Drawing.Color result = System.Drawing.Color.FromArgb(

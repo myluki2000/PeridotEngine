@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.Xna.Framework;
 using PeridotEngine.Misc;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace PeridotEngine.Graphics.Cameras
 {
@@ -147,6 +148,14 @@ namespace PeridotEngine.Graphics.Cameras
             );
             direction.Normalize();
             return direction;
+        }
+
+        public Vector2 WorldPosToScreenPos(Vector3 worldPos)
+        {
+            Vector4 res = new Vector4(worldPos, 1).Transform(GetViewMatrix() * GetProjectionMatrix());
+            res /= res.W;
+            return new Vector2((res.X + 1) / 2 * Globals.Graphics.PreferredBackBufferWidth,
+                               (-res.Y + 1) / 2 * Globals.Graphics.PreferredBackBufferHeight);
         }
     }
 }

@@ -23,6 +23,10 @@ namespace PeridotWindows.EditorScreen
 
         private static Vector3 originalObjectPos;
 
+        private static bool lockToX = false;
+        private static bool lockToY = false;
+        private static bool lockToZ = false;
+
         public static void HandleObjectMove(EditorScreen editor)
         {
             KeyboardState keyboardState = Keyboard.GetState();
@@ -38,6 +42,10 @@ namespace PeridotWindows.EditorScreen
                 editor.Mode = EditorScreen.EditorMode.OBJECT_MOVE;
                 // save original object pos in case we abort the move
                 originalObjectPos = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
+
+                lockToX = false;
+                lockToY = false;
+                lockToZ = false;
             }
             else if (editor.Mode == EditorScreen.EditorMode.OBJECT_MOVE)
             {
@@ -51,6 +59,18 @@ namespace PeridotWindows.EditorScreen
                     // cancel move, reset object position to original
                     editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position = originalObjectPos;
                     editor.Mode = EditorScreen.EditorMode.NONE;
+                }
+                else if (keyboardState.IsKeyDown(Keys.X) && lastKeyboardState.IsKeyUp(Keys.X))
+                {
+                    lockToX = true;
+                }
+                else if (keyboardState.IsKeyDown(Keys.Y) && lastKeyboardState.IsKeyUp(Keys.Y))
+                {
+                    lockToY = true;
+                }
+                else if (keyboardState.IsKeyDown(Keys.Z) && lastKeyboardState.IsKeyUp(Keys.Z))
+                {
+                    lockToZ = true;
                 }
                 else
                 {
@@ -75,7 +95,22 @@ namespace PeridotWindows.EditorScreen
 
                     pos /= pos.W;
 
-                    posC.Position = new Vector3(pos.X, pos.Y, pos.Z);
+                    if (lockToX)
+                    {
+                        posC.Position = new Vector3(pos.X, originalObjectPos.Y, originalObjectPos.Z);
+                    }
+                    else if (lockToY)
+                    {
+                        posC.Position = new Vector3(originalObjectPos.X, pos.Y, originalObjectPos.Z);
+                    }
+                    else if (lockToZ)
+                    {
+                        posC.Position = new Vector3(originalObjectPos.X, originalObjectPos.Y, pos.Z);
+                    }
+                    else
+                    {
+                        posC.Position = new Vector3(pos.X, pos.Y, pos.Z);
+                    }
                 }
 
                 if(mouseState.Position.X > Globals.Graphics.PreferredBackBufferWidth - 10)

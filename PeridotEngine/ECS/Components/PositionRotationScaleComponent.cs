@@ -77,9 +77,7 @@ namespace PeridotEngine.ECS.Components
                 if (!refresh) return transformation;
 
                 transformation = Matrix.CreateScale(scale)
-                                 * Matrix.CreateRotationX(rotation.X)
-                                 * Matrix.CreateRotationY(rotation.Y)
-                                 * Matrix.CreateRotationZ(rotation.Z)
+                                 * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
                                  * Matrix.CreateTranslation(position);
 
                 if (parentEntityPosRotScaleComponent != null)

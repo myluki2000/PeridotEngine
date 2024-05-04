@@ -64,6 +64,9 @@
             panel3 = new Panel();
             label3 = new Label();
             nudPositionZ = new NumericUpDown();
+            panel10 = new Panel();
+            label10 = new Label();
+            nudRotationW = new NumericUpDown();
             gbParent.SuspendLayout();
             gbScale.SuspendLayout();
             flpScale.SuspendLayout();
@@ -89,6 +92,8 @@
             ((System.ComponentModel.ISupportInitialize)nudPositionY).BeginInit();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudPositionZ).BeginInit();
+            panel10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudRotationW).BeginInit();
             SuspendLayout();
             // 
             // titleBar
@@ -265,10 +270,11 @@
             flpRotation.Controls.Add(panel4);
             flpRotation.Controls.Add(panel5);
             flpRotation.Controls.Add(panel6);
+            flpRotation.Controls.Add(panel10);
             flpRotation.Location = new Point(3, 16);
             flpRotation.Margin = new Padding(0);
             flpRotation.Name = "flpRotation";
-            flpRotation.Size = new Size(345, 35);
+            flpRotation.Size = new Size(460, 35);
             flpRotation.TabIndex = 1;
             // 
             // panel4
@@ -477,6 +483,36 @@
             nudPositionZ.Size = new Size(80, 23);
             nudPositionZ.TabIndex = 4;
             // 
+            // panel10
+            // 
+            panel10.AutoSize = true;
+            panel10.Controls.Add(label10);
+            panel10.Controls.Add(nudRotationW);
+            panel10.Location = new Point(348, 3);
+            panel10.Name = "panel10";
+            panel10.Size = new Size(109, 29);
+            panel10.TabIndex = 8;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(3, 5);
+            label10.Name = "label10";
+            label10.Size = new Size(21, 15);
+            label10.TabIndex = 5;
+            label10.Text = "W:";
+            // 
+            // nudRotationW
+            // 
+            nudRotationW.DecimalPlaces = 3;
+            nudRotationW.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            nudRotationW.Location = new Point(26, 3);
+            nudRotationW.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
+            nudRotationW.Minimum = new decimal(new int[] { 99999, 0, 0, int.MinValue });
+            nudRotationW.Name = "nudRotationW";
+            nudRotationW.Size = new Size(80, 23);
+            nudRotationW.TabIndex = 4;
+            // 
             // PositionRotationScaleControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -532,6 +568,9 @@
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudPositionZ).EndInit();
+            panel10.ResumeLayout(false);
+            panel10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudRotationW).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -573,5 +612,8 @@
         private Panel panel3;
         private Label label3;
         private NumericUpDown nudPositionZ;
+        private Panel panel10;
+        private Label label10;
+        private NumericUpDown nudRotationW;
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
+using PeridotWindows.ECS.Components.PropertiesControls;
 
 namespace PeridotEngine.ECS.Components
 {
@@ -14,16 +15,18 @@ namespace PeridotEngine.ECS.Components
             {
                 position = value;
                 matrixOutdated = true;
+                ValuesChanged?.Invoke(this, this);
             }
         }
 
-        public Vector3 Rotation
+        public Quaternion Rotation
         {
             get => rotation;
             set
             {
                 rotation = value;
                 matrixOutdated = true;
+                ValuesChanged?.Invoke(this, this);
             }
         }
 
@@ -34,6 +37,7 @@ namespace PeridotEngine.ECS.Components
             {
                 scale = value;
                 matrixOutdated = true;
+                ValuesChanged?.Invoke(this, this);
             }
         }
 
@@ -58,8 +62,11 @@ namespace PeridotEngine.ECS.Components
                     : null;
                 parentEntityMatrixVersion = 0;
                 matrixOutdated = true;
+                ValuesChanged?.Invoke(this, this);
             }
         }
+
+        public event EventHandler<PositionRotationScaleComponent>? ValuesChanged; 
 
         private PositionRotationScaleComponent? parentEntityPosRotScaleComponent;
         private uint parentEntityMatrixVersion = 0;
@@ -77,7 +84,8 @@ namespace PeridotEngine.ECS.Components
                 if (!refresh) return transformation;
 
                 transformation = Matrix.CreateScale(scale)
-                                 * Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
+                                 * Matrix.CreateFromQuaternion(rotation)
+                                 //* Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
                                  * Matrix.CreateTranslation(position);
 
                 if (parentEntityPosRotScaleComponent != null)
@@ -98,7 +106,7 @@ namespace PeridotEngine.ECS.Components
         }
 
         private Vector3 position;
-        private Vector3 rotation;
+        private Quaternion rotation;
         private Vector3 scale = Vector3.One;
         private Matrix transformation = Matrix.Identity;
 

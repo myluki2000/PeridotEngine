@@ -21,7 +21,7 @@ namespace PeridotWindows.EditorScreen
         private static KeyboardState lastKeyboardState;
         private static MouseState lastMouseState;
 
-        private static Vector3 originalObjectPos;
+        private static Quaternion originalObjectRotation;
 
         private static bool lockToX = false;
         private static bool lockToY = false;
@@ -41,11 +41,11 @@ namespace PeridotWindows.EditorScreen
                 // if object selected & we're currently not in any mode, go into move mode
                 editor.Mode = EditorScreen.EditorMode.OBJECT_ROTATE;
                 // save original object pos in case we abort the move
-                originalObjectPos = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
+                originalObjectRotation = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Rotation;
 
-                lockToX = true;
-                lockToY = true;
-                lockToZ = true;
+                lockToX = false;
+                lockToY = false;
+                lockToZ = false;
             }
             else if (editor.Mode == EditorScreen.EditorMode.OBJECT_ROTATE)
             {
@@ -57,7 +57,7 @@ namespace PeridotWindows.EditorScreen
                 else if (mouseState.RightButton == ButtonState.Pressed)
                 {
                     // cancel move, reset object position to original
-                    editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position = originalObjectPos;
+                    editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Rotation = originalObjectRotation;
                     editor.Mode = EditorScreen.EditorMode.NONE;
                 }
                 else if (keyboardState.IsKeyDown(Keys.X) && lastKeyboardState.IsKeyUp(Keys.X))
@@ -66,14 +66,6 @@ namespace PeridotWindows.EditorScreen
                     lockToX = true;
                     lockToY = false;
                     lockToZ = false;
-
-                    // lock to yz plane
-                    if (keyboardState.IsKeyDown(Keys.LeftControl))
-                    {
-                        lockToX = false;
-                        lockToY = true;
-                        lockToZ = true;
-                    }
                 }
                 else if (keyboardState.IsKeyDown(Keys.Y) && lastKeyboardState.IsKeyUp(Keys.Y))
                 {
@@ -81,14 +73,6 @@ namespace PeridotWindows.EditorScreen
                     lockToX = false;
                     lockToY = true;
                     lockToZ = false;
-
-                    // lock to xz plane
-                    if (keyboardState.IsKeyDown(Keys.LeftControl))
-                    {
-                        lockToX = true;
-                        lockToY = false;
-                        lockToZ = true;
-                    }
                 }
                 else if (keyboardState.IsKeyDown(Keys.Z) && lastKeyboardState.IsKeyUp(Keys.Z))
                 {
@@ -96,47 +80,43 @@ namespace PeridotWindows.EditorScreen
                     lockToX = false;
                     lockToY = false;
                     lockToZ = true;
-
-                    // lock to xy plane
-                    if (keyboardState.IsKeyDown(Keys.LeftControl))
-                    {
-                        lockToX = true;
-                        lockToY = true;
-                        lockToZ = false;
-                    }
                 }
                 else
                 {
                     PositionRotationScaleComponent posC = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>();
 
-                    Vector4 movePos = new(posC.Position, 1);
+                    Quaternion rot = posC.Rotation;
 
-                    // from world space into view space
-                    movePos = movePos.Transform(editor.Scene.Camera.GetViewMatrix());
+                    Matrix rotMat = Matrix.CreateFromQuaternion(rot);
 
-                    // TODO: Implement rotation
+                    float mouseDiff = (mouseState.X - lastMouseState.X) / 100f + (lastMouseState.Y - mouseState.Y) / 100f;
 
-                    
-                    // back from view space to world space
-                    movePos = movePos.Transform(Matrix.Invert(editor.Scene.Camera.GetViewMatrix()));
+                    if (!lockToX && !lockToY && !lockToZ)
+                    {
+                        // transform to view space
+                        rotMat = rotMat * editor.Scene.Camera.GetViewMatrix();
+                        rotMat = rotMat * Matrix.CreateRotationZ(mouseDiff);
+                        // back to world space
+                        rotMat = rotMat * Matrix.Invert(editor.Scene.Camera.GetViewMatrix());
+                    }
+                    else if (lockToX)
+                    {
+                        rotMat = rotMat * Matrix.CreateRotationX(mouseDiff);
+                    }
+                    else if (lockToY)
+                    {
+                        rotMat = rotMat * Matrix.CreateRotationY(mouseDiff);
+                    }
+                    else if (lockToZ)
+                    {
+                        rotMat = rotMat * Matrix.CreateRotationZ(mouseDiff);
+                    }
 
-                    movePos /= movePos.W;
-
-                    Vector3 newPos = originalObjectPos;
-
-                    if (lockToX)
-                        newPos.X = movePos.X;
-
-                    if (lockToY)
-                        newPos.Y = movePos.Y;
-
-                    if (lockToZ)
-                        newPos.Z = movePos.Z;
-
-                    posC.Position = newPos;
+                    rotMat.Decompose(out Vector3 newScale, out Quaternion newRot, out Vector3 newPos);
+                    posC.Rotation = newRot;
                 }
 
-                if(mouseState.Position.X > Globals.Graphics.PreferredBackBufferWidth - 10)
+                if (mouseState.Position.X > Globals.Graphics.PreferredBackBufferWidth - 10)
                     Mouse.SetPosition(10, mouseState.Position.Y);
 
                 if (mouseState.Position.X < 10)

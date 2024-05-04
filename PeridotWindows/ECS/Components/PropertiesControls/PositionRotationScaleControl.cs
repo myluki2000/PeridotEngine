@@ -33,9 +33,10 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
         private void NudRotation_ValueChanged(object? sender, EventArgs eventArgs)
         {
-            component.Rotation = new Vector3((float)nudRotationX.Value,
+            component.Rotation = new Quaternion((float)nudRotationX.Value,
                                              (float)nudRotationY.Value,
-                                             (float)nudRotationZ.Value);
+                                             (float)nudRotationZ.Value,
+                                             (float)nudRotationW.Value);
         }
 
         private void NudScale_ValueChanged(object? sender, EventArgs eventArgs)
@@ -54,17 +55,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
         private void PositionRotationScaleControl_Load(object sender, EventArgs e)
         {
-            nudPositionX.Value = (decimal)component.Position.X;
-            nudPositionY.Value = (decimal)component.Position.Y;
-            nudPositionZ.Value = (decimal)component.Position.Z;
-
-            nudRotationX.Value = (decimal)component.Rotation.X;
-            nudRotationY.Value = (decimal)component.Rotation.Y;
-            nudRotationZ.Value = (decimal)component.Rotation.Z;
-
-            nudScaleX.Value = (decimal)component.Scale.X;
-            nudScaleY.Value = (decimal)component.Scale.Y;
-            nudScaleZ.Value = (decimal)component.Scale.Z;
+            ComponentOnValuesChanged(null, component);
 
             int noneItemIndex = cbParent.Items.Add("<None>");
             component.Scene.Ecs.Query().Has<PositionRotationScaleComponent>().ForEach(
@@ -77,18 +68,6 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
                     cbParent.Items.Add(entity);
                 });
             cbParent.SelectedIndex = noneItemIndex;
-
-            nudPositionX.ValueChanged += NudPosition_ValueChanged;
-            nudPositionY.ValueChanged += NudPosition_ValueChanged;
-            nudPositionZ.ValueChanged += NudPosition_ValueChanged;
-
-            nudRotationX.ValueChanged += NudRotation_ValueChanged;
-            nudRotationY.ValueChanged += NudRotation_ValueChanged;
-            nudRotationZ.ValueChanged += NudRotation_ValueChanged;
-
-            nudScaleX.ValueChanged += NudScale_ValueChanged;
-            nudScaleY.ValueChanged += NudScale_ValueChanged;
-            nudScaleZ.ValueChanged += NudScale_ValueChanged;
         }
 
         private void cbParent_SelectedIndexChanged(object sender, EventArgs e)
@@ -113,6 +92,58 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
         {
             get => titleBar.OptionsMenu;
             set => titleBar.OptionsMenu = value;
+        }
+        private void ComponentOnValuesChanged(object? sender, PositionRotationScaleComponent e)
+        {
+            nudPositionX.ValueChanged -= NudPosition_ValueChanged;
+            nudPositionY.ValueChanged -= NudPosition_ValueChanged;
+            nudPositionZ.ValueChanged -= NudPosition_ValueChanged;
+
+            nudRotationX.ValueChanged -= NudRotation_ValueChanged;
+            nudRotationY.ValueChanged -= NudRotation_ValueChanged;
+            nudRotationZ.ValueChanged -= NudRotation_ValueChanged;
+
+            nudScaleX.ValueChanged -= NudScale_ValueChanged;
+            nudScaleY.ValueChanged -= NudScale_ValueChanged;
+            nudScaleZ.ValueChanged -= NudScale_ValueChanged;
+
+            nudPositionX.Value = (decimal)component.Position.X;
+            nudPositionY.Value = (decimal)component.Position.Y;
+            nudPositionZ.Value = (decimal)component.Position.Z;
+
+            nudRotationX.Value = (decimal)component.Rotation.X;
+            nudRotationY.Value = (decimal)component.Rotation.Y;
+            nudRotationZ.Value = (decimal)component.Rotation.Z;
+
+            nudScaleX.Value = (decimal)component.Scale.X;
+            nudScaleY.Value = (decimal)component.Scale.Y;
+            nudScaleZ.Value = (decimal)component.Scale.Z;
+
+            nudPositionX.ValueChanged += NudPosition_ValueChanged;
+            nudPositionY.ValueChanged += NudPosition_ValueChanged;
+            nudPositionZ.ValueChanged += NudPosition_ValueChanged;
+
+            nudRotationX.ValueChanged += NudRotation_ValueChanged;
+            nudRotationY.ValueChanged += NudRotation_ValueChanged;
+            nudRotationZ.ValueChanged += NudRotation_ValueChanged;
+
+            nudScaleX.ValueChanged += NudScale_ValueChanged;
+            nudScaleY.ValueChanged += NudScale_ValueChanged;
+            nudScaleZ.ValueChanged += NudScale_ValueChanged;
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+
+            component.ValuesChanged += ComponentOnValuesChanged;
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            base.OnHandleDestroyed(e);
+
+            component.ValuesChanged -= ComponentOnValuesChanged;
         }
     }
 }

@@ -33,5 +33,14 @@ namespace PeridotEngine.Misc
         {
             return new Color(value.R, value.G, value.B, value.A);
         }
+
+        public static Vector3 ToEulerAngles(this Quaternion q)
+        {
+            float yaw = (float)Math.Atan2(2.0 * (q.Y * q.Z + q.W * q.X), q.W * q.W - q.X * q.X - q.Y * q.Y + q.Z * q.Z);
+            float pitch = (float)Math.Asin(-2.0 * (q.X * q.Z - q.W * q.Y));
+            float roll = (float)Math.Atan2(2.0 * (q.X * q.Y + q.W * q.Z), q.W * q.W + q.X * q.X - q.Y * q.Y - q.Z * q.Z);
+
+            return new Vector3(pitch, yaw, roll);
+        }
     }
 }

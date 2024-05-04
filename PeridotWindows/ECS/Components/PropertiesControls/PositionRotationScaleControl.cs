@@ -102,6 +102,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudRotationX.ValueChanged -= NudRotation_ValueChanged;
             nudRotationY.ValueChanged -= NudRotation_ValueChanged;
             nudRotationZ.ValueChanged -= NudRotation_ValueChanged;
+            nudRotationW.ValueChanged -= NudRotation_ValueChanged;
 
             nudScaleX.ValueChanged -= NudScale_ValueChanged;
             nudScaleY.ValueChanged -= NudScale_ValueChanged;
@@ -114,6 +115,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudRotationX.Value = (decimal)component.Rotation.X;
             nudRotationY.Value = (decimal)component.Rotation.Y;
             nudRotationZ.Value = (decimal)component.Rotation.Z;
+            nudRotationW.Value = (decimal)component.Rotation.W;
 
             nudScaleX.Value = (decimal)component.Scale.X;
             nudScaleY.Value = (decimal)component.Scale.Y;
@@ -126,6 +128,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudRotationX.ValueChanged += NudRotation_ValueChanged;
             nudRotationY.ValueChanged += NudRotation_ValueChanged;
             nudRotationZ.ValueChanged += NudRotation_ValueChanged;
+            nudRotationW.ValueChanged += NudRotation_ValueChanged;
 
             nudScaleX.ValueChanged += NudScale_ValueChanged;
             nudScaleY.ValueChanged += NudScale_ValueChanged;

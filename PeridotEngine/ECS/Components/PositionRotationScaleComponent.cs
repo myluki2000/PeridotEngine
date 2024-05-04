@@ -49,7 +49,7 @@ namespace PeridotEngine.ECS.Components
         [JsonIgnore]
         public uint MatrixVersion { get; private set; } = 0;
 
-        [JsonIgnore] public bool HasParent => parentEntityPosRotScaleComponent != null;
+        [JsonIgnore] public bool HasParent => parentEntityId != null;
 
         public uint? ParentEntityId
         {

@@ -55,9 +55,16 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
         private void PositionRotationScaleControl_Load(object sender, EventArgs e)
         {
+            PopulateCbParent();
             ComponentOnValuesChanged(null, component);
+        }
 
-            int noneItemIndex = cbParent.Items.Add("<None>");
+        private void PopulateCbParent()
+        {
+            cbParent.SelectedIndexChanged -= CbParent_SelectedIndexChanged;
+
+            cbParent.Items.Clear();
+            cbParent.Items.Add("<None>");
             component.Scene.Ecs.Query().Has<PositionRotationScaleComponent>().ForEach(
                 (Archetype.Entity entity) =>
                 {
@@ -67,10 +74,14 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
                     cbParent.Items.Add(entity);
                 });
-            cbParent.SelectedIndex = noneItemIndex;
+
+            cbParent.SelectedIndexChanged += CbParent_SelectedIndexChanged;
+
+            // update component ui values so that the correct entity is selected again in cbParent
+            ComponentOnValuesChanged(null, component);
         }
 
-        private void cbParent_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbParent_SelectedIndexChanged(object? sender, EventArgs e)
         {
             uint? parentId = (cbParent.SelectedItem as Archetype.Entity)?.Id;
 
@@ -108,6 +119,8 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudScaleY.ValueChanged -= NudScale_ValueChanged;
             nudScaleZ.ValueChanged -= NudScale_ValueChanged;
 
+            cbParent.SelectedIndexChanged -= CbParent_SelectedIndexChanged;
+
             nudPositionX.Value = (decimal)component.Position.X;
             nudPositionY.Value = (decimal)component.Position.Y;
             nudPositionZ.Value = (decimal)component.Position.Z;
@@ -121,6 +134,25 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudScaleY.Value = (decimal)component.Scale.Y;
             nudScaleZ.Value = (decimal)component.Scale.Z;
 
+            if (!component.HasParent)
+            {
+                cbParent.SelectedIndex = 0;
+            }
+            else
+            {
+                for (int i = 0; i < cbParent.Items.Count; i++)
+                {
+                    object? item = cbParent.Items[i];
+
+                    if (item is not Archetype.Entity entity) continue;
+
+                    if (entity.Id != component.ParentEntityId) continue;
+
+                    cbParent.SelectedIndex = i;
+                    break;
+                }
+            }
+            
             nudPositionX.ValueChanged += NudPosition_ValueChanged;
             nudPositionY.ValueChanged += NudPosition_ValueChanged;
             nudPositionZ.ValueChanged += NudPosition_ValueChanged;
@@ -133,6 +165,8 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             nudScaleX.ValueChanged += NudScale_ValueChanged;
             nudScaleY.ValueChanged += NudScale_ValueChanged;
             nudScaleZ.ValueChanged += NudScale_ValueChanged;
+
+            cbParent.SelectedIndexChanged += CbParent_SelectedIndexChanged;
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -140,6 +174,12 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             base.OnHandleCreated(e);
 
             component.ValuesChanged += ComponentOnValuesChanged;
+            component.Scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
+        }
+
+        private void EcsOnEntityListChanged(object? sender, Archetype e)
+        {
+            PopulateCbParent();
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
@@ -147,6 +187,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             base.OnHandleDestroyed(e);
 
             component.ValuesChanged -= ComponentOnValuesChanged;
+            component.Scene.Ecs.EntityListChanged -= EcsOnEntityListChanged;
         }
     }
 }

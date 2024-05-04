@@ -53,6 +53,9 @@
             panel6 = new Panel();
             label6 = new Label();
             nudRotationZ = new NumericUpDown();
+            panel10 = new Panel();
+            label10 = new Label();
+            nudRotationW = new NumericUpDown();
             gbPosition = new GroupBox();
             flpPosition = new FlowLayoutPanel();
             panel2 = new Panel();
@@ -64,9 +67,6 @@
             panel3 = new Panel();
             label3 = new Label();
             nudPositionZ = new NumericUpDown();
-            panel10 = new Panel();
-            label10 = new Label();
-            nudRotationW = new NumericUpDown();
             gbParent.SuspendLayout();
             gbScale.SuspendLayout();
             flpScale.SuspendLayout();
@@ -84,6 +84,8 @@
             ((System.ComponentModel.ISupportInitialize)nudRotationY).BeginInit();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudRotationZ).BeginInit();
+            panel10.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nudRotationW).BeginInit();
             gbPosition.SuspendLayout();
             flpPosition.SuspendLayout();
             panel2.SuspendLayout();
@@ -92,8 +94,6 @@
             ((System.ComponentModel.ISupportInitialize)nudPositionY).BeginInit();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudPositionZ).BeginInit();
-            panel10.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)nudRotationW).BeginInit();
             SuspendLayout();
             // 
             // titleBar
@@ -127,12 +127,12 @@
             // cbParent
             // 
             cbParent.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            cbParent.DropDownStyle = ComboBoxStyle.DropDownList;
             cbParent.FormattingEnabled = true;
             cbParent.Location = new Point(6, 22);
             cbParent.Name = "cbParent";
             cbParent.Size = new Size(543, 23);
             cbParent.TabIndex = 0;
-            cbParent.SelectedIndexChanged += cbParent_SelectedIndexChanged;
             // 
             // gbScale
             // 
@@ -367,6 +367,36 @@
             nudRotationZ.Size = new Size(80, 23);
             nudRotationZ.TabIndex = 4;
             // 
+            // panel10
+            // 
+            panel10.AutoSize = true;
+            panel10.Controls.Add(label10);
+            panel10.Controls.Add(nudRotationW);
+            panel10.Location = new Point(348, 3);
+            panel10.Name = "panel10";
+            panel10.Size = new Size(109, 29);
+            panel10.TabIndex = 8;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(3, 5);
+            label10.Name = "label10";
+            label10.Size = new Size(21, 15);
+            label10.TabIndex = 5;
+            label10.Text = "W:";
+            // 
+            // nudRotationW
+            // 
+            nudRotationW.DecimalPlaces = 3;
+            nudRotationW.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
+            nudRotationW.Location = new Point(26, 3);
+            nudRotationW.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
+            nudRotationW.Minimum = new decimal(new int[] { 99999, 0, 0, int.MinValue });
+            nudRotationW.Name = "nudRotationW";
+            nudRotationW.Size = new Size(80, 23);
+            nudRotationW.TabIndex = 4;
+            // 
             // gbPosition
             // 
             gbPosition.AutoSize = true;
@@ -483,36 +513,6 @@
             nudPositionZ.Size = new Size(80, 23);
             nudPositionZ.TabIndex = 4;
             // 
-            // panel10
-            // 
-            panel10.AutoSize = true;
-            panel10.Controls.Add(label10);
-            panel10.Controls.Add(nudRotationW);
-            panel10.Location = new Point(348, 3);
-            panel10.Name = "panel10";
-            panel10.Size = new Size(109, 29);
-            panel10.TabIndex = 8;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(3, 5);
-            label10.Name = "label10";
-            label10.Size = new Size(21, 15);
-            label10.TabIndex = 5;
-            label10.Text = "W:";
-            // 
-            // nudRotationW
-            // 
-            nudRotationW.DecimalPlaces = 3;
-            nudRotationW.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
-            nudRotationW.Location = new Point(26, 3);
-            nudRotationW.Maximum = new decimal(new int[] { 99999, 0, 0, 0 });
-            nudRotationW.Minimum = new decimal(new int[] { 99999, 0, 0, int.MinValue });
-            nudRotationW.Name = "nudRotationW";
-            nudRotationW.Size = new Size(80, 23);
-            nudRotationW.TabIndex = 4;
-            // 
             // PositionRotationScaleControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -555,6 +555,9 @@
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudRotationZ).EndInit();
+            panel10.ResumeLayout(false);
+            panel10.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nudRotationW).EndInit();
             gbPosition.ResumeLayout(false);
             gbPosition.PerformLayout();
             flpPosition.ResumeLayout(false);
@@ -568,9 +571,6 @@
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nudPositionZ).EndInit();
-            panel10.ResumeLayout(false);
-            panel10.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)nudRotationW).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

@@ -57,9 +57,7 @@ namespace PeridotEngine.ECS.Components
             set
             {
                 parentEntityId = value;
-                parentEntityPosRotScaleComponent = (value != null)
-                    ? Scene.Ecs.EntityById(value.Value)?.GetComponent<PositionRotationScaleComponent>()
-                    : null;
+                parentEntityPosRotScaleComponent = null;
                 parentEntityMatrixVersion = 0;
                 matrixOutdated = true;
                 ValuesChanged?.Invoke(this, this);
@@ -88,8 +86,13 @@ namespace PeridotEngine.ECS.Components
                                  //* Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
                                  * Matrix.CreateTranslation(position);
 
-                if (parentEntityPosRotScaleComponent != null)
+                if (parentEntityId != null)
                 {
+                    if (parentEntityPosRotScaleComponent == null)
+                    {
+                        parentEntityPosRotScaleComponent = Scene.Ecs.EntityById(parentEntityId.Value)
+                            ?.GetComponent<PositionRotationScaleComponent>();
+                    }
                     transformation *= parentEntityPosRotScaleComponent.Transformation;
                     parentEntityMatrixVersion = parentEntityPosRotScaleComponent.MatrixVersion;
                 }

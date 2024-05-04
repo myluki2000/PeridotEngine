@@ -151,6 +151,8 @@ namespace PeridotWindows.EditorScreen
             }
 
             EditorObjectMoveHandler.HandleObjectMove(this);
+            EditorObjectRotateHandler.HandleObjectRotate(this);
+            EditorObjectScaleHandler.HandleObjectScale(this);
 
             UpdateWindowLocations();
 

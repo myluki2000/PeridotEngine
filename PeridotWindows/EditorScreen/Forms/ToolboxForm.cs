@@ -24,6 +24,22 @@ namespace PeridotWindows.EditorScreen.Forms
             this.scene = scene;
         }
 
+        /// <summary>
+        /// Sets the tool strip which should be displayed for the tool specific toolstrip portion
+        /// of the toolbox form. Pass NULL to hide the tool specific toolstrip.
+        /// </summary>
+        public void SetToolSpecificToolStrip(ToolStrip? toolSpecificToolStrip)
+        {
+            foreach (Control control in flowLayoutPanel1.Controls)
+            {
+                if(control != tsMain)
+                    flowLayoutPanel1.Controls.Remove(control);
+            }
+
+            if(toolSpecificToolStrip != null)
+                flowLayoutPanel1.Controls.Add(toolSpecificToolStrip);
+        }
+
         private void tsmiNewScene_Click(object sender, EventArgs e)
         {
             EditorScreen screen = new EditorScreen();

@@ -54,6 +54,8 @@ namespace PeridotWindows.EditorScreen
 
         public EditorMode Mode { get; set; }
 
+        private readonly EditorObjectMoveTool moveTool = new();
+
         public EditorScreen() : base(new())
         {
 
@@ -150,7 +152,7 @@ namespace PeridotWindows.EditorScreen
                 SelectedEntity = Scene.Ecs.EntityById((uint)clickedObjectId);
             }
 
-            EditorObjectMoveHandler.HandleObjectMove(this);
+            moveTool.HandleObjectMove(this);
             EditorObjectRotateHandler.HandleObjectRotate(this);
             EditorObjectScaleHandler.HandleObjectScale(this);
 

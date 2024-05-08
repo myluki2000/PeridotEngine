@@ -29,104 +29,110 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolboxForm));
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.tsmiNewScene = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiLoadScene = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSaveScene = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripDropDownButton2 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.tsmiAddSunlight = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStrip1.SuspendLayout();
-            this.SuspendLayout();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            tsMain = new ToolStrip();
+            toolStripDropDownButton1 = new ToolStripDropDownButton();
+            tsmiNewScene = new ToolStripMenuItem();
+            tsmiLoadScene = new ToolStripMenuItem();
+            tsmiSaveScene = new ToolStripMenuItem();
+            toolStripDropDownButton2 = new ToolStripDropDownButton();
+            tsmiAddSunlight = new ToolStripMenuItem();
+            flowLayoutPanel1.SuspendLayout();
+            tsMain.SuspendLayout();
+            SuspendLayout();
             // 
-            // toolStrip1
+            // flowLayoutPanel1
             // 
-            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripDropDownButton1,
-            this.toolStripDropDownButton2});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(800, 31);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.Text = "toolStrip1";
+            flowLayoutPanel1.Controls.Add(tsMain);
+            flowLayoutPanel1.Dock = DockStyle.Fill;
+            flowLayoutPanel1.Location = new Point(0, 0);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(800, 31);
+            flowLayoutPanel1.TabIndex = 0;
+            // 
+            // tsMain
+            // 
+            tsMain.Dock = DockStyle.Fill;
+            tsMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripDropDownButton2 });
+            tsMain.Location = new Point(0, 0);
+            tsMain.Name = "tsMain";
+            tsMain.Size = new Size(166, 25);
+            tsMain.TabIndex = 1;
+            tsMain.Text = "toolStrip1";
             // 
             // toolStripDropDownButton1
             // 
-            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiNewScene,
-            this.tsmiLoadScene,
-            this.tsmiSaveScene});
-            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(38, 28);
-            this.toolStripDropDownButton1.Text = "File";
+            toolStripDropDownButton1.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownButton1.DropDownItems.AddRange(new ToolStripItem[] { tsmiNewScene, tsmiLoadScene, tsmiSaveScene });
+            toolStripDropDownButton1.Image = (Image)resources.GetObject("toolStripDropDownButton1.Image");
+            toolStripDropDownButton1.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            toolStripDropDownButton1.Size = new Size(38, 22);
+            toolStripDropDownButton1.Text = "File";
             // 
             // tsmiNewScene
             // 
-            this.tsmiNewScene.Name = "tsmiNewScene";
-            this.tsmiNewScene.Size = new System.Drawing.Size(134, 22);
-            this.tsmiNewScene.Text = "New Scene";
-            this.tsmiNewScene.Click += new System.EventHandler(this.tsmiNewScene_Click);
+            tsmiNewScene.Name = "tsmiNewScene";
+            tsmiNewScene.Size = new Size(180, 22);
+            tsmiNewScene.Text = "New Scene";
+            tsmiNewScene.Click += tsmiNewScene_Click;
             // 
             // tsmiLoadScene
             // 
-            this.tsmiLoadScene.Name = "tsmiLoadScene";
-            this.tsmiLoadScene.Size = new System.Drawing.Size(134, 22);
-            this.tsmiLoadScene.Text = "Load Scene";
-            this.tsmiLoadScene.Click += new System.EventHandler(this.tsmiLoadScene_Click);
+            tsmiLoadScene.Name = "tsmiLoadScene";
+            tsmiLoadScene.Size = new Size(180, 22);
+            tsmiLoadScene.Text = "Load Scene";
+            tsmiLoadScene.Click += tsmiLoadScene_Click;
             // 
             // tsmiSaveScene
             // 
-            this.tsmiSaveScene.Name = "tsmiSaveScene";
-            this.tsmiSaveScene.Size = new System.Drawing.Size(134, 22);
-            this.tsmiSaveScene.Text = "Save Scene";
-            this.tsmiSaveScene.Click += new System.EventHandler(this.tsmiSaveScene_Click);
+            tsmiSaveScene.Name = "tsmiSaveScene";
+            tsmiSaveScene.Size = new Size(180, 22);
+            tsmiSaveScene.Text = "Save Scene";
+            tsmiSaveScene.Click += tsmiSaveScene_Click;
             // 
             // toolStripDropDownButton2
             // 
-            this.toolStripDropDownButton2.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripDropDownButton2.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiAddSunlight});
-            this.toolStripDropDownButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton2.Image")));
-            this.toolStripDropDownButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton2.Name = "toolStripDropDownButton2";
-            this.toolStripDropDownButton2.Size = new System.Drawing.Size(85, 28);
-            this.toolStripDropDownButton2.Text = "Add Objects";
+            toolStripDropDownButton2.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripDropDownButton2.DropDownItems.AddRange(new ToolStripItem[] { tsmiAddSunlight });
+            toolStripDropDownButton2.Image = (Image)resources.GetObject("toolStripDropDownButton2.Image");
+            toolStripDropDownButton2.ImageTransparentColor = Color.Magenta;
+            toolStripDropDownButton2.Name = "toolStripDropDownButton2";
+            toolStripDropDownButton2.Size = new Size(85, 22);
+            toolStripDropDownButton2.Text = "Add Objects";
             // 
             // tsmiAddSunlight
             // 
-            this.tsmiAddSunlight.Name = "tsmiAddSunlight";
-            this.tsmiAddSunlight.Size = new System.Drawing.Size(180, 22);
-            this.tsmiAddSunlight.Text = "Add Sunlight";
-            this.tsmiAddSunlight.Click += new System.EventHandler(this.tsmiAddSunlight_Click);
+            tsmiAddSunlight.Name = "tsmiAddSunlight";
+            tsmiAddSunlight.Size = new Size(180, 22);
+            tsmiAddSunlight.Text = "Add Sunlight";
+            tsmiAddSunlight.Click += tsmiAddSunlight_Click;
             // 
             // ToolboxForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 31);
-            this.Controls.Add(this.toolStrip1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "ToolboxForm";
-            this.ShowInTaskbar = false;
-            this.Text = "ToolboxForm";
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 31);
+            Controls.Add(flowLayoutPanel1);
+            FormBorderStyle = FormBorderStyle.SizableToolWindow;
+            Name = "ToolboxForm";
+            ShowInTaskbar = false;
+            Text = "ToolboxForm";
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
+            tsMain.ResumeLayout(false);
+            tsMain.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
 
-        private ToolStrip toolStrip1;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private ToolStrip tsMain;
         private ToolStripDropDownButton toolStripDropDownButton1;
         private ToolStripMenuItem tsmiNewScene;
-        private ToolStripMenuItem tsmiSaveScene;
         private ToolStripMenuItem tsmiLoadScene;
+        private ToolStripMenuItem tsmiSaveScene;
         private ToolStripDropDownButton toolStripDropDownButton2;
         private ToolStripMenuItem tsmiAddSunlight;
     }

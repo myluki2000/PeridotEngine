@@ -10,24 +10,59 @@ using PeridotEngine;
 using PeridotEngine.ECS.Components;
 using PeridotEngine.Misc;
 using PeridotEngine.Scenes;
+using PeridotWindows.Controls;
 using PeridotWindows.ECS;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace PeridotWindows.EditorScreen
 {
-    internal static class EditorObjectMoveHandler
+    internal class EditorObjectMoveTool : IDisposable
     {
-        private static KeyboardState lastKeyboardState;
-        private static MouseState lastMouseState;
+        private KeyboardState lastKeyboardState;
+        private MouseState lastMouseState;
 
-        private static Vector3 originalObjectPos;
+        private Vector3 originalObjectPos;
 
-        private static bool lockToX = false;
-        private static bool lockToY = false;
-        private static bool lockToZ = false;
+        private bool lockToX = false;
+        private bool lockToY = false;
+        private bool lockToZ = false;
 
-        public static void HandleObjectMove(EditorScreen editor)
+        private readonly ToolStrip propertiesToolstrip = new();
+        private readonly ToolStripNumericUpDown nudStepSize;
+
+        private decimal stepSize = 0;
+
+        private Vector3 preciseLastPos;
+
+        public EditorObjectMoveTool()
+        {
+            propertiesToolstrip.Items.Add(new ToolStripLabel("Move Tool:"));
+            propertiesToolstrip.Items.Add(new ToolStripLabel("Snapping:"));
+
+            nudStepSize = new ToolStripNumericUpDown()
+            {
+                NumericUpDownControl =
+                {
+                    DecimalPlaces = 2,
+                    Maximum = 10,
+                    Minimum = 0,
+                    Value = 0,
+                    Increment = 0.1M
+                }
+            };
+
+            nudStepSize.ValueChanged += NudStepSizeOnValueChanged;
+
+            propertiesToolstrip.Items.Add(nudStepSize);
+        }
+
+        private void NudStepSizeOnValueChanged(object? sender, EventArgs e)
+        {
+            stepSize = nudStepSize.NumericUpDownControl.Value;
+        }
+
+        public void HandleObjectMove(EditorScreen editor)
         {
             KeyboardState keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
@@ -43,9 +78,13 @@ namespace PeridotWindows.EditorScreen
                 // save original object pos in case we abort the move
                 originalObjectPos = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
 
+                editor.FrmToolbox.SetToolSpecificToolStrip(propertiesToolstrip);
+
                 lockToX = true;
                 lockToY = true;
                 lockToZ = true;
+
+                preciseLastPos = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
             }
             else if (editor.Mode == EditorScreen.EditorMode.OBJECT_MOVE)
             {
@@ -109,7 +148,7 @@ namespace PeridotWindows.EditorScreen
                 {
                     PositionRotationScaleComponent posC = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>();
 
-                    Vector4 movePos = new(posC.Position, 1);
+                    Vector4 movePos = new(preciseLastPos, 1);
 
                     // from world space into view space
                     movePos = movePos.Transform(editor.Scene.Camera.GetViewMatrix());
@@ -138,6 +177,15 @@ namespace PeridotWindows.EditorScreen
 
                     if (lockToZ)
                         newPos.Z = movePos.Z;
+                    
+                    preciseLastPos = newPos;
+
+                    if (stepSize > 0)
+                    {
+                        newPos.X = (float)Math.Round(preciseLastPos.X / (float)stepSize) * (float)stepSize;
+                        newPos.Y = (float)Math.Round(preciseLastPos.Y / (float)stepSize) * (float)stepSize;
+                        newPos.Z = (float)Math.Round(preciseLastPos.Z / (float)stepSize) * (float)stepSize;
+                    }
 
                     posC.Position = newPos;
                 }
@@ -157,6 +205,16 @@ namespace PeridotWindows.EditorScreen
 
             lastMouseState = Mouse.GetState();
             lastKeyboardState = keyboardState;
+        }
+
+        public ToolStrip GetToolStrip()
+        {
+            return propertiesToolstrip;
+        }
+
+        public void Dispose()
+        {
+            propertiesToolstrip.Dispose();
         }
     }
 }

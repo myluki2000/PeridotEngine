@@ -42,5 +42,15 @@ namespace PeridotEngine.Misc
 
             return new Vector3(pitch, yaw, roll);
         }
+
+        public static Vector2 ToXnaVector2(this SharpDX.Vector2 value)
+        {
+            return new Vector2(value.X, value.Y);
+        }
+
+        public static Vector2 ToXnaVector2(this SharpDX.Size2F value)
+        {
+            return new Vector2(value.Width, value.Height);
+        }
     }
 }

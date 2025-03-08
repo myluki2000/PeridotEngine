@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json;
 using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
-using SharpDX.Direct3D9;
 using Color = Microsoft.Xna.Framework.Color;
 using Effect = Microsoft.Xna.Framework.Graphics.Effect;
 using Mesh = PeridotEngine.Graphics.Geometry.Mesh;
+using RectangleF = SharpDX.RectangleF;
 using VertexDeclaration = Microsoft.Xna.Framework.Graphics.VertexDeclaration;
 using VertexElement = Microsoft.Xna.Framework.Graphics.VertexElement;
 
@@ -193,8 +189,8 @@ namespace PeridotEngine.Graphics.Effects
                 if (TextureEnabled)
                 {
                     RectangleF bounds = SimpleEffect.TextureResources.GetTextureBoundsInAtlas(TextureId);
-                    SimpleEffect.texturePositionParam.SetValue(bounds.Location.ToVector2());
-                    SimpleEffect.textureSizeParam.SetValue(bounds.Size.ToVector2());
+                    SimpleEffect.texturePositionParam.SetValue(bounds.Location.ToXnaVector2());
+                    SimpleEffect.textureSizeParam.SetValue(bounds.Size.ToXnaVector2());
                     SimpleEffect.textureRepeatParam.SetValue(new Vector2(TextureRepeatX, TextureRepeatY));
                 }
 

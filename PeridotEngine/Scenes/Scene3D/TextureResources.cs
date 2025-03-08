@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
-using static System.Net.Mime.MediaTypeNames;
+using RectangleF = SharpDX.RectangleF;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -282,7 +278,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             using (MemoryStream ms = new())
             {
-                atlas.Save(ms, ImageFormat.Png);
+                atlas.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Seek(0, SeekOrigin.Begin);
                 TextureAtlas = Texture2D.FromStream(Globals.Graphics.GraphicsDevice, ms);
             }

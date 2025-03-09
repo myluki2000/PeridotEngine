@@ -16,6 +16,7 @@ namespace PeridotWindows.EditorScreen.Controls
     {
         private readonly Scene3D scene;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TextureResources.ITextureInfo? SelectedItem { get; private set; }
 
         public event EventHandler<TextureResources.ITextureInfo?>? SelectedItemChanged;

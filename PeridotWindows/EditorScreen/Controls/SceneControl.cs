@@ -7,23 +7,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
+using PeridotWindows.EditorScreen.Forms;
 
-namespace PeridotWindows.EditorScreen.Forms
+namespace PeridotWindows.EditorScreen.Controls
 {
-    public partial class SceneForm : Form
+    public partial class SceneControl : UserControl
     {
-        private readonly EditorScreen screen;
+        private readonly EditorForm frmEditor;
 
-        public SceneForm(EditorScreen screen)
+        public SceneControl(EditorForm frmEditor)
         {
             InitializeComponent();
 
-            this.screen = screen;
-            screen.Scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
-            screen.SelectedEntityChanged += ScreenOnSelectedEntityChanged;
-            Populate();
+            this.frmEditor = frmEditor;
+
+            frmEditor.EditorScreenChanged += (sender, args) =>
+            {
+                if (args.Old != null)
+                {
+                    args.Old.Scene.Ecs.EntityListChanged -= EcsOnEntityListChanged;
+                    args.Old.SelectedEntityChanged -= ScreenOnSelectedEntityChanged;
+                }
+
+                args.New.Scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
+                args.New.SelectedEntityChanged += ScreenOnSelectedEntityChanged;
+
+                Populate();
+            };
         }
 
         private void ScreenOnSelectedEntityChanged(object? sender, Archetype.Entity? entity)
@@ -49,9 +62,9 @@ namespace PeridotWindows.EditorScreen.Forms
         private void EcsOnEntityListChanged(object? sender, Archetype e)
         {
             // TODO: This check should be in EditorScreen class
-            if (screen.SelectedEntity != null && screen.SelectedEntity.IsDeleted)
+            if (frmEditor.Editor.SelectedEntity != null && frmEditor.Editor.SelectedEntity.IsDeleted)
             {
-                screen.SelectedEntity = null;
+                frmEditor.Editor.SelectedEntity = null;
             }
             Populate();
         }
@@ -59,7 +72,7 @@ namespace PeridotWindows.EditorScreen.Forms
         public void Populate()
         {
             List<ListViewItem> items = new();
-            screen.Scene.Ecs.Query().ForEach((Archetype.Entity entity) =>
+            frmEditor.Editor.Scene.Ecs.Query().ForEach((Archetype.Entity entity) =>
             {
                 ListViewItem item = new(entity.ToString())
                 {
@@ -73,8 +86,8 @@ namespace PeridotWindows.EditorScreen.Forms
 
         private void lvScene_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            if (lvScene.SelectedItems.Count == 0) screen.SelectedEntity = null;
-            else screen.SelectedEntity = (Archetype.Entity)lvScene.SelectedItems[0].Tag;
+            if (lvScene.SelectedItems.Count == 0) frmEditor.Editor.SelectedEntity = null;
+            else frmEditor.Editor.SelectedEntity = (Archetype.Entity)lvScene.SelectedItems[0].Tag;
         }
     }
 }

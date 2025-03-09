@@ -22,7 +22,10 @@ namespace PeridotWindows.EditorScreen.Controls
         private readonly FpsMeasurer fpsMeasurer = new();
 
         public event EventHandler<double>? OnFpsMeasurement;
-        public event EventHandler? OnInitialized; 
+        public event EventHandler? OnInitialized;
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool IsInitialized { get; private set; } = false;
 
         protected override void Initialize()
         {
@@ -31,6 +34,7 @@ namespace PeridotWindows.EditorScreen.Controls
             Main = new Main(Editor.Content, Editor.GraphicsDevice);
             Main.Initialize();
 
+            IsInitialized = true;
             OnInitialized?.Invoke(this, EventArgs.Empty);
         }
 

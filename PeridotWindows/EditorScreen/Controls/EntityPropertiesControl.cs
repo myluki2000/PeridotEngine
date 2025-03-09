@@ -1,20 +1,22 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 using PeridotEngine.ECS.Components;
 using PeridotWindows.Controls;
 using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 using PeridotWindows.ECS.Components.PropertiesControls;
+using PeridotWindows.EditorScreen.Forms;
 
-namespace PeridotWindows.EditorScreen.Forms
+namespace PeridotWindows.EditorScreen.Controls
 {
-    public partial class EntityForm : Form
+    public partial class EntityPropertiesControl : UserControl
     {
-        private EditorScreen editorScreen;
+        private EditorForm frmEditor;
 
-        public EntityForm(EditorScreen editorScreen)
+        public EntityPropertiesControl(EditorForm frmEditor)
         {
             InitializeComponent();
-            this.editorScreen = editorScreen;
+            this.frmEditor = frmEditor;
 
             IEnumerable<Type> componentTypes = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(ComponentBase)));
@@ -31,6 +33,7 @@ namespace PeridotWindows.EditorScreen.Forms
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Archetype.Entity? Entity
         {
             get => entity;
@@ -38,7 +41,7 @@ namespace PeridotWindows.EditorScreen.Forms
             {
                 entity = value;
                 Populate();
-                Text = "EntityForm - Selected Entity ID: " + entity?.Id;
+                Text = "EntityPropertiesControl - Selected Entity ID: " + entity?.Id;
             }
         }
 
@@ -91,7 +94,7 @@ namespace PeridotWindows.EditorScreen.Forms
             nameControl.TextChanged += (_, _) =>
             {
                 entity.Name = nameControl.Text;
-                editorScreen.FrmScene?.Populate();
+                frmEditor.SceneControl.Populate();
             };
         }
 

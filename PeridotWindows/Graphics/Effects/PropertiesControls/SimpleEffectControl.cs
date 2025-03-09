@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using PeridotEngine;
-using PeridotEngine.Graphics;
+﻿using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Misc;
-using PeridotWindows.ECS.Components;
 using PeridotWindows.EditorScreen.Forms;
 
 namespace PeridotWindows.Graphics.Effects.PropertiesControls

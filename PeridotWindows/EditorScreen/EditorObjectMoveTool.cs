@@ -12,6 +12,8 @@ using PeridotEngine.Misc;
 using PeridotEngine.Scenes;
 using PeridotWindows.Controls;
 using PeridotWindows.ECS;
+using PeridotWindows.EditorScreen.Controls;
+using PeridotWindows.EditorScreen.Forms;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 
@@ -62,42 +64,42 @@ namespace PeridotWindows.EditorScreen
             stepSize = nudStepSize.NumericUpDownControl.Value;
         }
 
-        public void HandleObjectMove(EditorScreen editor)
+        public void HandleObjectMove(EditorForm frmEditor)
         {
             KeyboardState keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
 
             if (keyboardState.IsKeyDown(Keys.G)
                 && lastKeyboardState.IsKeyUp(Keys.G)
-                && editor.SelectedEntity != null
-                && editor.SelectedEntity.Archetype.HasComponent<PositionRotationScaleComponent>()
-                && editor.Mode == EditorScreen.EditorMode.NONE)
+                && frmEditor.Editor.SelectedEntity != null
+                && frmEditor.Editor.SelectedEntity.Archetype.HasComponent<PositionRotationScaleComponent>()
+                && frmEditor.Editor.Mode == EditorScreen.EditorMode.NONE)
             {
                 // if object selected & we're currently not in any mode, go into move mode
-                editor.Mode = EditorScreen.EditorMode.OBJECT_MOVE;
+                frmEditor.Editor.Mode = EditorScreen.EditorMode.OBJECT_MOVE;
                 // save original object pos in case we abort the move
-                originalObjectPos = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
+                originalObjectPos = frmEditor.Editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
 
-                editor.FrmToolbox.SetToolSpecificToolStrip(propertiesToolstrip);
+                frmEditor.Toolbox.SetToolSpecificToolStrip(propertiesToolstrip);
 
                 lockToX = true;
                 lockToY = true;
                 lockToZ = true;
 
-                preciseLastPos = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
+                preciseLastPos = frmEditor.Editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position;
             }
-            else if (editor.Mode == EditorScreen.EditorMode.OBJECT_MOVE)
+            else if (frmEditor.Editor.Mode == EditorScreen.EditorMode.OBJECT_MOVE)
             {
                 if (mouseState.LeftButton == ButtonState.Pressed)
                 {
                     // if mouse is pressed during object move, we're done
-                    editor.Mode = EditorScreen.EditorMode.NONE;
+                    frmEditor.Editor.Mode = EditorScreen.EditorMode.NONE;
                 }
                 else if (mouseState.RightButton == ButtonState.Pressed)
                 {
                     // cancel move, reset object position to original
-                    editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position = originalObjectPos;
-                    editor.Mode = EditorScreen.EditorMode.NONE;
+                    frmEditor.Editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>().Position = originalObjectPos;
+                    frmEditor.Editor.Mode = EditorScreen.EditorMode.NONE;
                 }
                 else if (keyboardState.IsKeyDown(Keys.X) && lastKeyboardState.IsKeyUp(Keys.X))
                 {
@@ -146,12 +148,12 @@ namespace PeridotWindows.EditorScreen
                 }
                 else
                 {
-                    PositionRotationScaleComponent posC = editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>();
+                    PositionRotationScaleComponent posC = frmEditor.Editor.SelectedEntity.GetComponent<PositionRotationScaleComponent>();
 
                     Vector4 movePos = new(preciseLastPos, 1);
 
                     // from world space into view space
-                    movePos = movePos.Transform(editor.Scene.Camera.GetViewMatrix());
+                    movePos = movePos.Transform(frmEditor.Editor.Scene.Camera.GetViewMatrix());
 
                     // translate model matrix in view space by mouse movement
                     movePos = movePos.Transform(
@@ -163,7 +165,7 @@ namespace PeridotWindows.EditorScreen
                     );
 
                     // back from view space to world space
-                    movePos = movePos.Transform(Matrix.Invert(editor.Scene.Camera.GetViewMatrix()));
+                    movePos = movePos.Transform(Matrix.Invert(frmEditor.Editor.Scene.Camera.GetViewMatrix()));
 
                     movePos /= movePos.W;
 

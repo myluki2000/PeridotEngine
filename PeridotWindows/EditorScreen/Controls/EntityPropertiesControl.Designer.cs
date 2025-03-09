@@ -1,6 +1,6 @@
-﻿namespace PeridotWindows.EditorScreen.Forms
+﻿namespace PeridotWindows.EditorScreen.Controls
 {
-    partial class EntityForm
+    partial class EntityPropertiesControl
     {
         /// <summary>
         /// Required designer variable.
@@ -63,16 +63,14 @@
             cmsAddComponent.Name = "cmsAddComponent";
             cmsAddComponent.Size = new Size(61, 4);
             // 
-            // EntityForm
+            // EntityPropertiesControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(353, 594);
             Controls.Add(pnlComponents);
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Name = "EntityForm";
-            ShowInTaskbar = false;
-            Text = "EntityForm";
+            Name = "EntityPropertiesControl";
+            Text = "EntityPropertiesControl";
             cmsComponentOptions.ResumeLayout(false);
             ResumeLayout(false);
         }

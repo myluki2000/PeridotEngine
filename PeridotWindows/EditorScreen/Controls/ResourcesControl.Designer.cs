@@ -1,6 +1,6 @@
-﻿namespace PeridotWindows.EditorScreen.Forms
+﻿namespace PeridotWindows.EditorScreen.Controls
 {
-    partial class ResourcesForm
+    partial class ResourcesControl
     {
         /// <summary>
         /// Required designer variable.
@@ -115,16 +115,14 @@
             button1.Text = "Add Texture";
             button1.UseVisualStyleBackColor = true;
             // 
-            // ResourcesForm
+            // ResourcesControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(911, 227);
             Controls.Add(tabControl1);
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Name = "ResourcesForm";
-            ShowInTaskbar = false;
-            Text = "ResourcesForm";
+            Name = "ResourcesControl";
+            Text = "ResourcesControl";
             tabControl1.ResumeLayout(false);
             tpMeshes.ResumeLayout(false);
             panel2.ResumeLayout(false);

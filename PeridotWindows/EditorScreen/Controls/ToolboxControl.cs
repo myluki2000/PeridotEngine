@@ -1,27 +1,20 @@
-﻿using PeridotEngine.Graphics;
-using PeridotEngine.Scenes.Scene3D;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Microsoft.Xna.Framework;
+﻿using PeridotEngine.Scenes.Scene3D;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PeridotEngine.ECS.Components;
-using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.IO.JsonConverters;
-using PeridotWindows.ECS;
-using PeridotWindows.ECS.Components;
+using PeridotWindows.EditorScreen.Forms;
 
-namespace PeridotWindows.EditorScreen.Forms
+namespace PeridotWindows.EditorScreen.Controls
 {
-    public partial class ToolboxForm : Form
+    public partial class ToolboxControl : UserControl
     {
-        private readonly Scene3D scene;
+        private readonly EditorForm frmEditor;
 
-        public ToolboxForm(Scene3D scene)
+        public ToolboxControl(EditorForm frmEditor)
         {
             InitializeComponent();
 
-            this.scene = scene;
+            this.frmEditor = frmEditor;
         }
 
         /// <summary>
@@ -42,18 +35,21 @@ namespace PeridotWindows.EditorScreen.Forms
 
         private void tsmiNewScene_Click(object sender, EventArgs e)
         {
-            EditorScreen screen = new EditorScreen();
-
-            ScreenManager.CurrentScreen = screen;
+            EditorScreen screen = new EditorScreen(frmEditor, new Scene3D());
+            frmEditor.Editor = screen;
         }
 
         private void tsmiSaveScene_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new();
-
             if (sfd.ShowDialog() != DialogResult.OK) return;
 
-            string json = JsonConvert.SerializeObject(scene, new StaticMeshComponentJsonConverter(scene), new EffectPropertiesJsonConverter(scene), new EcsJsonConverter(scene));
+            Scene3D scene = frmEditor.Editor.Scene;
+            string json = JsonConvert.SerializeObject(
+                scene, 
+                new StaticMeshComponentJsonConverter(scene), 
+                new EffectPropertiesJsonConverter(scene), 
+                new EcsJsonConverter(scene));
             File.WriteAllText(sfd.FileName, json);
         }
 
@@ -65,13 +61,13 @@ namespace PeridotWindows.EditorScreen.Forms
 
             string json = File.ReadAllText(ofd.FileName);
 
-            Scene3D newScene = new Scene3D(json);
-
-            ScreenManager.CurrentScreen = new EditorScreen(newScene);
+            Scene3D newScene = new(json);
+            frmEditor.Editor = new EditorScreen(frmEditor, newScene);
         }
 
         private void tsmiAddSunlight_Click(object sender, EventArgs e)
         {
+            Scene3D scene = frmEditor.Editor.Scene;
             scene.Ecs
                 .Archetype(typeof(PositionRotationScaleComponent), typeof(SunLightComponent))
                 .CreateEntity(

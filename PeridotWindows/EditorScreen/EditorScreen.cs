@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PeridotEngine;
 using PeridotEngine.ECS.Components;
-using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.Effects;
-using PeridotEngine.Graphics.Geometry;
 using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
-using PeridotWindows.ECS.Components;
+using PeridotWindows.EditorScreen.Controls;
 using PeridotWindows.EditorScreen.Forms;
 using PeridotWindows.Graphics.Camera;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
@@ -25,10 +19,7 @@ namespace PeridotWindows.EditorScreen
 {
     public class EditorScreen : Scene3DScreen
     {
-        public ResourcesForm? FrmResources;
-        public ToolboxForm? FrmToolbox;
-        public EntityForm? FrmEntity;
-        public SceneForm? FrmScene;
+        private readonly EditorForm frmEditor;
 
         private Archetype.Entity? selectedEntity = null;
 
@@ -41,7 +32,7 @@ namespace PeridotWindows.EditorScreen
                 {
                     selectedEntity = value;
                     SelectedEntityChanged?.Invoke(this, selectedEntity);
-                    if (FrmEntity != null) FrmEntity.Entity = value;
+                    frmEditor.EntityPropertiesPanel.Entity = value;
                 }
             }
         }
@@ -54,14 +45,9 @@ namespace PeridotWindows.EditorScreen
 
         private readonly EditorObjectMoveTool moveTool = new();
 
-        public EditorScreen() : base(new())
+        public EditorScreen(EditorForm frmEditor, Scene3D scene) : base(scene)
         {
-
-        }
-
-        public EditorScreen(Scene3D scene) : base(scene)
-        {
-
+            this.frmEditor = frmEditor;
         }
 
         public override void Initialize()
@@ -69,15 +55,6 @@ namespace PeridotWindows.EditorScreen
             base.Initialize();
 
             Scene.Camera = new EditorCamera();
-
-            FrmResources = new(Scene);
-            FrmResources.Show();
-            FrmToolbox = new(Scene);
-            FrmToolbox.Show();
-            FrmEntity = new(this);
-            FrmEntity.Show();
-            FrmScene = new(this);
-            FrmScene.Show();
         }
 
         private KeyboardState lastKeyboardState;
@@ -106,7 +83,7 @@ namespace PeridotWindows.EditorScreen
                 SelectedEntity = Scene.Ecs.EntityById((uint)clickedObjectId);
             }
 
-            moveTool.HandleObjectMove(this);
+            moveTool.HandleObjectMove(frmEditor);
             EditorObjectRotateHandler.HandleObjectRotate(this);
             EditorObjectScaleHandler.HandleObjectScale(this);
 
@@ -238,15 +215,6 @@ namespace PeridotWindows.EditorScreen
         public override void Deinitialize()
         {
             base.Deinitialize();
-
-            FrmResources?.Dispose();
-            FrmResources = null;
-            FrmToolbox?.Dispose();
-            FrmToolbox = null;
-            FrmEntity?.Dispose();
-            FrmEntity = null;
-            FrmScene?.Dispose();
-            FrmScene = null;
         }
 
         public enum EditorMode

@@ -63,9 +63,9 @@ namespace PeridotEngine.Scenes.Scene3D
         private RenderTarget2D colorRtIn;
         private RenderTarget2D colorRtOut;
 
-        private SimplePostProcessingEffect postProcessingEffect;
-        private SsaoPostProcessingEffect ssaoPostProcessingEffect;
-        private DepthOfFieldPostProcessingEffect dofPostProcessingEffect;
+        private readonly SimplePostProcessingEffect postProcessingEffect;
+        private readonly SsaoPostProcessingEffect ssaoPostProcessingEffect;
+        private readonly DepthOfFieldPostProcessingEffect dofPostProcessingEffect;
         
 
         public SceneRenderPipeline(Scene3D scene)
@@ -76,7 +76,6 @@ namespace PeridotEngine.Scenes.Scene3D
             sunShadowMapSystem = new SunShadowMapSystem(scene);
 
             InitRts();
-            Globals.GameMain.Window.ClientSizeChanged += (_, _) => InitRts();
 
             postProcessingEffect = new SimplePostProcessingEffect()
             {
@@ -92,12 +91,12 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void Render(RenderTarget2D? target)
         {
-            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+            GraphicsDevice gd = Globals.GraphicsDevice;
             gd.SamplerStates[0] = SamplerState.PointWrap;
 
             if(scene.Camera.AllowAutomaticAspectRatioAdjustment)
-                scene.Camera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
-                                           Globals.Graphics.PreferredBackBufferHeight;
+                scene.Camera.AspectRatio = (float)Globals.GraphicsDevice.PresentationParameters.BackBufferWidth /
+                                           Globals.GraphicsDevice.PresentationParameters.BackBufferHeight;
 
             scene.Resources.EffectPool.UpdateEffectCameraData(scene.Camera);
 
@@ -105,6 +104,10 @@ namespace PeridotEngine.Scenes.Scene3D
             Texture2D? shadowMap = sunShadowMapSystem.GenerateShadowMap(meshRenderingSystem, out Vector3 lightPosition, out Matrix lightViewProj);
 
             scene.Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
+
+            // TODO: Might need different blend states for the different render targets
+            // see https://stackoverflow.com/questions/53565844/only-do-alpha-blending-on-certain-output-colors
+            gd.BlendState = BlendState.Opaque;
 
             // render scene meshes to color, normal and depth buffers
             gd.SetRenderTargets(colorRt, depthRt, normalRt, objectPickingRt);
@@ -168,6 +171,7 @@ namespace PeridotEngine.Scenes.Scene3D
             }
 
             // final render to screen
+            var r = gd.GetRenderTargets();
             gd.SetRenderTarget(target);
             postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = false;
             postProcessingEffect.FogEnabled = false;
@@ -191,23 +195,23 @@ namespace PeridotEngine.Scenes.Scene3D
             normalRt?.Dispose();
 
             // multisampling sample count must be the same on all render targets bound at the same time!
-            colorRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24,
+            colorRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24,
                 preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
-            depthRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
+            depthRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
                 preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
-            normalRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24,
+            normalRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24,
                 preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
-            objectPickingRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.None,
-                preferredMultiSampleCount, RenderTargetUsage.PlatformContents);
+            objectPickingRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
+                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
 
-            colorRtIn = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            colorRtOut = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            colorRtIn = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            colorRtOut = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
         }
 
         ~SceneRenderPipeline()

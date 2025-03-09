@@ -37,6 +37,14 @@ namespace PeridotEngine.Graphics
 
         public static void Draw(GameTime gameTime)
         {
+            if (screenChanged)
+            {
+                screenChanged = false;
+                oldScreen?.Deinitialize();
+                oldScreen = null;
+                _currentScreen?.Initialize();
+            }
+
             _currentScreen?.Draw(gameTime);
         }
     }

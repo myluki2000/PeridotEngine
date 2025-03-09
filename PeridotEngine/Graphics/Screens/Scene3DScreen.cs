@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PeridotEngine.Scenes.Scene3D;
 using Point = Microsoft.Xna.Framework.Point;
@@ -42,7 +43,8 @@ namespace PeridotEngine.Graphics.Screens
         public override void Draw(GameTime gameTime)
         {
             renderPipeline ??= new SceneRenderPipeline(scene);
-            renderPipeline.Render(null);
+            RenderTargetBinding[]? rts = Globals.GraphicsDevice.GetRenderTargets();
+            renderPipeline.Render(rts.Length > 0 ? (RenderTarget2D)rts[0].RenderTarget : null);
         }
 
         public override void Deinitialize()

@@ -116,17 +116,17 @@ namespace PeridotWindows.EditorScreen
                     posC.Rotation = newRot;
                 }
 
-                if (mouseState.Position.X > Globals.Graphics.PreferredBackBufferWidth - 10)
+                if (mouseState.Position.X > Globals.GraphicsDevice.PresentationParameters.BackBufferWidth - 10)
                     Mouse.SetPosition(10, mouseState.Position.Y);
 
                 if (mouseState.Position.X < 10)
-                    Mouse.SetPosition(Globals.Graphics.PreferredBackBufferWidth - 10, mouseState.Position.Y);
+                    Mouse.SetPosition(Globals.GraphicsDevice.PresentationParameters.BackBufferWidth - 10, mouseState.Position.Y);
 
-                if (mouseState.Position.Y > Globals.Graphics.PreferredBackBufferHeight - 10)
+                if (mouseState.Position.Y > Globals.GraphicsDevice.PresentationParameters.BackBufferHeight - 10)
                     Mouse.SetPosition(mouseState.Position.X, 10);
 
                 if (mouseState.Position.Y < 10)
-                    Mouse.SetPosition(mouseState.Position.X, Globals.Graphics.PreferredBackBufferHeight - 10);
+                    Mouse.SetPosition(mouseState.Position.X, Globals.GraphicsDevice.PresentationParameters.BackBufferHeight - 10);
             }
 
             lastMouseState = Mouse.GetState();

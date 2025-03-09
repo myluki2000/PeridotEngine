@@ -47,8 +47,13 @@ namespace PeridotEngine.Graphics.Effects
             NormalMatrixParam?.SetValue(Matrix.Transpose(Matrix.Invert(World * View)));
             ViewParam?.SetValue(View);
 
-            // TODO: currently, only int and not uint supported. Probably a monogame effects translator limitation
-            ObjectIdParam?.SetValue((int)ObjectId);
+            uint objectId = ObjectId;
+            unsafe
+            {
+                // reinterpret the uint as a float because the shader expects a float. We convert it back
+                // when getting an object id from the shader
+                ObjectIdParam?.SetValue(*((float*)(&objectId)));
+            }
         }
 
         public abstract EffectProperties CreatePropertiesBase();

@@ -3,6 +3,7 @@ using System.Globalization;
 using Microsoft.Xna.Framework;
 using PeridotEngine;
 using PeridotEngine.Graphics;
+using PeridotWindows.EditorScreen.Forms;
 
 namespace PeridotWindows
 {
@@ -12,17 +13,13 @@ namespace PeridotWindows
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            //Application.Run(new MainForm());
-            using (var game = new Main())
-            {
-                ScreenManager.CurrentScreen = new EditorScreen.EditorScreen();
-                game.Run();
-            }
+
+            EditorForm form = args.Length == 1
+                ? new EditorForm(args[0])
+                : new EditorForm();
+            Application.Run(form);
         }
     }
 }

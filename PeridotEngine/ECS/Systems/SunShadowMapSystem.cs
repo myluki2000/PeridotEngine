@@ -41,16 +41,18 @@ namespace PeridotEngine.ECS.Systems
                     return null;
             }
 
-            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+            GraphicsDevice gd = Globals.GraphicsDevice;
 
             if(rt == null) 
                 rt = new(gd, 1920,
                          1080, false, SurfaceFormat.Single, DepthFormat.Depth24);
 
+            RenderTargetBinding[] originalRenderTargets = gd.GetRenderTargets();
             gd.SetRenderTarget(rt);
             gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White, float.MaxValue, 0);
 
             gd.DepthStencilState = DepthStencilState.Default;
+            gd.BlendState = BlendState.Opaque;
 
             Camera camera = new OrthographicCamera();
 
@@ -72,7 +74,7 @@ namespace PeridotEngine.ECS.Systems
                 meshRenderingSystem.RenderMesh(entityId, meshC, posC, depthEffect);
             });
 
-            gd.SetRenderTarget(null);
+            gd.SetRenderTargets(originalRenderTargets);
             
             lightViewProjection = depthEffect.View * depthEffect.Projection;
 

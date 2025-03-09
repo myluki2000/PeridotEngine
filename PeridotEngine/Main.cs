@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PeridotEngine;
@@ -8,51 +9,30 @@ using PeridotEngine.Misc;
 
 namespace PeridotEngine
 {
-    public class Main : Microsoft.Xna.Framework.Game
+    public class Main
     {
-        private readonly FpsMeasurer fpsMeasurer = new();
+        
 
-        public Main()
+        public Main(ContentManager content, GraphicsDevice graphicsDevice)
         {
             Globals.GameMain = this;
-            Globals.Graphics = new GraphicsDeviceManager(this);
-            Globals.Graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            Globals.Graphics.PreferMultiSampling = true;
-            Globals.Content = Content;
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
+            Globals.GraphicsDevice = graphicsDevice;
+            Globals.Content = content;
+            Globals.Content.RootDirectory = "Content";
         }
 
-        protected override void Initialize()
+        public void Initialize()
         {
-            base.Initialize();
         }
 
-        protected override void LoadContent()
+        public void Update(GameTime gameTime)
         {
-            
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == Microsoft.Xna.Framework.Input.ButtonState.Pressed
-                || Keyboard.GetState().IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
-                Exit();
-            
             ScreenManager.Update(gameTime);
-
-            base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
-            fpsMeasurer.StartFrameTimeMeasure();
             ScreenManager.Draw(gameTime);
-            fpsMeasurer.StopFrameTimeMeasure();
-
-            Window.Title = "PeridotEngine (Avg. Frame Time: " + fpsMeasurer.GetAverageFrameTime().ToString("#00.00") + "ms)";
-
-            base.Draw(gameTime);
         }
     }
 }

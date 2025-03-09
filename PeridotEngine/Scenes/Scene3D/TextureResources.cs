@@ -280,7 +280,7 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 atlas.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Seek(0, SeekOrigin.Begin);
-                TextureAtlas = Texture2D.FromStream(Globals.Graphics.GraphicsDevice, ms);
+                TextureAtlas = Texture2D.FromStream(Globals.GraphicsDevice, ms);
             }
 
 

@@ -28,7 +28,7 @@ float3 CameraPosition;
 float3 LightPosition;
 matrix LightWorldViewProjection;
 
-int ObjectId;
+float ObjectId;
 
 float CalculateShadowPresence(float4 positionLightSpace)
 {
@@ -69,12 +69,12 @@ $uberblock SimpleEffect(bool vertexColorEnabled, bool textureEnabled, bool shado
 
 struct PixelOut$$
 {
-    float4 Color : COLOR0;
-    float Depth : COLOR1;
-    float4 Normal : COLOR2;
+    float4 Color : SV_TARGET0;
+    float Depth : SV_TARGET1;
+    float4 Normal : SV_TARGET2;
 
     $if objectPickingEnabled
-        float ObjectId : COLOR3;
+        float ObjectId : SV_TARGET3;
     $endif
 };
 
@@ -194,18 +194,18 @@ PixelOut$$ PixelShader$$(PixelIn$$ input)
     $if diffuseShading
         float3 normal = normalize(input.Normal);
         lightIntensity = min(lightIntensity, CalculateDiffuseShading(input.WorldPosition.xyz / input.WorldPosition.w, normal.xyz));
-        pout.Normal = float4(normal, 0);
+        pout.Normal = float4(normal, 1);
     $endif
 
     $if shadowsEnabled || diffuseShading
-        result = result * (0.4 + lightIntensity * 0.6);
+        result = float4(result.rgb * (0.4 + lightIntensity * 0.6), result.a);
     $endif
     
     pout.Color = result;
     pout.Depth = input.Depth.x / input.Depth.y;
 
     $if objectPickingEnabled
-        pout.ObjectId = asfloat(ObjectId);
+        pout.ObjectId = ObjectId;
     $endif
 
     return pout;

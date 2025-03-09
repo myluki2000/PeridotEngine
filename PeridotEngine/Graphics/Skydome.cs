@@ -50,9 +50,9 @@ namespace PeridotEngine.Graphics
             VertexBuffer?.Dispose();
             IndexBuffer?.Dispose();
 
-            VertexBuffer = new(Globals.Graphics.GraphicsDevice, typeof(VertexPositionNormalTexture), verts.Length,
+            VertexBuffer = new(Globals.GraphicsDevice, typeof(VertexPositionNormalTexture), verts.Length,
                 BufferUsage.WriteOnly);
-            IndexBuffer = new(Globals.Graphics.GraphicsDevice, IndexElementSize.ThirtyTwoBits, indices.Length,
+            IndexBuffer = new(Globals.GraphicsDevice, IndexElementSize.ThirtyTwoBits, indices.Length,
                 BufferUsage.WriteOnly);
 
             VertexBuffer.SetData(verts);

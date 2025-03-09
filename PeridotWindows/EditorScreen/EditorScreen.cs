@@ -19,9 +19,7 @@ using PeridotWindows.EditorScreen.Forms;
 using PeridotWindows.Graphics.Camera;
 using ButtonState = Microsoft.Xna.Framework.Input.ButtonState;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
-using Point = System.Drawing.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
-using Timer = System.Timers.Timer;
 
 namespace PeridotWindows.EditorScreen
 {
@@ -72,53 +70,14 @@ namespace PeridotWindows.EditorScreen
 
             Scene.Camera = new EditorCamera();
 
-            Globals.GameMain.Window.AllowUserResizing = true;
-
-            Control mainWindowControl = Control.FromHandle(Globals.GameMain.Window.Handle);
-
             FrmResources = new(Scene);
-            FrmResources.Show(mainWindowControl);
+            FrmResources.Show();
             FrmToolbox = new(Scene);
-            FrmToolbox.Show(mainWindowControl);
+            FrmToolbox.Show();
             FrmEntity = new(this);
-            FrmEntity.Show(mainWindowControl);
+            FrmEntity.Show();
             FrmScene = new(this);
-            FrmScene.Show(mainWindowControl);
-        }
-
-        private void UpdateWindowLocations()
-        {
-            int titleHeight = FrmToolbox.RectangleToScreen(FrmToolbox.ClientRectangle).Top - FrmToolbox.Top;
-
-            Rectangle bounds = Globals.GameMain.Window.ClientBounds;
-
-            if (bounds != windowLastBounds)
-            {
-                Form mainWindow = (Form)Control.FromHandle(Globals.GameMain.Window.Handle);
-                if (mainWindow.WindowState == FormWindowState.Maximized)
-                {
-                    int screenWith = mainWindow.Width;
-                    int screenHeight = mainWindow.Height;
-                    mainWindow.WindowState = FormWindowState.Normal;
-                    mainWindow.Width = screenWith - FrmScene.Width - FrmEntity.Width;
-                    mainWindow.Height = screenHeight - FrmToolbox.Height - FrmResources.Height;
-                    mainWindow.Location = new Point(FrmScene.Width, FrmToolbox.Height);
-                }
-
-                FrmToolbox.Location = new Point(bounds.Left, bounds.Top - titleHeight - FrmToolbox.Height);
-                FrmToolbox.Width = bounds.Width;
-
-                FrmResources.Location = new Point(bounds.Left, bounds.Bottom);
-                FrmResources.Width = bounds.Width;
-
-                FrmScene.Location = new Point(bounds.Left - FrmScene.Width, FrmToolbox.Top);
-                FrmScene.Height = FrmResources.Bottom - FrmToolbox.Top;
-
-                FrmEntity.Location = new Point(bounds.Right, FrmToolbox.Top);
-                FrmEntity.Height = FrmResources.Bottom - FrmToolbox.Top;
-            }
-
-            windowLastBounds = bounds;
+            FrmScene.Show();
         }
 
         private KeyboardState lastKeyboardState;
@@ -130,11 +89,6 @@ namespace PeridotWindows.EditorScreen
             KeyboardState keyboardState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
 
-            if (lastKeyboardState.IsKeyUp(Keys.J) && keyboardState.IsKeyDown(Keys.J))
-            {
-                ((Form)Control.FromHandle(Globals.GameMain.Window.Handle)).Activate();
-            }
-
             if (lastKeyboardState.IsKeyUp(Keys.Delete) && keyboardState.IsKeyDown(Keys.Delete))
             {
                 SelectedEntity?.Delete();
@@ -144,9 +98,9 @@ namespace PeridotWindows.EditorScreen
                 && mouseState.LeftButton == ButtonState.Pressed
                 && lastMouseState.LeftButton == ButtonState.Released
                 && mouseState.X > 0
-                && mouseState.X < Globals.Graphics.PreferredBackBufferWidth
+                && mouseState.X < Globals.GraphicsDevice.PresentationParameters.BackBufferWidth
                 && mouseState.Y > 0
-                && mouseState.Y < Globals.Graphics.PreferredBackBufferHeight)
+                && mouseState.Y < Globals.GraphicsDevice.PresentationParameters.BackBufferHeight)
             {
                 int clickedObjectId = GetObjectIdAtScreenPos(mouseState.Position);
                 SelectedEntity = Scene.Ecs.EntityById((uint)clickedObjectId);
@@ -156,8 +110,6 @@ namespace PeridotWindows.EditorScreen
             EditorObjectRotateHandler.HandleObjectRotate(this);
             EditorObjectScaleHandler.HandleObjectScale(this);
 
-            UpdateWindowLocations();
-
             lastKeyboardState = keyboardState;
             lastMouseState = mouseState;
         }
@@ -166,7 +118,7 @@ namespace PeridotWindows.EditorScreen
         {
             base.Draw(gameTime);
 
-            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+            GraphicsDevice gd = Globals.GraphicsDevice;
 
             DrawSunlightVisualization(gd);
             DrawSelectedObjectBox(gd);

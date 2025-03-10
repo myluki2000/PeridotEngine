@@ -18,6 +18,7 @@ namespace PeridotWindows.Controls
         }
 
         private ContextMenuStrip? _optionsMenu;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ContextMenuStrip? OptionsMenu
         {
             get => _optionsMenu;
@@ -37,6 +38,7 @@ namespace PeridotWindows.Controls
         }
 
         [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool Collapsed
         {
             get => collapsed;

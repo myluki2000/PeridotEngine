@@ -99,6 +99,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             component.ParentEntityId = (cbParent.SelectedItem as Archetype.Entity)?.Id;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override ContextMenuStrip? OptionsMenu
         {
             get => titleBar.OptionsMenu;

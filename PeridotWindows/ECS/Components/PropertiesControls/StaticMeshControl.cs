@@ -85,6 +85,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             component.CastShadows = cbCastShadows.Checked;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override ContextMenuStrip? OptionsMenu
         {
             get => titleBar.OptionsMenu;

@@ -22,6 +22,7 @@ namespace PeridotWindows.Controls
             tbName.TextChanged += ((_, _) => TextChanged?.Invoke(this, EventArgs.Empty));
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override string Text
         {
             get => tbName.Text;

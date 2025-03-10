@@ -39,7 +39,7 @@ jobs:
         shell: pwsh
         
       - name: Build and Pack NuGet Package
-        run: dotnet pack --configuration Release --output nupkg
+        run: dotnet pack --configuration Release --output nupkg /p:Version=1.0.0-beta${{ github.run_number }}
         shell: pwsh
 
       - name: Push Package to GitHub Registry

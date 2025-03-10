@@ -9,5 +9,6 @@ namespace PeridotEngine
         public static Main GameMain { get; set; }
         public static GraphicsDevice GraphicsDevice { get; set; }
         public static ContentManager Content { get; set; }
+        public static EventHandler? BackBufferSizeChanged;
     }
 }

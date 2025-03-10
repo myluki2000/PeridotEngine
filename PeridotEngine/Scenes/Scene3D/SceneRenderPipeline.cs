@@ -47,6 +47,11 @@ namespace PeridotEngine.Scenes.Scene3D
             }
         }
 
+        /// <summary>
+        /// True during the process of the render pipeline refreshing/replacing rendertargets.
+        /// </summary>
+        public bool IsRefreshingRts { get; private set; }
+
         private int preferredMultiSampleCount = 0;
 
         private readonly Scene3D scene;
@@ -76,6 +81,7 @@ namespace PeridotEngine.Scenes.Scene3D
             meshRenderingSystem = new MeshRenderingSystem(scene);
             sunShadowMapSystem = new SunShadowMapSystem(scene);
 
+            Globals.BackBufferSizeChanged += (sender, args) => InitRts();
             InitRts();
 
             postProcessingEffect = new SimplePostProcessingEffect()
@@ -92,6 +98,9 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void Render(RenderTarget2D? target)
         {
+            if (IsRefreshingRts)
+                return;
+
             GraphicsDevice gd = Globals.GraphicsDevice;
             gd.SamplerStates[0] = SamplerState.PointWrap;
 
@@ -198,6 +207,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         private void InitRts()
         {
+            IsRefreshingRts = true;
             colorRtIn?.Dispose();
             colorRtOut?.Dispose();
             depthRt?.Dispose();
@@ -221,6 +231,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
             colorRtOut = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
                 Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            IsRefreshingRts = false;
         }
 
         ~SceneRenderPipeline()

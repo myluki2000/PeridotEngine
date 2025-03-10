@@ -34,6 +34,8 @@ namespace PeridotWindows.EditorScreen.Controls
             Main = new Main(Editor.Content, Editor.GraphicsDevice);
             Main.Initialize();
 
+            Editor.RenderTargetsRefreshed += () => Globals.BackBufferSizeChanged?.Invoke(this, EventArgs.Empty);
+
             IsInitialized = true;
             OnInitialized?.Invoke(this, EventArgs.Empty);
         }
@@ -48,7 +50,7 @@ namespace PeridotWindows.EditorScreen.Controls
             fpsMeasurer.StartFrameTimeMeasure();
             Main!.Draw(Editor.GameTime);
             fpsMeasurer.StopFrameTimeMeasure();
-
+            
             OnFpsMeasurement?.Invoke(this, fpsMeasurer.GetAverageFrameTime());
         }
     }

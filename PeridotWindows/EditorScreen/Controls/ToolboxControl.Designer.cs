@@ -1,6 +1,6 @@
-﻿namespace PeridotWindows.EditorScreen.Forms
+﻿namespace PeridotWindows.EditorScreen.Controls
 {
-    partial class ToolboxForm
+    partial class ToolboxControl
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolboxForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolboxControl));
             flowLayoutPanel1 = new FlowLayoutPanel();
             tsMain = new ToolStrip();
             toolStripDropDownButton1 = new ToolStripDropDownButton();
@@ -47,7 +47,7 @@
             flowLayoutPanel1.Dock = DockStyle.Fill;
             flowLayoutPanel1.Location = new Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(800, 31);
+            flowLayoutPanel1.Size = new Size(800, 25);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // tsMain
@@ -56,7 +56,7 @@
             tsMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripDropDownButton2 });
             tsMain.Location = new Point(0, 0);
             tsMain.Name = "tsMain";
-            tsMain.Size = new Size(166, 25);
+            tsMain.Size = new Size(135, 25);
             tsMain.TabIndex = 1;
             tsMain.Text = "toolStrip1";
             // 
@@ -73,21 +73,21 @@
             // tsmiNewScene
             // 
             tsmiNewScene.Name = "tsmiNewScene";
-            tsmiNewScene.Size = new Size(180, 22);
+            tsmiNewScene.Size = new Size(134, 22);
             tsmiNewScene.Text = "New Scene";
             tsmiNewScene.Click += tsmiNewScene_Click;
             // 
             // tsmiLoadScene
             // 
             tsmiLoadScene.Name = "tsmiLoadScene";
-            tsmiLoadScene.Size = new Size(180, 22);
+            tsmiLoadScene.Size = new Size(134, 22);
             tsmiLoadScene.Text = "Load Scene";
             tsmiLoadScene.Click += tsmiLoadScene_Click;
             // 
             // tsmiSaveScene
             // 
             tsmiSaveScene.Name = "tsmiSaveScene";
-            tsmiSaveScene.Size = new Size(180, 22);
+            tsmiSaveScene.Size = new Size(134, 22);
             tsmiSaveScene.Text = "Save Scene";
             tsmiSaveScene.Click += tsmiSaveScene_Click;
             // 
@@ -108,16 +108,13 @@
             tsmiAddSunlight.Text = "Add Sunlight";
             tsmiAddSunlight.Click += tsmiAddSunlight_Click;
             // 
-            // ToolboxForm
+            // ToolboxControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 31);
             Controls.Add(flowLayoutPanel1);
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Name = "ToolboxForm";
-            ShowInTaskbar = false;
-            Text = "ToolboxForm";
+            Name = "ToolboxControl";
+            Size = new Size(800, 25);
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.PerformLayout();
             tsMain.ResumeLayout(false);

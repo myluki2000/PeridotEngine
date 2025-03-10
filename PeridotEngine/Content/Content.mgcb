@@ -41,7 +41,7 @@
 #begin Effects/SimpleEffect.ufx
 /importer:UfxImporter
 /processor:EffectProcessor
-/processorParam:DebugMode=Auto
+/processorParam:DebugMode=Optimize
 /build:Effects/SimpleEffect.ufx
 
 #begin Effects/SkydomeEffect.fx

@@ -12,32 +12,47 @@ using System.Windows.Forms;
 using PeridotEngine;
 using PeridotEngine.ECS.Components;
 using PeridotEngine.Graphics.Effects;
+using PeridotEngine.Graphics.Screens;
+using PeridotEngine.Scenes;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS.Components;
 using PeridotWindows.EditorScreen.Controls;
+using PeridotWindows.EditorScreen.Forms;
 
-namespace PeridotWindows.EditorScreen.Forms
+namespace PeridotWindows.EditorScreen.Controls
 {
-    public partial class ResourcesForm : Form
+    public partial class ResourcesControl : UserControl
     {
-        private Scene3D scene;
+        private readonly EditorForm frmEditor;
 
-        private TextureResourcesManagementControl textureResourcesControl;
+        private TextureResourcesManagementControl? textureResourcesControl = null;
 
-        public ResourcesForm(Scene3D scene)
+        public ResourcesControl(EditorForm frmEditor)
         {
             InitializeComponent();
 
-            textureResourcesControl = new(scene);
-            textureResourcesControl.Dock = DockStyle.Fill;
-            tpTextures.Controls.Add(textureResourcesControl);
+            this.frmEditor = frmEditor;
 
-            this.scene = scene;
+            frmEditor.EditorScreenChanged += (sender, args) =>
+            {
+                if (args.Old != null)
+                {
+                    args.Old.Scene.Resources.MeshResources.MeshListChanged -= OnMeshListChanged;
+                }
 
-            scene.Resources.MeshResources.MeshListChanged += OnMeshListChanged;
+                args.New.Scene.Resources.MeshResources.MeshListChanged += OnMeshListChanged;
 
-            OnMeshListChanged(null, scene.Resources.MeshResources.GetAllMeshes());
+                textureResourcesControl?.Dispose();
+                textureResourcesControl = new TextureResourcesManagementControl(args.New.Scene)
+                {
+                    Dock = DockStyle.Fill,
+                };
+                tpTextures.Controls.Add(textureResourcesControl);
+
+                OnMeshListChanged(this, args.New.Scene.Resources.MeshResources.GetAllMeshes());
+            };
         }
+
 
         private void OnMeshListChanged(object? sender, IEnumerable<MeshResources.MeshInfo> meshInfos)
         {
@@ -78,13 +93,15 @@ namespace PeridotWindows.EditorScreen.Forms
                 // remove ".xnb" extension
                 trimmedPath = trimmedPath.Substring(0, trimmedPath.Length - 4);
 
-                scene.Resources.MeshResources.LoadModel(trimmedPath);
+                frmEditor.Editor.Scene.Resources.MeshResources.LoadModel(trimmedPath);
             }
         }
 
         private void lvMeshes_DoubleClick(object sender, EventArgs e)
         {
             if (lvMeshes.SelectedItems == null || lvMeshes.SelectedItems.Count == 0) return;
+
+            Scene3D scene = frmEditor.Editor.Scene;
 
             ComponentBase[] components = new ComponentBase[]
             {

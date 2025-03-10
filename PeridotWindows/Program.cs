@@ -1,28 +1,35 @@
-using System.Diagnostics;
-using System.Globalization;
-using Microsoft.Xna.Framework;
-using PeridotEngine;
-using PeridotEngine.Graphics;
+using PeridotEngine.Scenes.Scene3D;
+using PeridotWindows.EditorScreen.Forms;
 
 namespace PeridotWindows
 {
     internal static class Program
     {
+        private static string[] args;
+        private static EditorForm form;
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            //Application.Run(new MainForm());
-            using (var game = new Main())
+            Program.args = args;
+            form = new();
+            
+            if (args.Length > 0)
             {
-                ScreenManager.CurrentScreen = new EditorScreen.EditorScreen();
-                game.Run();
+                form.Engine.OnInitialized += EngineOnOnInitialized;
+                
             }
+            Application.Run(form);
+        }
+
+        private static void EngineOnOnInitialized(object? sender, EventArgs e)
+        {
+            Scene3D scene = new(File.ReadAllText(args[0]));
+            EditorScreen.EditorScreen editor = new(form, scene);
+            form.Editor = editor;
+            form.Engine.OnInitialized -= EngineOnOnInitialized;
         }
     }
 }

@@ -69,8 +69,6 @@ namespace PeridotEngine.Scenes.Scene3D
 
             meshInfo.Mesh = new ModelMesh(model.Meshes[0].MeshParts[0].VertexBuffer,
                 model.Meshes[0].MeshParts[0].IndexBuffer);
-
-            Globals.Content.UnloadAsset(meshInfo.FilePath);
         } 
 
         private void AddCustomMesh(MeshInfo mesh)

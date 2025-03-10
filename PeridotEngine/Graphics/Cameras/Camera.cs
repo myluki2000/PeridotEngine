@@ -154,8 +154,8 @@ namespace PeridotEngine.Graphics.Cameras
         {
             Vector4 res = new Vector4(worldPos, 1).Transform(GetViewMatrix() * GetProjectionMatrix());
             res /= res.W;
-            return new Vector2((res.X + 1) / 2 * Globals.Graphics.PreferredBackBufferWidth,
-                               (-res.Y + 1) / 2 * Globals.Graphics.PreferredBackBufferHeight);
+            return new Vector2((res.X + 1) / 2 * Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                               (-res.Y + 1) / 2 * Globals.GraphicsDevice.PresentationParameters.BackBufferHeight);
         }
     }
 }

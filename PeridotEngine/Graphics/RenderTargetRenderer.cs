@@ -15,7 +15,7 @@ namespace PeridotEngine.Graphics
 
         static RenderTargetRenderer()
         {
-            vbf = new(Globals.Graphics.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
+            vbf = new(Globals.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
 
             vbf.SetData(new VertexPositionTexture[]
             {
@@ -31,12 +31,12 @@ namespace PeridotEngine.Graphics
 
         public static void RenderRenderTarget(PostProcessingEffectBase effect)
         {
-            Globals.Graphics.GraphicsDevice.SetVertexBuffer(vbf);
+            Globals.GraphicsDevice.SetVertexBuffer(vbf);
 
             foreach (EffectPass pass in effect.Technique.Passes)
             {
                 pass.Apply();
-                Globals.Graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+                Globals.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
             }
         }
     }

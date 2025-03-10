@@ -26,7 +26,7 @@ namespace PeridotEngine.ECS.Systems
 
         public void RenderMeshes(EffectBase? effectOverride = null)
         {
-            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+            GraphicsDevice gd = Globals.GraphicsDevice;
 
             Meshes!.ForEach((uint entityId, StaticMeshComponent meshC, PositionRotationScaleComponent posC) =>
             {
@@ -38,7 +38,7 @@ namespace PeridotEngine.ECS.Systems
         {
             if (meshC.EffectProperties == null || meshC.Mesh == null) return;
 
-            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+            GraphicsDevice gd = Globals.GraphicsDevice;
 
             if (effectOverride == null)
             {

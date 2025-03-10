@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace PeridotEngine.Misc
 {
@@ -41,6 +43,21 @@ namespace PeridotEngine.Misc
             float roll = (float)Math.Atan2(2.0 * (q.X * q.Y + q.W * q.Z), q.W * q.W + q.X * q.X - q.Y * q.Y - q.Z * q.Z);
 
             return new Vector3(pitch, yaw, roll);
+        }
+
+        public static Vector2 ToXnaVector2(this SharpDX.Vector2 value)
+        {
+            return new Vector2(value.X, value.Y);
+        }
+
+        public static Vector2 ToXnaVector2(this SharpDX.Size2F value)
+        {
+            return new Vector2(value.Width, value.Height);
+        }
+
+        public static Point BackBufferSize(this PresentationParameters pp)
+        {
+            return new Point(pp.BackBufferWidth, pp.BackBufferHeight);
         }
     }
 }

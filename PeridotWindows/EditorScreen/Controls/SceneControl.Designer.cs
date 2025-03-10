@@ -1,6 +1,6 @@
-﻿namespace PeridotWindows.EditorScreen.Forms
+﻿namespace PeridotWindows.EditorScreen.Controls
 {
-    partial class SceneForm
+    partial class SceneControl
     {
         /// <summary>
         /// Required designer variable.
@@ -51,16 +51,14 @@
             chName.Text = "Name";
             chName.Width = 500;
             // 
-            // SceneForm
+            // SceneControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(308, 525);
             Controls.Add(lvScene);
-            FormBorderStyle = FormBorderStyle.SizableToolWindow;
-            Name = "SceneForm";
-            ShowInTaskbar = false;
-            Text = "SceneForm";
+            Name = "SceneControl";
+            Text = "SceneControl";
             ResumeLayout(false);
         }
 

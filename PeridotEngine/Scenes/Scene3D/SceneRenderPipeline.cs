@@ -7,6 +7,7 @@ using PeridotEngine.ECS.Systems;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.PostProcessing;
+using PeridotEngine.Misc;
 using static PeridotEngine.Graphics.Effects.SkydomeEffect;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
@@ -46,6 +47,11 @@ namespace PeridotEngine.Scenes.Scene3D
             }
         }
 
+        /// <summary>
+        /// True during the process of the render pipeline refreshing/replacing rendertargets.
+        /// </summary>
+        public bool IsRefreshingRts { get; private set; }
+
         private int preferredMultiSampleCount = 0;
 
         private readonly Scene3D scene;
@@ -63,9 +69,9 @@ namespace PeridotEngine.Scenes.Scene3D
         private RenderTarget2D colorRtIn;
         private RenderTarget2D colorRtOut;
 
-        private SimplePostProcessingEffect postProcessingEffect;
-        private SsaoPostProcessingEffect ssaoPostProcessingEffect;
-        private DepthOfFieldPostProcessingEffect dofPostProcessingEffect;
+        private readonly SimplePostProcessingEffect postProcessingEffect;
+        private readonly SsaoPostProcessingEffect ssaoPostProcessingEffect;
+        private readonly DepthOfFieldPostProcessingEffect dofPostProcessingEffect;
         
 
         public SceneRenderPipeline(Scene3D scene)
@@ -75,8 +81,8 @@ namespace PeridotEngine.Scenes.Scene3D
             meshRenderingSystem = new MeshRenderingSystem(scene);
             sunShadowMapSystem = new SunShadowMapSystem(scene);
 
+            Globals.BackBufferSizeChanged += (sender, args) => InitRts();
             InitRts();
-            Globals.GameMain.Window.ClientSizeChanged += (_, _) => InitRts();
 
             postProcessingEffect = new SimplePostProcessingEffect()
             {
@@ -92,12 +98,15 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public void Render(RenderTarget2D? target)
         {
-            GraphicsDevice gd = Globals.Graphics.GraphicsDevice;
+            if (IsRefreshingRts)
+                return;
+
+            GraphicsDevice gd = Globals.GraphicsDevice;
             gd.SamplerStates[0] = SamplerState.PointWrap;
 
             if(scene.Camera.AllowAutomaticAspectRatioAdjustment)
-                scene.Camera.AspectRatio = (float)Globals.Graphics.PreferredBackBufferWidth /
-                                           Globals.Graphics.PreferredBackBufferHeight;
+                scene.Camera.AspectRatio = (float)Globals.GraphicsDevice.PresentationParameters.BackBufferWidth /
+                                           Globals.GraphicsDevice.PresentationParameters.BackBufferHeight;
 
             scene.Resources.EffectPool.UpdateEffectCameraData(scene.Camera);
 
@@ -105,6 +114,10 @@ namespace PeridotEngine.Scenes.Scene3D
             Texture2D? shadowMap = sunShadowMapSystem.GenerateShadowMap(meshRenderingSystem, out Vector3 lightPosition, out Matrix lightViewProj);
 
             scene.Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
+
+            // TODO: Might need different blend states for the different render targets
+            // see https://stackoverflow.com/questions/53565844/only-do-alpha-blending-on-certain-output-colors
+            gd.BlendState = BlendState.Opaque;
 
             // render scene meshes to color, normal and depth buffers
             gd.SetRenderTargets(colorRt, depthRt, normalRt, objectPickingRt);
@@ -168,6 +181,7 @@ namespace PeridotEngine.Scenes.Scene3D
             }
 
             // final render to screen
+            var r = gd.GetRenderTargets();
             gd.SetRenderTarget(target);
             postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = false;
             postProcessingEffect.FogEnabled = false;
@@ -176,38 +190,48 @@ namespace PeridotEngine.Scenes.Scene3D
 
         }
 
-        public int GetObjectIdAtScreenPos(Point screenPos)
+        public uint? GetObjectIdAtScreenPos(Point screenPos)
         {
-            int[] objectIds = new int[1];
-            objectPickingRt.GetData(0, new Rectangle(screenPos, new(1, 1)), objectIds, 0, 1);
+            uint[] objectIds = new uint[1];
+
+            Vector2 relativePos = screenPos.ToVector2() / Globals.GraphicsDevice.PresentationParameters.BackBufferSize().ToVector2();
+
+            if (relativePos.X < 0 || relativePos.Y < 0 || relativePos.X >= 1 || relativePos.Y >= 1)
+                return null;
+
+            Vector2 rtPos = relativePos * objectPickingRt.Bounds.Size.ToVector2();
+
+            objectPickingRt.GetData(0, new Rectangle(rtPos.ToPoint(), new(1, 1)), objectIds, 0, 1);
             return objectIds[0];
         }
 
         private void InitRts()
         {
+            IsRefreshingRts = true;
             colorRtIn?.Dispose();
             colorRtOut?.Dispose();
             depthRt?.Dispose();
             normalRt?.Dispose();
 
             // multisampling sample count must be the same on all render targets bound at the same time!
-            colorRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24,
+            colorRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24,
                 preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
-            depthRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
+            depthRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
                 preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
-            normalRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24,
+            normalRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24,
                 preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
-            objectPickingRt = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Single, DepthFormat.None,
-                preferredMultiSampleCount, RenderTargetUsage.PlatformContents);
+            objectPickingRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
+                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
 
-            colorRtIn = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
-            colorRtOut = new(Globals.Graphics.GraphicsDevice, Globals.Graphics.PreferredBackBufferWidth,
-                Globals.Graphics.PreferredBackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            colorRtIn = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            colorRtOut = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
+            IsRefreshingRts = false;
         }
 
         ~SceneRenderPipeline()

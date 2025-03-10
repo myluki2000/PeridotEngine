@@ -34,14 +34,14 @@ namespace PeridotEngine.Graphics.Geometry
 
         protected override void CreateVertexBuffer()
         {
-            VertexBuffer = new VertexBuffer(Globals.Graphics.GraphicsDevice, vertexDeclaration, GetVertexCount(), BufferUsage.WriteOnly);
+            VertexBuffer = new VertexBuffer(Globals.GraphicsDevice, vertexDeclaration, GetVertexCount(), BufferUsage.WriteOnly);
             typeof(VertexBuffer).GetMethods().First(x => x.Name == "SetData" && x.GetParameters().Length == 1)
                 .MakeGenericMethod(GetVertexType()).Invoke(VertexBuffer, new[] { vertices });
         }
 
         protected override void CreateIndexBuffer()
         {
-            IndexBuffer = new IndexBuffer(Globals.Graphics.GraphicsDevice, IndexElementSize.ThirtyTwoBits, indices.Length, BufferUsage.WriteOnly);
+            IndexBuffer = new IndexBuffer(Globals.GraphicsDevice, IndexElementSize.ThirtyTwoBits, indices.Length, BufferUsage.WriteOnly);
             IndexBuffer.SetData(GetIndices());
         }
 

@@ -18,8 +18,8 @@ namespace PeridotWindows.EditorScreen.Controls
             InitializeComponent();
             this.frmEditor = frmEditor;
 
-            IEnumerable<Type> componentTypes = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(ComponentBase)));
+            IEnumerable<Type> componentTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(ass => ass.GetTypes()
+                .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(ComponentBase))));
 
             foreach (Type componentType in componentTypes)
             {

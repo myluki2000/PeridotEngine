@@ -8,6 +8,7 @@ using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
+using PeridotWindows.ECS.Systems;
 using PeridotWindows.EditorScreen.Controls;
 using PeridotWindows.EditorScreen.Forms;
 using PeridotWindows.Graphics.Camera;
@@ -44,10 +45,12 @@ namespace PeridotWindows.EditorScreen
         public EditorMode Mode { get; set; }
 
         private readonly EditorObjectMoveTool moveTool = new();
+        private readonly EditorLightVisualizationRenderingSystem lightVisRenderingSystem;
 
         public EditorScreen(EditorForm frmEditor, Scene3D scene) : base(scene)
         {
             this.frmEditor = frmEditor;
+            this.lightVisRenderingSystem = new EditorLightVisualizationRenderingSystem(scene);
         }
 
         public override void Initialize()
@@ -99,7 +102,7 @@ namespace PeridotWindows.EditorScreen
 
             GraphicsDevice gd = Globals.GraphicsDevice;
 
-            DrawSunlightVisualization(gd);
+            lightVisRenderingSystem.DrawLightVisualization(gd);
             DrawSelectedObjectBox(gd);
         }
 
@@ -175,44 +178,7 @@ namespace PeridotWindows.EditorScreen
 
         }
 
-        /// <summary>
-        /// Helper method to draw a representation of sunlight objects in the editor.
-        /// </summary>
-        private void DrawSunlightVisualization(GraphicsDevice gd)
-        {
-            Scene.Ecs.Query().Has<SunLightComponent>().Has<PositionRotationScaleComponent>().ForEach(
-                (uint _, PositionRotationScaleComponent posC) =>
-                {
-                    SimpleEffect effect = new();
-                    effect.World = Matrix.Identity;
-                    effect.View = Scene.Camera.GetViewMatrix();
-                    effect.Projection = Scene.Camera.GetProjectionMatrix();
-                    effect.Apply();
-
-                    // direction the sun is "facing"
-                    Vector3 direction = new Vector3(
-                        (float)Math.Sin(posC.Rotation.Y),
-                        0,
-                        -(float)Math.Cos(posC.Rotation.Y)
-                    );
-                    direction.Normalize();
-                    direction *= (float)Math.Cos(posC.Rotation.X);
-                    direction.Y = (float)Math.Sin(posC.Rotation.X);
-                    direction.Normalize();
-
-                    VertexPosition[] verts = new[]
-                    {
-                        new VertexPosition(posC.Position),
-                        new VertexPosition(posC.Position + direction)
-                    };
-
-                    foreach (EffectPass pass in effect.Techniques[0].Passes)
-                    {
-                        pass.Apply();
-                        gd.DrawUserPrimitives(PrimitiveType.LineList, verts, 0, 1);
-                    }
-                });
-        }
+        
 
         public override void Deinitialize()
         {

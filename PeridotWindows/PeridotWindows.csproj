@@ -8,6 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>AnyCPU;x86</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	  <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,4 +37,9 @@
     </None>
   </ItemGroup>
 
+	<ItemGroup>
+		<Content Include="../PeridotEngine/Content/bin/**/*">
+			<IncludeInPackage>true</IncludeInPackage>
+		</Content>
+	</ItemGroup>
 </Project>

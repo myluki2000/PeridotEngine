@@ -39,7 +39,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<Content Include="../PeridotEngine/Content/bin/Windows">
+		<Content Include="../PeridotEngine/Content/bin/Windows/">
 			<PackageCopyToOutput>true</PackageCopyToOutput>
 		</Content>
 	</ItemGroup>

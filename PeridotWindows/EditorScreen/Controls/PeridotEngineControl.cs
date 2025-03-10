@@ -45,18 +45,11 @@ namespace PeridotWindows.EditorScreen.Controls
 
         protected override void Draw()
         {
-            //fpsMeasurer.StartFrameTimeMeasure();
+            fpsMeasurer.StartFrameTimeMeasure();
             Main!.Draw(Editor.GameTime);
-            //fpsMeasurer.StopFrameTimeMeasure();
+            fpsMeasurer.StopFrameTimeMeasure();
 
-            //OnFpsMeasurement?.Invoke(this, fpsMeasurer.GetAverageFrameTime());
-            
-            Editor.spriteBatch.Begin();
-            string WelcomeMessage = "Hello MonoGame.Forms!";
-            Editor.spriteBatch.DrawString(Editor.Font, WelcomeMessage, new Vector2(0, 0),
-                Color.White);
-
-            Editor.spriteBatch.End();
+            OnFpsMeasurement?.Invoke(this, fpsMeasurer.GetAverageFrameTime());
         }
     }
 }

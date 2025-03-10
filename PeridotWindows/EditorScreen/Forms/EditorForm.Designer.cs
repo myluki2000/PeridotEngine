@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             splitContainer1 = new SplitContainer();
+            pnlSceneContainer = new Panel();
             splitContainer2 = new SplitContainer();
             splitContainer3 = new SplitContainer();
             pnlEngineContainer = new Panel();
-            pnlSceneContainer = new Panel();
-            pnlEntityPropertiesContainer = new Panel();
             pnlResourcesContainer = new Panel();
+            pnlEntityPropertiesContainer = new Panel();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -62,9 +62,17 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(splitContainer2);
-            splitContainer1.Size = new Size(800, 450);
-            splitContainer1.SplitterDistance = 173;
+            splitContainer1.Size = new Size(1268, 727);
+            splitContainer1.SplitterDistance = 274;
             splitContainer1.TabIndex = 0;
+            // 
+            // pnlSceneContainer
+            // 
+            pnlSceneContainer.Dock = DockStyle.Fill;
+            pnlSceneContainer.Location = new Point(0, 0);
+            pnlSceneContainer.Name = "pnlSceneContainer";
+            pnlSceneContainer.Size = new Size(274, 727);
+            pnlSceneContainer.TabIndex = 1;
             // 
             // splitContainer2
             // 
@@ -79,8 +87,8 @@
             // splitContainer2.Panel2
             // 
             splitContainer2.Panel2.Controls.Add(pnlEntityPropertiesContainer);
-            splitContainer2.Size = new Size(623, 450);
-            splitContainer2.SplitterDistance = 423;
+            splitContainer2.Size = new Size(990, 727);
+            splitContainer2.SplitterDistance = 672;
             splitContainer2.TabIndex = 0;
             // 
             // splitContainer3
@@ -97,8 +105,8 @@
             // splitContainer3.Panel2
             // 
             splitContainer3.Panel2.Controls.Add(pnlResourcesContainer);
-            splitContainer3.Size = new Size(423, 450);
-            splitContainer3.SplitterDistance = 306;
+            splitContainer3.Size = new Size(672, 727);
+            splitContainer3.SplitterDistance = 494;
             splitContainer3.TabIndex = 0;
             // 
             // pnlEngineContainer
@@ -106,38 +114,30 @@
             pnlEngineContainer.Dock = DockStyle.Fill;
             pnlEngineContainer.Location = new Point(0, 0);
             pnlEngineContainer.Name = "pnlEngineContainer";
-            pnlEngineContainer.Size = new Size(423, 306);
+            pnlEngineContainer.Size = new Size(672, 494);
             pnlEngineContainer.TabIndex = 0;
-            // 
-            // pnlSceneContainer
-            // 
-            pnlSceneContainer.Dock = DockStyle.Fill;
-            pnlSceneContainer.Location = new Point(0, 0);
-            pnlSceneContainer.Name = "pnlSceneContainer";
-            pnlSceneContainer.Size = new Size(173, 450);
-            pnlSceneContainer.TabIndex = 1;
-            // 
-            // pnlEntityPropertiesContainer
-            // 
-            pnlEntityPropertiesContainer.Dock = DockStyle.Fill;
-            pnlEntityPropertiesContainer.Location = new Point(0, 0);
-            pnlEntityPropertiesContainer.Name = "pnlEntityPropertiesContainer";
-            pnlEntityPropertiesContainer.Size = new Size(196, 450);
-            pnlEntityPropertiesContainer.TabIndex = 1;
             // 
             // pnlResourcesContainer
             // 
             pnlResourcesContainer.Dock = DockStyle.Fill;
             pnlResourcesContainer.Location = new Point(0, 0);
             pnlResourcesContainer.Name = "pnlResourcesContainer";
-            pnlResourcesContainer.Size = new Size(423, 140);
+            pnlResourcesContainer.Size = new Size(672, 229);
             pnlResourcesContainer.TabIndex = 1;
+            // 
+            // pnlEntityPropertiesContainer
+            // 
+            pnlEntityPropertiesContainer.Dock = DockStyle.Fill;
+            pnlEntityPropertiesContainer.Location = new Point(0, 0);
+            pnlEntityPropertiesContainer.Name = "pnlEntityPropertiesContainer";
+            pnlEntityPropertiesContainer.Size = new Size(314, 727);
+            pnlEntityPropertiesContainer.TabIndex = 1;
             // 
             // EditorForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1268, 727);
             Controls.Add(splitContainer1);
             Name = "EditorForm";
             Text = "EditorForm";

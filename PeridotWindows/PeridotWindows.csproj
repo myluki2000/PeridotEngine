@@ -41,6 +41,10 @@
 	<ItemGroup>
 		<Content Include="../PeridotEngine/Content/bin/**/*">
 			<IncludeInPackage>true</IncludeInPackage>
+			<CopyToOutput>true</CopyToOutput>
+			<BuildAction>Content</BuildAction>
+			<copyToOutput>true</copyToOutput>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 </Project>

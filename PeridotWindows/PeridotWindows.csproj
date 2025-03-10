@@ -9,6 +9,7 @@
     <Platforms>AnyCPU;x86</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	  <EnableWindowsTargeting>true</EnableWindowsTargeting>
+	  <MonoGamePlatform>WindowsDX</MonoGamePlatform>
   </PropertyGroup>
 
   <ItemGroup>

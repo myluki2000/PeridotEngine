@@ -27,6 +27,17 @@ jobs:
             --store-password-in-clear-text
         shell: pwsh
 
+      - name: Build PeridotContentExtensions (First)
+        run: dotnet build PeridotContentExtensions/PeridotContentExtensions.csproj --configuration Release
+        shell: pwsh
+
+      - name: Copy Content Extensions DLL
+        run: |
+          mkdir -Force "D:\a\PeridotEngine\PeridotEngine\PeridotContentExtensions\bin\Debug\net6.0"
+          Copy-Item "D:\a\PeridotEngine\PeridotEngine\PeridotContentExtensions\bin\Release\net6.0\PeridotContentExtensions.dll" `
+          "D:\a\PeridotEngine\PeridotEngine\PeridotContentExtensions\bin\Debug\net6.0\PeridotContentExtensions.dll"
+        shell: pwsh
+        
       - name: Build and Pack NuGet Package
         run: dotnet pack --configuration Release --output nupkg
         shell: pwsh

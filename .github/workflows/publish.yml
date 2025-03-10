@@ -39,9 +39,9 @@ jobs:
         shell: pwsh
         
       - name: Build and Pack NuGet Package
-        run: dotnet pack --configuration Release --output nupkg
+        run: dotnet pack --configuration Debug --output nupkg /p:Version=1.0.0-beta${{ github.run_number }}
         shell: pwsh
 
       - name: Push Package to GitHub Registry
-        run: dotnet nuget push "nupkg/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet nuget push "D:\a\PeridotEngine\PeridotEngine\nupkg\PeridotWindows.1.0.0-beta${{ github.run_number }}.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh

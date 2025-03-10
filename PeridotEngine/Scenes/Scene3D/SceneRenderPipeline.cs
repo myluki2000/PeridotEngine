@@ -7,6 +7,7 @@ using PeridotEngine.ECS.Systems;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.PostProcessing;
+using PeridotEngine.Misc;
 using static PeridotEngine.Graphics.Effects.SkydomeEffect;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
@@ -180,10 +181,18 @@ namespace PeridotEngine.Scenes.Scene3D
 
         }
 
-        public int GetObjectIdAtScreenPos(Point screenPos)
+        public uint? GetObjectIdAtScreenPos(Point screenPos)
         {
-            int[] objectIds = new int[1];
-            objectPickingRt.GetData(0, new Rectangle(screenPos, new(1, 1)), objectIds, 0, 1);
+            uint[] objectIds = new uint[1];
+
+            Vector2 relativePos = screenPos.ToVector2() / Globals.GraphicsDevice.PresentationParameters.BackBufferSize().ToVector2();
+
+            if (relativePos.X < 0 || relativePos.Y < 0 || relativePos.X >= 1 || relativePos.Y >= 1)
+                return null;
+
+            Vector2 rtPos = relativePos * objectPickingRt.Bounds.Size.ToVector2();
+
+            objectPickingRt.GetData(0, new Rectangle(rtPos.ToPoint(), new(1, 1)), objectIds, 0, 1);
             return objectIds[0];
         }
 

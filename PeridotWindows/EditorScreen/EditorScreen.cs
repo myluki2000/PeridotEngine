@@ -79,8 +79,10 @@ namespace PeridotWindows.EditorScreen
                 && mouseState.Y > 0
                 && mouseState.Y < Globals.GraphicsDevice.PresentationParameters.BackBufferHeight)
             {
-                int clickedObjectId = GetObjectIdAtScreenPos(mouseState.Position);
-                SelectedEntity = Scene.Ecs.EntityById((uint)clickedObjectId);
+                uint? clickedObjectId = GetObjectIdAtScreenPos(mouseState.Position);
+                SelectedEntity = clickedObjectId != null 
+                    ? Scene.Ecs.EntityById(clickedObjectId.Value)
+                    : null;
             }
 
             moveTool.HandleObjectMove(frmEditor);

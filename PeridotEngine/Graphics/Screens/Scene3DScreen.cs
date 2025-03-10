@@ -44,10 +44,12 @@ namespace PeridotEngine.Graphics.Screens
             Scene.Deinitialize();
         }
 
-        public int GetObjectIdAtScreenPos(Point screenPos)
+        public uint? GetObjectIdAtScreenPos(Point screenPos)
         {
-            return renderPipeline?.GetObjectIdAtScreenPos(screenPos) 
-                   ?? throw new Exception("Can only get object at screen pos after render pipeline has been initialized!");
+            if (renderPipeline == null)
+                throw new Exception("Can only get object at screen pos after render pipeline has been initialized!");
+
+            return renderPipeline?.GetObjectIdAtScreenPos(screenPos);
         }
     }
 

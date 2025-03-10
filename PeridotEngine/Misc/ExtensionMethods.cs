@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Color = Microsoft.Xna.Framework.Color;
+using Point = Microsoft.Xna.Framework.Point;
 
 namespace PeridotEngine.Misc
 {
@@ -51,6 +53,11 @@ namespace PeridotEngine.Misc
         public static Vector2 ToXnaVector2(this SharpDX.Size2F value)
         {
             return new Vector2(value.Width, value.Height);
+        }
+
+        public static Point BackBufferSize(this PresentationParameters pp)
+        {
+            return new Point(pp.BackBufferWidth, pp.BackBufferHeight);
         }
     }
 }

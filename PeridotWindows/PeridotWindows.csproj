@@ -39,10 +39,8 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<None Include="../PeridotEngine/Content/bin/**/*">
-			<Pack>true</Pack>
-			<PackagePath>content/</PackagePath>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<Content Include="../PeridotEngine/Content/bin/">
+			<PackageCopyToOutput>true</PackageCopyToOutput>
+		</Content>
 	</ItemGroup>
 </Project>

@@ -63,7 +63,10 @@ namespace PeridotWindows.EditorScreen.Controls
             {
                 foreach (ToolStripItem item in cmsAddComponent.Items)
                 {
-                    item.Visible = !entity.Components.Select(x => x.GetType()).Contains(item.Tag);
+                    Type itemType = item.Tag!.GetType();
+                    item.Visible = !entity.Components
+                        .Select(x => x.GetType())
+                        .Any(x => x == itemType || x.IsSubclassOf(itemType) || itemType.IsSubclassOf(x));
                 }
 
                 cmsAddComponent.Show(btnAddComponent, new Point(0, 0), ToolStripDropDownDirection.BelowLeft);

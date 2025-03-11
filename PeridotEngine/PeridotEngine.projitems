@@ -16,7 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\SunLightComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Ecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Entity.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ECS\Query.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\QueryBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\MeshRenderingSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\SunShadowMapSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />

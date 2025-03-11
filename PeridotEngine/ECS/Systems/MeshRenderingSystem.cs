@@ -10,19 +10,12 @@ using PeridotWindows.ECS.Components;
 
 namespace PeridotEngine.ECS.Systems
 {
-    public class MeshRenderingSystem
+    public class MeshRenderingSystem(Scene3D scene) : IDisposable
     {
-        private readonly Scene3D scene;
-        public readonly Query Meshes;
-
-        public MeshRenderingSystem(Scene3D scene)
-        {
-            this.scene = scene;
-
-            Meshes = scene.Ecs.Query()
-                .Has<PositionRotationScaleComponent>()
-                .Has<StaticMeshComponent>();
-        }
+        public readonly ComponentQuery<StaticMeshComponent, PositionRotationScaleComponent> Meshes = scene.Ecs.Query()
+            .Has<PositionRotationScaleComponent>()
+            .Has<StaticMeshComponent>()
+            .OnComponents<StaticMeshComponent, PositionRotationScaleComponent>();
 
         public void RenderMeshes(EffectBase? effectOverride = null)
         {
@@ -88,6 +81,17 @@ namespace PeridotEngine.ECS.Systems
                 pass.Apply();
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshC.Mesh.Mesh.IndexBuffer.IndexCount / 3);
             }
+        }
+
+        ~MeshRenderingSystem()
+        {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            Meshes.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

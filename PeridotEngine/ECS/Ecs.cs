@@ -60,9 +60,9 @@ namespace PeridotWindows.ECS
             return null;
         }
 
-        public Query Query()
+        public QueryBuilder Query()
         {
-            return new Query(this);
+            return new QueryBuilder(this);
         }
     }
 }

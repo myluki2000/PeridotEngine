@@ -9,49 +9,73 @@ using PeridotEngine.ECS.Components;
 
 namespace PeridotWindows.ECS
 {
-	public partial class Query {
-		<# for(int i = 1; i <= 10; i++) { 
-			string genericTypes = string.Join(", ", Enumerable.Range(1, i).Select(x => "T" + x));
-			string genericConstraints = string.Join(" ", Enumerable.Range(1, i).Select(x => "where T" + x + " : ComponentBase"));
-			string componentIndices = string.Join("\n", Enumerable.Range(1, i)
-					.Select(x => "int c" + x + "Index = Array.IndexOf(archetype.ComponentTypes, typeof(T" + x + "));"));
-			string args = string.Join(", ", Enumerable.Range(1, i).Select(x => "(T" + x + ")archetype.Components[c" + x +"Index][i]"));
-		#>
+    <# for(int i = 1; i <= 10; i++) { 
+		string genericTypes = string.Join(", ", Enumerable.Range(1, i).Select(x => "T" + x));
+		string genericConstraints = string.Join(" ", Enumerable.Range(1, i).Select(x => "where T" + x + " : ComponentBase"));
+		string componentIndicesDefinitions = string.Join("\n", Enumerable.Range(1, i).Select(x => "private int[] c" + x + "Indices = [];"));
+		string componentIndicesInitializations = string.Join("\n", Enumerable.Range(1, i).Select(x => "c" + x + "Indices = new int[MatchingArchetypes.Count];"));
+		string componentIndicesFillers = string.Join("\n", Enumerable.Range(1, i).Select(x => "Type t" + x + " = typeof(T" + x + ");\n" 
+            + "c" + x + "Indices[i] = Array.FindIndex(archetype.ComponentTypes, x => x == t" + x + " || x.IsSubclassOf(t" + x + "));"));
+		string componentIndicesGetters = string.Join("\n", Enumerable.Range(1, i)
+				.Select(x => "int c" + x + "Index = c" + x + "Indices[ai];"));
+		string args = string.Join(", ", Enumerable.Range(1, i).Select(x => "(T" + x + ")archetype.Components[c" + x +"Index][ei]"));
+	#>
 
-		public void ForEach<<#= genericTypes #>>(Action<uint, <#= genericTypes #>> action) <#= genericConstraints #> {
-			if (archetypesOutdated) UpdateMatchingArchetypes();
+	public sealed class ComponentQuery<<#= genericTypes #>>(Ecs ecs, List<Type> includeComponents, List<Type> excludeComponents)
+        : Query(ecs, includeComponents, excludeComponents)
+        <#= genericConstraints #>
+    {
+        <#= componentIndicesDefinitions #>
 
-			foreach (Archetype archetype in matchingArchetypes)
-			{
-				<#= componentIndices #>
+        protected override void OnMatchingArchetypesUpdated()
+        {
+            <#= componentIndicesInitializations #>
+            for (int i = 0; i < MatchingArchetypes.Count; i++)
+            {
+                Archetype archetype = MatchingArchetypes[i];
+                <#= componentIndicesFillers #>
+            }
+        }
 
-				for (int i = 0; i < archetype.EntityCount; i++)
-				{
-					uint entityId = archetype.Ids[i];
+        public void ForEach(Action<uint, <#= genericTypes #>> action)
+        {
+            for (int ai = 0; ai < MatchingArchetypes.Count; ai++)
+            {
+                <#= componentIndicesGetters #>
+                Archetype archetype = MatchingArchetypes[ai];
 
-					action.Invoke(entityId, <#= args #>);
-				}
-			}
-		}
+                for (int ei = 0; ei < archetype.EntityCount; ei++)
+                {
+                    uint entityId = archetype.Ids[ei];
 
-		public void First<<#= genericTypes #>>(Action<uint, <#= genericTypes #>> action) <#= genericConstraints #> {
-			if (archetypesOutdated) UpdateMatchingArchetypes();
+                    action.Invoke(entityId, <#= args #>);
+                }
+            }
+        }
 
-			foreach (Archetype archetype in matchingArchetypes)
-			{
-				<#= componentIndices #>
+        public void First(Action<uint, <#= genericTypes #>> action)
+        {
+            for (int ai = 0; ai < MatchingArchetypes.Count; ai++)
+            {
+				<#= componentIndicesGetters #>
+                Archetype archetype = MatchingArchetypes[ai];
 
-				for (int i = 0; i < archetype.EntityCount; i++)
-				{
-					uint entityId = archetype.Ids[i];
+                for (int ei = 0; ei < archetype.EntityCount; ei++)
+                {
+                    uint entityId = archetype.Ids[ei];
 
-					action.Invoke(entityId, <#= args #>);
-					return;
-				}
-			}
-			
-		}
-
-		<# } #>
+                    action.Invoke(entityId, <#= args #>);
+                    return;
+                }
+            }
+        }
 	}
+
+    public partial class QueryBuilder {
+        public ComponentQuery<<#= genericTypes #>> OnComponents<<#= genericTypes #>>() <#= genericConstraints #>
+        {
+            return new ComponentQuery<<#= genericTypes #>>(ecs, includeComponents, excludeComponents);
+        }
+    }
+    <# } #>
 }

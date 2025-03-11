@@ -35,7 +35,8 @@ namespace PeridotWindows.ECS
 
             public T GetComponent<T>() where T : ComponentBase
             {
-                int componentIndex = Array.IndexOf(archetype.ComponentTypes, typeof(T));
+                Type type = typeof(T);
+                int componentIndex = Array.FindIndex(archetype.ComponentTypes, x => x == type || x.IsSubclassOf(type));
 
                 return (T)Archetype.Components[componentIndex][index];
             }
@@ -80,18 +81,24 @@ namespace PeridotWindows.ECS
 
             public void AddComponent<T>(T component) where T : ComponentBase
             {
+                EnsureNewComponentTypeNotDuplicate(typeof(T));
+
                 ComponentBase[] newComponents = Components.Concat(new[] { component }).ToArray();
                 ModifyEntity(newComponents);
             }
 
             public void AddComponent<T>() where T : ComponentBase, new()
             {
+                EnsureNewComponentTypeNotDuplicate(typeof(T));
+
                 ComponentBase[] newComponents = Components.Concat(new[] { new T() }).ToArray();
                 ModifyEntity(newComponents);
             }
 
             public void AddComponent(Type componentType)
             {
+                EnsureNewComponentTypeNotDuplicate(componentType);
+
                 ComponentBase obj = (ComponentBase)Activator.CreateInstance(componentType, new object?[] { Components.First().Scene });
                 ComponentBase[] newComponents = Components.Concat(new[] { obj }).ToArray();
                 ModifyEntity(newComponents);
@@ -107,6 +114,21 @@ namespace PeridotWindows.ECS
             {
                 ComponentBase[] newComponents = Components.Where(x => x.GetType() != componentType).ToArray();
                 ModifyEntity(newComponents);
+            }
+
+            private void EnsureNewComponentTypeNotDuplicate(Type newComponent)
+            {
+                foreach (ComponentBase component in Components)
+                {
+                    Type componentType = component.GetType();
+
+                    if (componentType == newComponent)
+                        throw new Exception($"Cannot add component of type {newComponent.Name} because it already exists in the entity.");
+
+                    if (componentType.IsSubclassOf(newComponent) || newComponent.IsSubclassOf(componentType))
+                        throw new Exception($"Cannot add component of type {newComponent.Name} because it is in an inheritance " +
+                                            $"hierarchy with the existing type {componentType.Name}.");
+                }
             }
 
             private void ModifyEntity(ComponentBase[] newComponents)

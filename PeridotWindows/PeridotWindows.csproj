@@ -31,15 +31,21 @@
   </ItemGroup>
 
   <Import Project="..\PeridotEngine\PeridotEngine.projitems" Label="Shared" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v17.0\TextTemplating\Microsoft.TextTemplating.targets" />
 
-  <ItemGroup>
+	<PropertyGroup>
+		<TransformOnBuild>true</TransformOnBuild>
+	</PropertyGroup>
+
+
+	<ItemGroup>
     <None Update="C:\Users\lukas\source\repos\PeridotEngine\PeridotEngine\ECS\QueryMethods.tt">
       <LastGenOutput>QueryMethods.cs</LastGenOutput>
     </None>
   </ItemGroup>
 
 	<ItemGroup>
-		<Content Include="../PeridotEngine/Content/bin/Windows/">
+		<Content Include="..\PeridotEngine\Content\bin\Windows\*">
 			<PackageCopyToOutput>true</PackageCopyToOutput>
 		</Content>
 	</ItemGroup>

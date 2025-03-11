@@ -65,15 +65,17 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
             cbParent.Items.Clear();
             cbParent.Items.Add("<None>");
-            component.Scene.Ecs.Query().Has<PositionRotationScaleComponent>().ForEach(
-                (Archetype.Entity entity) =>
-                {
-                    // skip adding the entity to the combobox if it is the entity the component is a part of
-                    if (entity.Id == Entity.Id)
-                        return;
+            using (EntityQuery query = component.Scene.Ecs.Query().Has<PositionRotationScaleComponent>().OnEntity())
+            {
+                query.ForEach(entity =>
+                    {
+                        // skip adding the entity to the combobox if it is the entity the component is a part of
+                        if (entity.Id == Entity.Id)
+                            return;
 
-                    cbParent.Items.Add(entity);
-                });
+                        cbParent.Items.Add(entity);
+                    });
+            }
 
             cbParent.SelectedIndexChanged += CbParent_SelectedIndexChanged;
 

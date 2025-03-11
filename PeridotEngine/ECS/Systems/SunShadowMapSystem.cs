@@ -13,11 +13,11 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotEngine.ECS.Systems
 {
-    public class SunShadowMapSystem
+    public class SunShadowMapSystem : IDisposable
     {
         private readonly Scene3D scene;
 
-        private readonly Query sunLights;
+        private readonly ComponentQuery<PositionRotationScaleComponent> sunLights;
 
         private RenderTarget2D? rt;
 
@@ -26,7 +26,8 @@ namespace PeridotEngine.ECS.Systems
             this.scene = scene;
 
             sunLights = scene.Ecs.Query().Has<SunLightComponent>()
-                                         .Has<PositionRotationScaleComponent>();
+                                         .Has<PositionRotationScaleComponent>()
+                                         .OnComponents<PositionRotationScaleComponent>();
         }
 
         public Texture2D? GenerateShadowMap(MeshRenderingSystem meshRenderingSystem, out Vector3 lightPosition, out Matrix lightViewProjection)
@@ -43,7 +44,7 @@ namespace PeridotEngine.ECS.Systems
 
             GraphicsDevice gd = Globals.GraphicsDevice;
 
-            if(rt == null) 
+            if(rt == null || rt.IsDisposed) 
                 rt = new(gd, 1920,
                          1080, false, SurfaceFormat.Single, DepthFormat.Depth24);
 
@@ -86,8 +87,13 @@ namespace PeridotEngine.ECS.Systems
 
         ~SunShadowMapSystem()
         {
-            // not sure if this is necessary, but just do it to make sure we don't get a VRAM memory leak
-            rt?.Dispose();
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            sunLights.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

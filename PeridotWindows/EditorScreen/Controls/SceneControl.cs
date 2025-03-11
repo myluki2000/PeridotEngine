@@ -72,7 +72,8 @@ namespace PeridotWindows.EditorScreen.Controls
         public void Populate()
         {
             List<ListViewItem> items = new();
-            frmEditor.Editor.Scene.Ecs.Query().ForEach((Archetype.Entity entity) =>
+            using EntityQuery query = frmEditor.Editor.Scene.Ecs.Query().OnEntity();
+            query.ForEach(entity =>
             {
                 ListViewItem item = new(entity.ToString())
                 {

@@ -183,6 +183,8 @@ namespace PeridotWindows.EditorScreen
         public override void Deinitialize()
         {
             base.Deinitialize();
+
+            lightVisRenderingSystem.Dispose();
         }
 
         public enum EditorMode

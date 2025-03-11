@@ -37,6 +37,7 @@ namespace PeridotWindows.ECS
         public Archetype(Ecs ecs, Type[] componentTypes)
         {
             this.ecs = ecs;
+
             ComponentTypes = componentTypes.OrderBy(x => x.FullName).ToArray();
 
             entities = new();

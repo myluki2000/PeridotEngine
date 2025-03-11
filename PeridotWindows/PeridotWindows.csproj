@@ -31,12 +31,6 @@
   </ItemGroup>
 
   <Import Project="..\PeridotEngine\PeridotEngine.projitems" Label="Shared" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v17.0\TextTemplating\Microsoft.TextTemplating.targets" />
-
-	<PropertyGroup>
-		<TransformOnBuild>true</TransformOnBuild>
-	</PropertyGroup>
-
 
 	<ItemGroup>
     <None Update="C:\Users\lukas\source\repos\PeridotEngine\PeridotEngine\ECS\QueryMethods.tt">

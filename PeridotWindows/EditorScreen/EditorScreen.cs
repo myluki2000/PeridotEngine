@@ -125,6 +125,9 @@ namespace PeridotWindows.EditorScreen
                 effect.Projection = Scene.Camera.GetProjectionMatrix();
                 effect.Apply();
 
+                if (meshC.Mesh == null || meshC.Mesh.Mesh == null)
+                    return;
+
                 BoundingBox bounds = meshC.Mesh.Mesh.Bounds;
 
                 VertexPosition[] verts = new VertexPosition[24]

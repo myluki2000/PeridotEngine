@@ -21,8 +21,9 @@ jobs:
       - name: Modify .csproj (Add Trailing Backslash)
         shell: pwsh
         run: |
-          $csprojPath = "PeridotWindows/PeridotWindows.csproj"
-          (Get-Content $csprojPath) -replace '(?<=<Content Include="..\PeridotEngine\\Content\\bin\\Windows)(?=">)', '\' | Set-Content $csprojPath
+          $csprojContent = Get-Content $csprojPath -Raw
+          $csprojContent = $csprojContent -replace '(<Content Include="\.\.\\PeridotEngine\\Content\\bin\\Windows)(?=">)', '$1\'
+          Set-Content -Path $csprojPath -Value $csprojContent
 
       - name: Add GitHub Package Registry source
         run: |

@@ -12,6 +12,9 @@ namespace PeridotEngine.ECS.Components
             get;
             set
             {
+                if (field == value)
+                    return;
+
                 field = value;
                 RaiseValuesChanged();
             }
@@ -22,6 +25,9 @@ namespace PeridotEngine.ECS.Components
             get;
             set
             {
+                if (field == value)
+                    return;
+
                 field = value;
                 RaiseValuesChanged();
             }
@@ -32,6 +38,9 @@ namespace PeridotEngine.ECS.Components
             get;
             set
             {
+                if (field == value)
+                    return;
+
                 field = value;
                 RaiseValuesChanged();
             }

@@ -114,6 +114,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     ValuesChanged?.Invoke(this, this);
                 }
@@ -124,6 +127,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     Technique = null;
                     ValuesChanged?.Invoke(this, this);
@@ -135,6 +141,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     Technique = null;
                     ValuesChanged?.Invoke(this, this);
@@ -146,6 +155,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     Technique = null;
                     ValuesChanged?.Invoke(this, this);
@@ -157,6 +169,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     Technique = null;
                     ValuesChanged?.Invoke(this, this);
@@ -168,6 +183,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     Technique = null;
                     ValuesChanged?.Invoke(this, this);
@@ -179,6 +197,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     Technique = null;
                     ValuesChanged?.Invoke(this, this);
@@ -190,6 +211,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     ValuesChanged?.Invoke(this, this);
                 }
@@ -200,6 +224,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     ValuesChanged?.Invoke(this, this);
                 }
@@ -210,6 +237,9 @@ namespace PeridotEngine.Graphics.Effects
                 get;
                 set
                 {
+                    if (field == value)
+                        return;
+
                     field = value;
                     ValuesChanged?.Invoke(this, this);
                 }

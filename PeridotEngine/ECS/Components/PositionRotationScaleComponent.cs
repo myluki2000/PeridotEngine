@@ -6,14 +6,17 @@ using PeridotWindows.ECS.Components.PropertiesControls;
 
 namespace PeridotEngine.ECS.Components
 {
-    public sealed partial class PositionRotationScaleComponent : ComponentBase
+    public sealed partial class PositionRotationScaleComponent(Scene3D scene) : ComponentBase(scene)
     {
         public Vector3 Position
         {
-            get => position;
+            get;
             set
             {
-                position = value;
+                if (field == value)
+                    return;
+
+                field = value;
                 matrixOutdated = true;
                 RaiseValuesChanged();
             }
@@ -21,10 +24,13 @@ namespace PeridotEngine.ECS.Components
 
         public Quaternion Rotation
         {
-            get => rotation;
+            get;
             set
             {
-                rotation = value;
+                if (field == value)
+                    return;
+
+                field = value;
                 matrixOutdated = true;
                 RaiseValuesChanged();
             }
@@ -32,14 +38,17 @@ namespace PeridotEngine.ECS.Components
 
         public Vector3 Scale
         {
-            get => scale;
+            get;
             set
             {
-                scale = value;
+                if (field == value)
+                    return;
+
+                field = value;
                 matrixOutdated = true;
                 RaiseValuesChanged();
             }
-        }
+        } = Vector3.One;
 
         /// <summary>
         /// A counter which is incremented each time the transformation matrix is updated. Can be
@@ -50,14 +59,17 @@ namespace PeridotEngine.ECS.Components
         public uint MatrixVersion { get; private set; } = 0;
 
         [JsonIgnore]
-        public bool HasParent => parentEntityId != null;
+        public bool HasParent => ParentEntityId != null;
 
         public uint? ParentEntityId
         {
-            get => parentEntityId;
+            get;
             set
             {
-                parentEntityId = value;
+                if (field == value)
+                    return;
+
+                field = value;
                 parentEntityPosRotScaleComponent = null;
                 parentEntityMatrixVersion = 0;
                 matrixOutdated = true;
@@ -67,7 +79,6 @@ namespace PeridotEngine.ECS.Components
 
         private PositionRotationScaleComponent? parentEntityPosRotScaleComponent;
         private uint parentEntityMatrixVersion = 0;
-        private uint? parentEntityId;
 
         [JsonIgnore]
         public Matrix Transformation
@@ -78,39 +89,30 @@ namespace PeridotEngine.ECS.Components
                                || (parentEntityPosRotScaleComponent != null 
                                    && parentEntityMatrixVersion != parentEntityPosRotScaleComponent.MatrixVersion);
 
-                if (!refresh) return transformation;
+                if (!refresh) return field;
 
-                transformation = Matrix.CreateScale(scale)
-                                 * Matrix.CreateFromQuaternion(rotation)
-                                 //* Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
-                                 * Matrix.CreateTranslation(position);
+                field = Matrix.CreateScale(Scale)
+                        * Matrix.CreateFromQuaternion(Rotation)
+                        //* Matrix.CreateFromYawPitchRoll(rotation.Y, rotation.X, rotation.Z)
+                        * Matrix.CreateTranslation(Position);
 
-                if (parentEntityId != null)
+                if (ParentEntityId != null)
                 {
                     if (parentEntityPosRotScaleComponent == null)
                     {
-                        parentEntityPosRotScaleComponent = Scene.Ecs.EntityById(parentEntityId.Value)
+                        parentEntityPosRotScaleComponent = Scene.Ecs.EntityById(ParentEntityId.Value)
                             ?.GetComponent<PositionRotationScaleComponent>();
                     }
-                    transformation *= parentEntityPosRotScaleComponent.Transformation;
+                    field *= parentEntityPosRotScaleComponent.Transformation;
                     parentEntityMatrixVersion = parentEntityPosRotScaleComponent.MatrixVersion;
                 }
 
                 // unchecked increment by 1, overflows back to 0 when it reaches uint.MaxValue
                 MatrixVersion = unchecked(MatrixVersion + 1);
 
-                return transformation;
+                return field;
             }
-        }
-
-        public PositionRotationScaleComponent(Scene3D scene) : base(scene)
-        {
-        }
-
-        private Vector3 position;
-        private Quaternion rotation;
-        private Vector3 scale = Vector3.One;
-        private Matrix transformation = Matrix.Identity;
+        } = Matrix.Identity;
 
         private bool matrixOutdated = true;
     }

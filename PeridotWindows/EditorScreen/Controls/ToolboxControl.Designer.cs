@@ -37,6 +37,7 @@
             tsmiSaveScene = new ToolStripMenuItem();
             toolStripDropDownButton2 = new ToolStripDropDownButton();
             tsmiAddSunlight = new ToolStripMenuItem();
+            tsmiAddEmpty = new ToolStripMenuItem();
             flowLayoutPanel1.SuspendLayout();
             tsMain.SuspendLayout();
             SuspendLayout();
@@ -56,7 +57,7 @@
             tsMain.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripDropDownButton2 });
             tsMain.Location = new Point(0, 0);
             tsMain.Name = "tsMain";
-            tsMain.Size = new Size(135, 25);
+            tsMain.Size = new Size(166, 25);
             tsMain.TabIndex = 1;
             tsMain.Text = "toolStrip1";
             // 
@@ -94,7 +95,7 @@
             // toolStripDropDownButton2
             // 
             toolStripDropDownButton2.DisplayStyle = ToolStripItemDisplayStyle.Text;
-            toolStripDropDownButton2.DropDownItems.AddRange(new ToolStripItem[] { tsmiAddSunlight });
+            toolStripDropDownButton2.DropDownItems.AddRange(new ToolStripItem[] { tsmiAddSunlight, tsmiAddEmpty });
             toolStripDropDownButton2.Image = (Image)resources.GetObject("toolStripDropDownButton2.Image");
             toolStripDropDownButton2.ImageTransparentColor = Color.Magenta;
             toolStripDropDownButton2.Name = "toolStripDropDownButton2";
@@ -107,6 +108,13 @@
             tsmiAddSunlight.Size = new Size(180, 22);
             tsmiAddSunlight.Text = "Add Sunlight";
             tsmiAddSunlight.Click += tsmiAddSunlight_Click;
+            // 
+            // tsmiAddEmpty
+            // 
+            tsmiAddEmpty.Name = "tsmiAddEmpty";
+            tsmiAddEmpty.Size = new Size(180, 22);
+            tsmiAddEmpty.Text = "Add Empty";
+            tsmiAddEmpty.Click += tsmiAddEmpty_Click;
             // 
             // ToolboxControl
             // 
@@ -132,5 +140,6 @@
         private ToolStripMenuItem tsmiSaveScene;
         private ToolStripDropDownButton toolStripDropDownButton2;
         private ToolStripMenuItem tsmiAddSunlight;
+        private ToolStripMenuItem tsmiAddEmpty;
     }
 }

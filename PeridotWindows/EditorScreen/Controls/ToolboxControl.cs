@@ -25,11 +25,11 @@ namespace PeridotWindows.EditorScreen.Controls
         {
             foreach (Control control in flowLayoutPanel1.Controls)
             {
-                if(control != tsMain)
+                if (control != tsMain)
                     flowLayoutPanel1.Controls.Remove(control);
             }
 
-            if(toolSpecificToolStrip != null)
+            if (toolSpecificToolStrip != null)
                 flowLayoutPanel1.Controls.Add(toolSpecificToolStrip);
         }
 
@@ -46,9 +46,9 @@ namespace PeridotWindows.EditorScreen.Controls
 
             Scene3D scene = frmEditor.Editor.Scene;
             string json = JsonConvert.SerializeObject(
-                scene, 
-                new StaticMeshComponentJsonConverter(scene), 
-                new EffectPropertiesJsonConverter(scene), 
+                scene,
+                new StaticMeshComponentJsonConverter(scene),
+                new EffectPropertiesJsonConverter(scene),
                 new EcsJsonConverter(scene));
             File.WriteAllText(sfd.FileName, json);
         }
@@ -73,6 +73,14 @@ namespace PeridotWindows.EditorScreen.Controls
                 .CreateEntity(
                     new PositionRotationScaleComponent(scene),
                     new SunLightComponent(scene));
+        }
+
+        private void tsmiAddEmpty_Click(object sender, EventArgs e)
+        {
+            Scene3D scene = frmEditor.Editor.Scene;
+            scene.Ecs
+                .Archetype(typeof(PositionRotationScaleComponent))
+                .CreateEntity(new PositionRotationScaleComponent(scene));
         }
     }
 }

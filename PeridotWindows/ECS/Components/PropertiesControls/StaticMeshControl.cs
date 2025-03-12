@@ -57,6 +57,8 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
         private void EffectPoolOnRegisteredEffectTypesChanged(object? sender, EventArgs e)
         {
+            cmbEffect.Items.Clear();
+
             foreach (Type effectType in EffectPool.GetRegisteredEffectTypes())
             {
                 cmbEffect.Items.Add(effectType);

@@ -18,6 +18,14 @@ jobs:
         with:
           dotnet-version: '8.0.x'  # Adjust to your target .NET version
 
+      - name: Modify .csproj (Add Trailing Backslash)
+        shell: pwsh
+        run: |
+          $csprojPath = "PeridotWindows/PeridotWindows.csproj"
+          $csprojContent = Get-Content $csprojPath -Raw
+          $csprojContent = $csprojContent -replace '(<Content Include="\.\.\\PeridotEngine\\Content\\bin\\Windows)(?=">)', '$1\'
+          Set-Content -Path $csprojPath -Value $csprojContent
+
       - name: Add GitHub Package Registry source
         run: |
           dotnet nuget add source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" `

@@ -13,7 +13,7 @@ namespace PeridotEngine.ECS.Components
             set
             {
                 field = value;
-                ValuesChanged?.Invoke(this, this);
+                RaiseValuesChanged();
             }
         }
 
@@ -23,7 +23,7 @@ namespace PeridotEngine.ECS.Components
             set
             {
                 field = value;
-                ValuesChanged?.Invoke(this, this);
+                RaiseValuesChanged();
             }
         } = true;
 
@@ -33,16 +33,14 @@ namespace PeridotEngine.ECS.Components
             set
             {
                 field = value;
-                ValuesChanged?.Invoke(this, this);
+                RaiseValuesChanged();
             }
         }
 
         private void EffectPropertiesOnValuesChanged(object? sender, EffectBase.EffectProperties e)
         {
-            ValuesChanged?.Invoke(this, this);
+            RaiseValuesChanged();
         }
-
-        public override event EventHandler<ComponentBase>? ValuesChanged;
 
         public StaticMeshComponent(Scene3D scene) : base(scene) { }
 

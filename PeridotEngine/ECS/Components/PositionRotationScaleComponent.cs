@@ -15,7 +15,7 @@ namespace PeridotEngine.ECS.Components
             {
                 position = value;
                 matrixOutdated = true;
-                ValuesChanged?.Invoke(this, this);
+                RaiseValuesChanged();
             }
         }
 
@@ -26,7 +26,7 @@ namespace PeridotEngine.ECS.Components
             {
                 rotation = value;
                 matrixOutdated = true;
-                ValuesChanged?.Invoke(this, this);
+                RaiseValuesChanged();
             }
         }
 
@@ -37,7 +37,7 @@ namespace PeridotEngine.ECS.Components
             {
                 scale = value;
                 matrixOutdated = true;
-                ValuesChanged?.Invoke(this, this);
+                RaiseValuesChanged();
             }
         }
 
@@ -61,11 +61,9 @@ namespace PeridotEngine.ECS.Components
                 parentEntityPosRotScaleComponent = null;
                 parentEntityMatrixVersion = 0;
                 matrixOutdated = true;
-                ValuesChanged?.Invoke(this, this);
+                RaiseValuesChanged();
             }
         }
-
-        public override event EventHandler<ComponentBase>? ValuesChanged;
 
         private PositionRotationScaleComponent? parentEntityPosRotScaleComponent;
         private uint parentEntityMatrixVersion = 0;

@@ -8,11 +8,16 @@ namespace PeridotEngine.ECS.Components
         [JsonIgnore]
         public Scene3D Scene { get; protected set; }
 
-        public abstract event EventHandler<ComponentBase>? ValuesChanged;
+        public event EventHandler<ComponentBase>? ValuesChanged;
 
         protected ComponentBase(Scene3D scene)
         {
             Scene = scene;
+        }
+
+        protected void RaiseValuesChanged()
+        {
+            ValuesChanged?.Invoke(this, this);
         }
     }
 }

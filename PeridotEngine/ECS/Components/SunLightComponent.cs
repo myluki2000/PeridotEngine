@@ -8,6 +8,5 @@ namespace PeridotEngine.ECS.Components
 {
     public partial class SunLightComponent(Scene3D scene) : ComponentBase(scene)
     {
-        public override event EventHandler<ComponentBase>? ValuesChanged;
     }
 }

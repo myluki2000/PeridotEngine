@@ -22,7 +22,7 @@ jobs:
         shell: pwsh
         run: |
           $csprojPath = "PeridotWindows/PeridotWindows.csproj"
-          (Get-Content $csprojPath) -replace '(?<=<None Include="..\PeridotEngine\\Content\\bin\\Windows)(?=">)', '\' | Set-Content $csprojPath
+          (Get-Content $csprojPath) -replace '(?<=<Content Include="..\PeridotEngine\\Content\\bin\\Windows)(?=">)', '\' | Set-Content $csprojPath
 
       - name: Add GitHub Package Registry source
         run: |

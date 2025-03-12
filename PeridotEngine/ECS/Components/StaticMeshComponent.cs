@@ -7,14 +7,44 @@ namespace PeridotEngine.ECS.Components
 {
     public partial class StaticMeshComponent : ComponentBase
     {
-        public MeshResources.MeshInfo? Mesh { get; set; }
-        public bool CastShadows { get; set; } = true;
-        public EffectBase.EffectProperties? EffectProperties { get; set; }
-
-        public StaticMeshComponent(Scene3D scene) : base(scene)
+        public MeshResources.MeshInfo? Mesh
         {
-
+            get;
+            set
+            {
+                field = value;
+                ValuesChanged?.Invoke(this, this);
+            }
         }
+
+        public bool CastShadows
+        {
+            get;
+            set
+            {
+                field = value;
+                ValuesChanged?.Invoke(this, this);
+            }
+        } = true;
+
+        public EffectBase.EffectProperties? EffectProperties
+        {
+            get;
+            set
+            {
+                field = value;
+                ValuesChanged?.Invoke(this, this);
+            }
+        }
+
+        private void EffectPropertiesOnValuesChanged(object? sender, EffectBase.EffectProperties e)
+        {
+            ValuesChanged?.Invoke(this, this);
+        }
+
+        public override event EventHandler<ComponentBase>? ValuesChanged;
+
+        public StaticMeshComponent(Scene3D scene) : base(scene) { }
 
         public StaticMeshComponent(Scene3D scene, MeshResources.MeshInfo? mesh, EffectBase.EffectProperties? effectProperties, bool castShadows = true) : base(scene)
         {

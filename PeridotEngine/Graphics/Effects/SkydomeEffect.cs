@@ -8,12 +8,8 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotEngine.Graphics.Effects
 {
-    public class SkydomeEffect : EffectBase
+    public partial class SkydomeEffect() : EffectBase(Globals.Content.Load<Effect>("Effects/SkydomeEffect"))
     {
-        public SkydomeEffect() : base(Globals.Content.Load<Effect>("Effects/SkydomeEffect"))
-        {
-        }
-
         public override EffectProperties CreatePropertiesBase()
         {
             return CreateProperties();
@@ -31,7 +27,7 @@ namespace PeridotEngine.Graphics.Effects
 
         public partial class SkydomeEffectProperties : EffectProperties
         {
-            public override UserControl PropertiesControl { get; }
+            public override event EventHandler<EffectProperties>? ValuesChanged;
 
             public SkydomeEffectProperties(EffectBase effect) : base(effect)
             {

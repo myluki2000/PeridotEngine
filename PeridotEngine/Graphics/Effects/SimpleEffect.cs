@@ -107,78 +107,113 @@ namespace PeridotEngine.Graphics.Effects
             lightWorldViewProjParam.SetValue(lightWorldViewProj);
         }
 
-        public partial class SimpleEffectProperties : EffectProperties
+        public partial class SimpleEffectProperties(SimpleEffect effect) : EffectProperties(effect)
         {
-            public Color MixColor { get; set; } = Color.White;
+            public Color MixColor
+            {
+                get;
+                set
+                {
+                    field = value;
+                    ValuesChanged?.Invoke(this, this);
+                }
+            } = Color.White;
 
             public bool ShadowsEnabled
             {
-                get => shadowsEnabled;
+                get;
                 set
                 {
-                    shadowsEnabled = value;
+                    field = value;
                     Technique = null;
+                    ValuesChanged?.Invoke(this, this);
                 }
-            }
+            } = true;
 
             public bool VertexColorEnabled
             {
-                get => vertexColorEnabled;
+                get;
                 set
                 {
-                    vertexColorEnabled = value;
+                    field = value;
                     Technique = null;
+                    ValuesChanged?.Invoke(this, this);
                 }
             }
 
             public bool TextureEnabled
             {
-                get => textureEnabled;
+                get;
                 set
                 {
-                    textureEnabled = value;
+                    field = value;
                     Technique = null;
+                    ValuesChanged?.Invoke(this, this);
                 }
             }
 
             public bool DiffuseShadingEnabled
             {
-                get => diffuseShadingEnabled;
+                get;
                 set
                 {
-                    diffuseShadingEnabled = value;
+                    field = value;
                     Technique = null;
+                    ValuesChanged?.Invoke(this, this);
                 }
-            }
+            } = true;
 
             public bool RandomTextureRotationEnabled
             {
-                get => randomTextureRotationEnabled;
+                get;
                 set
                 {
-                    randomTextureRotationEnabled = value;
+                    field = value;
                     Technique = null;
+                    ValuesChanged?.Invoke(this, this);
                 }
-            }
+            } = false;
 
             public bool ObjectPickingEnabled
             {
-                get => objectPickingEnabled;
+                get;
                 set
                 {
-                    objectPickingEnabled = value;
+                    field = value;
                     Technique = null;
+                    ValuesChanged?.Invoke(this, this);
+                }
+            } = true;
+
+            public int TextureId
+            {
+                get;
+                set
+                {
+                    field = value;
+                    ValuesChanged?.Invoke(this, this);
                 }
             }
 
-            public int TextureId { get; set; }
-
-            public int TextureRepeatX { get; set; } = 1;
-            public int TextureRepeatY { get; set; } = 1;
-
-            public SimpleEffectProperties(SimpleEffect effect) : base(effect)
+            public int TextureRepeatX
             {
-            }
+                get;
+                set
+                {
+                    field = value;
+                    ValuesChanged?.Invoke(this, this);
+                }
+            } = 1;
+
+            public int TextureRepeatY
+            {
+                get;
+                set
+                {
+                    field = value;
+                    ValuesChanged?.Invoke(this, this);
+                }
+            } = 1;
 
             public override void Apply(Mesh mesh)
             {
@@ -204,14 +239,9 @@ namespace PeridotEngine.Graphics.Effects
                 }
             }
 
-            private SimpleEffect SimpleEffect => (SimpleEffect)Effect;
+            public override event EventHandler<EffectProperties>? ValuesChanged;
 
-            private bool textureEnabled;
-            private bool vertexColorEnabled;
-            private bool shadowsEnabled = true;
-            private bool diffuseShadingEnabled = true;
-            private bool randomTextureRotationEnabled = false;
-            private bool objectPickingEnabled = true;
+            private SimpleEffect SimpleEffect => (SimpleEffect)Effect;
 
             private static readonly Dictionary<int, EffectTechnique> techniquesDict = new();
 

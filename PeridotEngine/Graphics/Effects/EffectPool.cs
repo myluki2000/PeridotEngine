@@ -11,8 +11,10 @@ namespace PeridotEngine.Graphics.Effects
     public class EffectPool
     {
         public event EventHandler<EffectBase>? EffectInstantiated; 
+        public static event EventHandler? RegisteredEffectTypesChanged;
 
         public readonly Dictionary<Type, WeakReference<EffectBase>> Effects = new();
+
         private static readonly List<Type> effectTypes = new();
 
         private readonly Scene3D scene;
@@ -30,6 +32,7 @@ namespace PeridotEngine.Graphics.Effects
         public static void RegisterEffectType<T>()
         {
             effectTypes.Add(typeof(T));
+            RegisteredEffectTypesChanged?.Invoke(null, EventArgs.Empty);
         }
 
         public static IEnumerable<Type> GetRegisteredEffectTypes()

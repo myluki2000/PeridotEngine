@@ -107,7 +107,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             get => titleBar.OptionsMenu;
             set => titleBar.OptionsMenu = value;
         }
-        private void ComponentOnValuesChanged(object? sender, PositionRotationScaleComponent e)
+        private void ComponentOnValuesChanged(object? sender, ComponentBase _)
         {
             nudPositionX.ValueChanged -= NudPosition_ValueChanged;
             nudPositionY.ValueChanged -= NudPosition_ValueChanged;

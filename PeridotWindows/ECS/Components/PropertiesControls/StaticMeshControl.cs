@@ -27,10 +27,36 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             this.component = entity.GetComponent<StaticMeshComponent>();
             titleBar.Tag = component;
 
-            component.Scene.Resources.MeshResources.MeshListChanged += (_, _) => UpdateMeshList();
+            component.Scene.Resources.MeshResources.MeshListChanged += MeshResourcesOnMeshListChanged;
+            EffectPool.RegisteredEffectTypesChanged += EffectPoolOnRegisteredEffectTypesChanged;
+            component.ValuesChanged += ComponentOnValuesChanged;
+            Disposed += (sender, e) =>
+            {
+                component.Scene.Resources.MeshResources.MeshListChanged -= MeshResourcesOnMeshListChanged;
+                EffectPool.RegisteredEffectTypesChanged -= EffectPoolOnRegisteredEffectTypesChanged;
+                component.ValuesChanged -= ComponentOnValuesChanged;
+            };
 
-            UpdateMeshList();
+            Populate();
 
+            cmbEffect.SelectedIndexChanged += cmbEffect_SelectedIndexChanged;
+        }
+
+        private void Populate()
+        {
+            cbCastShadows.Checked = component.CastShadows;
+
+            EffectPoolOnRegisteredEffectTypesChanged(null, EventArgs.Empty);
+            MeshResourcesOnMeshListChanged(null, []);
+        }
+
+        private void ComponentOnValuesChanged(object? sender, ComponentBase c)
+        {
+            Populate();
+        }
+
+        private void EffectPoolOnRegisteredEffectTypesChanged(object? sender, EventArgs e)
+        {
             foreach (Type effectType in EffectPool.GetRegisteredEffectTypes())
             {
                 cmbEffect.Items.Add(effectType);
@@ -41,13 +67,9 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
                     PopulateEffectProperties();
                 }
             }
-
-            cbCastShadows.Checked = component.CastShadows;
-
-            cmbEffect.SelectedIndexChanged += cmbEffect_SelectedIndexChanged;
         }
 
-        private void UpdateMeshList()
+        private void MeshResourcesOnMeshListChanged(object? sender, IEnumerable<MeshResources.MeshInfo> _)
         {
             cmbMesh.Items.Clear();
 

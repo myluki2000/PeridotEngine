@@ -49,7 +49,8 @@ namespace PeridotEngine.ECS.Components
         [JsonIgnore]
         public uint MatrixVersion { get; private set; } = 0;
 
-        [JsonIgnore] public bool HasParent => parentEntityId != null;
+        [JsonIgnore]
+        public bool HasParent => parentEntityId != null;
 
         public uint? ParentEntityId
         {
@@ -64,7 +65,7 @@ namespace PeridotEngine.ECS.Components
             }
         }
 
-        public event EventHandler<PositionRotationScaleComponent>? ValuesChanged; 
+        public override event EventHandler<ComponentBase>? ValuesChanged;
 
         private PositionRotationScaleComponent? parentEntityPosRotScaleComponent;
         private uint parentEntityMatrixVersion = 0;

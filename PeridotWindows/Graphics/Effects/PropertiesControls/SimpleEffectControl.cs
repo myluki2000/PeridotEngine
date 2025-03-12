@@ -1,4 +1,5 @@
-﻿using PeridotEngine.Graphics;
+﻿using System.Diagnostics;
+using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Effects;
 using PeridotEngine.Misc;
 using PeridotWindows.EditorScreen.Forms;
@@ -14,11 +15,18 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
             InitializeComponent();
 
             this.effectProperties = effectProperties;
+            this.effectProperties.ValuesChanged += EffectPropertiesOnValuesChanged;
+            this.Disposed += (sender, args) => effectProperties.ValuesChanged -= EffectPropertiesOnValuesChanged;
 
             Populate();
         }
 
-        public void Populate()
+        private void EffectPropertiesOnValuesChanged(object? sender, EffectBase.EffectProperties e)
+        {
+            Populate();
+        }
+
+        private void Populate()
         {
             cbTexture.Checked = effectProperties.TextureEnabled;
             nudTextureId.Value = effectProperties.TextureId;

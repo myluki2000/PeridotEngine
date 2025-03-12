@@ -71,6 +71,8 @@ namespace PeridotEngine.Graphics.Effects
                 Effect.Apply();
             }
 
+            public abstract event EventHandler<EffectProperties>? ValuesChanged;
+
             [JsonIgnore]
             public EffectBase Effect { get; protected set; }
 

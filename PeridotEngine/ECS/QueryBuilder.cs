@@ -78,11 +78,11 @@ namespace PeridotWindows.ECS
             {
                 // if |includeComponents \ a.ComponentTypes| > 0 this archetype is missing
                 // some required components
-                if (includeComponents.Except(a.ComponentTypes).Any()) return true;
-
+                if (includeComponents.Any(ic => !a.ComponentTypes.Any(ac => ac.IsSubclassOf(ic) || ac == ic))) return true;
+                
                 // if a component is included in both a.ComponentTypes and excludeComponents
                 // then the archetype has an excluded component
-                if (a.ComponentTypes.Intersect(excludeComponents).Any()) return true;
+                if (excludeComponents.Any(ec => a.ComponentTypes.Any(ac => ac.IsSubclassOf(ec) || ac == ec))) return true;
 
                 return false;
             });

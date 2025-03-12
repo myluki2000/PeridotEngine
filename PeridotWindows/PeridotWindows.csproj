@@ -44,7 +44,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\PeridotEngine\Content\bin\Windows\**" Pack="true" PackagePath="content\Content\">
+		<None Include="..\PeridotEngine\Content\bin\Windows" Pack="true" PackagePath="content\Content\">
 			<PackageCopyToOutput>true</PackageCopyToOutput>
 		</None>
 	</ItemGroup>

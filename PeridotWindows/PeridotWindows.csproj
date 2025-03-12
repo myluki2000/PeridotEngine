@@ -14,8 +14,9 @@
 
 	<PropertyGroup>
 		<LangVersion>preview</LangVersion>
+		<DebugType>embedded</DebugType>
 	</PropertyGroup>
-	
+
 
 	<ItemGroup>
     <Compile Include="..\PeridotEngine\ECS\QueryMethods.cs">

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,16 +22,11 @@ namespace PeridotWindows.EditorScreen.Controls
 
         public event EventHandler<TextureResources.ITextureInfo>? ItemDoubleClicked;
 
-        private readonly ImageList listViewImageList = new();
+        private Bitmap? textureAtlas;
 
         public TextureResourcesManagementControl(Scene3D scene)
         {
             InitializeComponent();
-
-            listViewImageList.ColorDepth = ColorDepth.Depth32Bit;
-            listViewImageList.ImageSize = new Size(tbImageSize.Value, tbImageSize.Value);
-            lvTextures.LargeImageList = listViewImageList;
-            lvTextures.SmallImageList = listViewImageList;
 
             this.scene = scene;
         }
@@ -66,54 +60,32 @@ namespace PeridotWindows.EditorScreen.Controls
 
         private void btnRemoveTexture_Click(object sender, EventArgs e)
         {
-            if (lvTextures.SelectedItems.Count == 0)
+            /*if (lvTextures.SelectedItems.Count == 0)
                 return;
 
             TextureResources.ITextureInfo texInfo = (TextureResources.ITextureInfo)lvTextures.SelectedItems[0].Tag;
 
-            scene.Resources.TextureResources.RemoveTexture(texInfo.Id);
+            scene.Resources.TextureResources.RemoveTexture(texInfo.Id);*/
         }
 
-        private void lvTextures_SelectedIndexChanged(object sender, EventArgs e)
+        private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.ITextureInfo> _)
         {
-            if (lvTextures.SelectedItems.Count > 0)
+            textureAtlas?.Dispose();
+
+            if (scene.Resources.TextureResources.TextureAtlas == null)
             {
-                TextureResources.ITextureInfo texInfo = (TextureResources.ITextureInfo)lvTextures.SelectedItems[0].Tag;
-                SelectedItem = texInfo;
+                textureAtlas = null;
+                return;
             }
-            else
-            {
-                SelectedItem = null;
-            }
-            SelectedItemChanged?.Invoke(this, SelectedItem);
-        }
 
-        private void OnTextureAtlasChanged(object? sender, IEnumerable<TextureResources.ITextureInfo> textureInfos)
-        {
-            PopulateTextureList(textureInfos);
-        }
-
-        private void PopulateTextureList(IEnumerable<TextureResources.ITextureInfo> textureInfos)
-        {
-            lvTextures.Items.Clear();
-
-            foreach (Image img in listViewImageList.Images)
-            {
-                img.Dispose();
-            }
-            listViewImageList.Images.Clear();
-
-            foreach (TextureResources.ITextureInfo texInfo in textureInfos)
-            {
-                listViewImageList.Images.Add(Image.FromFile(Globals.Content.RootDirectory + "/" + texInfo.FilePath));
-
-                ListViewItem item = new();
-                item.Text = texInfo.FilePath;
-                item.ImageIndex = listViewImageList.Images.Count - 1;
-                item.Tag = texInfo;
-                
-                lvTextures.Items.Add(item);
-            }
+            // convert Texture2D texture atlas to a bitmap
+            using MemoryStream ms = new();
+            scene.Resources.TextureResources.TextureAtlas.SaveAsPng(
+                ms,
+                scene.Resources.TextureResources.TextureAtlas.Width,
+                scene.Resources.TextureResources.TextureAtlas.Height);
+            textureAtlas = new Bitmap(ms);
+            pnlListView.Invalidate();
         }
 
         protected override void OnHandleCreated(EventArgs e)
@@ -121,7 +93,7 @@ namespace PeridotWindows.EditorScreen.Controls
             base.OnHandleCreated(e);
 
             scene.Resources.TextureResources.TextureAtlasChanged += OnTextureAtlasChanged;
-            PopulateTextureList(scene.Resources.TextureResources.GetAllTextures());
+            OnTextureAtlasChanged(null, []);
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
@@ -131,20 +103,153 @@ namespace PeridotWindows.EditorScreen.Controls
             scene.Resources.TextureResources.TextureAtlasChanged -= OnTextureAtlasChanged;
         }
 
-        private void lvTextures_DoubleClick(object sender, EventArgs e)
-        {
-            ItemDoubleClicked?.Invoke(this, SelectedItem!);
-        }
-
         private void tbImageSize_Scroll(object sender, EventArgs e)
         {
-            listViewImageList.ImageSize = new Size(tbImageSize.Value, tbImageSize.Value);
-            PopulateTextureList(scene.Resources.TextureResources.GetAllTextures());
+            pnlListView.Invalidate();
+        }
+
+        private void pnlListView_Paint(object sender, PaintEventArgs e)
+        {
+            if (textureAtlas == null)
+                return;
+
+            System.Drawing.Graphics g = e.Graphics;
+
+            g.FillRectangle(Brushes.White, e.ClipRectangle);
+
+            int i = 0;
+            foreach (TextureResources.ITextureInfo textureInfo in scene.Resources.TextureResources.GetAllTextures())
+            {
+                if (SelectedItem == textureInfo)
+                {
+                    g.FillRectangle(Brushes.LightBlue, GetListViewItemRect(i));
+                    g.DrawRectangle(Pens.DarkBlue, GetListViewItemRect(i));
+                }
+
+                g.DrawImage(
+                    textureAtlas,
+                    GetIconRect(i),
+                    new RectangleF(
+                        textureInfo.Bounds.X * textureAtlas.Width,
+                        textureInfo.Bounds.Y * textureAtlas.Height,
+                        textureInfo.Bounds.Width * textureAtlas.Width,
+                        textureInfo.Bounds.Height * textureAtlas.Height),
+                    GraphicsUnit.Pixel);
+
+                Font font = new(Font.FontFamily, 6.0f);
+
+                g.DrawString(
+                    textureInfo.FilePath ?? "?",
+                    font,
+                    Brushes.Black,
+                    GetTextRect(i));
+
+                i++;
+            }
+
+            int itemHeight = (int)GetListViewItemRect(0).Height;
+            int rowCount = i / GetItemsPerRow();
+            int scrollMaximum = (int)(rowCount * itemHeight) - pnlListView.Bounds.Height;
+            scrollBar.LargeChange = 40;
+            scrollBar.Maximum = scrollMaximum > 0 
+                ? scrollMaximum + scrollBar.LargeChange * 2 
+                : 0;
+            
+        }
+
+        private void pnlListView_Click(object sender, EventArgs e)
+        {
+            int i = 0;
+            foreach (TextureResources.ITextureInfo textureInfo in scene.Resources.TextureResources.GetAllTextures())
+            {
+                if (GetListViewItemRect(i).Contains(((MouseEventArgs)e).Location))
+                {
+                    if (SelectedItem == textureInfo)
+                        return;
+
+                    SelectedItem = textureInfo;
+                    SelectedItemChanged?.Invoke(this, textureInfo);
+                    pnlListView.Invalidate();
+                    return;
+                }
+
+                i++;
+            }
+
+            if (SelectedItem != null)
+            {
+                SelectedItem = null;
+                SelectedItemChanged?.Invoke(this, null);
+                pnlListView.Invalidate();
+            }
+        }
+
+        private const int ITEM_MARGIN = 4;
+        private const int TEXT_HEIGHT = 22;
+
+        private RectangleF GetListViewItemRect(int index)
+        {
+            int itemWidth = tbImageSize.Value + ITEM_MARGIN * 2;
+            int itemHeight = tbImageSize.Value + TEXT_HEIGHT + ITEM_MARGIN * 2;
+            int itemsPerRow = GetItemsPerRow();
+            int row = index / itemsPerRow;
+            int col = index % itemsPerRow;
+
+            RectangleF itemRect = new(
+                col * itemWidth + ITEM_MARGIN,
+                row * itemHeight + ITEM_MARGIN,
+                itemWidth,
+                itemHeight);
+
+            itemRect.Y -= scrollBar.Value;
+            return itemRect;
+        }
+
+        private int GetItemsPerRow()
+        {
+            return pnlListView.Width / (tbImageSize.Value + ITEM_MARGIN * 2);
+        }
+
+        private RectangleF GetIconRect(int index)
+        {
+            RectangleF itemRect = GetListViewItemRect(index);
+            itemRect.X += ITEM_MARGIN;
+            itemRect.Y += ITEM_MARGIN;
+            itemRect.Width -= ITEM_MARGIN * 2;
+            itemRect.Height -= ITEM_MARGIN * 2 + TEXT_HEIGHT;
+            return itemRect;
+        }
+
+        private RectangleF GetTextRect(int index)
+        {
+            RectangleF itemRect = GetListViewItemRect(index);
+            itemRect.Y += itemRect.Height - TEXT_HEIGHT;
+            itemRect.Height = TEXT_HEIGHT;
+            return itemRect;
+        }
+
+        private void pnlListView_DoubleClick(object sender, EventArgs e)
+        {
+            int i = 0;
+            foreach (TextureResources.ITextureInfo textureInfo in scene.Resources.TextureResources.GetAllTextures())
+            {
+                if (GetListViewItemRect(i).Contains(((MouseEventArgs)e).Location))
+                {
+                    ItemDoubleClicked?.Invoke(this, textureInfo);
+                }
+
+                i++;
+            }
+        }
+
+        private void scrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            pnlListView.Invalidate();
         }
 
         ~TextureResourcesManagementControl()
         {
-            listViewImageList.Dispose();
+            textureAtlas?.Dispose();
         }
     }
 }

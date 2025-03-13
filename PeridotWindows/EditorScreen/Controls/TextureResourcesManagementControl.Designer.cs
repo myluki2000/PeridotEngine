@@ -28,26 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            lvTextures = new ListView();
             panel1 = new Panel();
             label1 = new Label();
             tbImageSize = new TrackBar();
             btnRemoveTexture = new Button();
             btnAddTexture = new Button();
+            scrollBar = new VScrollBar();
+            pnlListView = new Panel();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)tbImageSize).BeginInit();
             SuspendLayout();
-            // 
-            // lvTextures
-            // 
-            lvTextures.Dock = DockStyle.Fill;
-            lvTextures.Location = new Point(0, 0);
-            lvTextures.Name = "lvTextures";
-            lvTextures.Size = new Size(566, 255);
-            lvTextures.TabIndex = 2;
-            lvTextures.UseCompatibleStateImageBehavior = false;
-            lvTextures.SelectedIndexChanged += lvTextures_SelectedIndexChanged;
-            lvTextures.DoubleClick += lvTextures_DoubleClick;
             // 
             // panel1
             // 
@@ -76,12 +66,12 @@
             tbImageSize.Location = new Point(12, 123);
             tbImageSize.Maximum = 128;
             tbImageSize.MaximumSize = new Size(0, 130);
-            tbImageSize.Minimum = 16;
+            tbImageSize.Minimum = 48;
             tbImageSize.Name = "tbImageSize";
             tbImageSize.Orientation = Orientation.Vertical;
             tbImageSize.Size = new Size(45, 129);
             tbImageSize.TabIndex = 2;
-            tbImageSize.Value = 32;
+            tbImageSize.Value = 48;
             tbImageSize.Scroll += tbImageSize_Scroll;
             // 
             // btnRemoveTexture
@@ -106,11 +96,32 @@
             btnAddTexture.UseVisualStyleBackColor = true;
             btnAddTexture.Click += btnAddTexture_Click;
             // 
+            // scrollBar
+            // 
+            scrollBar.Dock = DockStyle.Right;
+            scrollBar.Location = new Point(549, 0);
+            scrollBar.Name = "scrollBar";
+            scrollBar.Size = new Size(17, 255);
+            scrollBar.TabIndex = 4;
+            scrollBar.Scroll += scrollBar_Scroll;
+            // 
+            // pnlListView
+            // 
+            pnlListView.Dock = DockStyle.Fill;
+            pnlListView.Location = new Point(0, 0);
+            pnlListView.Name = "pnlListView";
+            pnlListView.Size = new Size(549, 255);
+            pnlListView.TabIndex = 5;
+            pnlListView.Click += pnlListView_Click;
+            pnlListView.Paint += pnlListView_Paint;
+            pnlListView.DoubleClick += pnlListView_DoubleClick;
+            // 
             // TextureResourcesManagementControl
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(lvTextures);
+            Controls.Add(pnlListView);
+            Controls.Add(scrollBar);
             Controls.Add(panel1);
             Name = "TextureResourcesManagementControl";
             Size = new Size(633, 255);
@@ -121,12 +132,12 @@
         }
 
         #endregion
-
-        private ListView lvTextures;
         private Panel panel1;
         private Button btnRemoveTexture;
         private Button btnAddTexture;
         private Label label1;
         private TrackBar tbImageSize;
+        private VScrollBar scrollBar;
+        private Panel pnlListView;
     }
 }

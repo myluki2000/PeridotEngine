@@ -41,7 +41,14 @@ namespace PeridotEngine.ECS.Components
                 if (field == value)
                     return;
 
+                if (field != null)
+                    field.ValuesChanged -= EffectPropertiesOnValuesChanged;
+
                 field = value;
+
+                if (value != null)
+                    value.ValuesChanged += EffectPropertiesOnValuesChanged;
+
                 RaiseValuesChanged();
             }
         }

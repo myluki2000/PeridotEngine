@@ -8,7 +8,7 @@ using Point = Microsoft.Xna.Framework.Point;
 
 namespace PeridotEngine.Misc
 {
-    static class ExtensionMethods
+    public static class ExtensionMethods
     {
         public static Vector3 Transform(this Vector3 v, Matrix matrix)
         {

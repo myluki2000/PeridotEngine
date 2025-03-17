@@ -27,7 +27,9 @@ namespace PeridotWindows.ECS
             {
                 archetype.EntityListChanged += () => EntityListChanged?.Invoke(this, archetype);
 
-                uint archetypeLargestId = archetype.Ids.Max();
+                uint archetypeLargestId = archetype.Ids
+                    .DefaultIfEmpty<uint>(0)
+                    .Max();
                 if (archetypeLargestId > LargestId) LargestId = archetypeLargestId;
             }
         }

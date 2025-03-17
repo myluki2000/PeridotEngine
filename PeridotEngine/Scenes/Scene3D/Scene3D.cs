@@ -100,7 +100,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
             Scene3D instance = (Scene3D?)Activator.CreateInstance(
                                    sceneType, 
-                                   BindingFlags.Instance | BindingFlags.NonPublic, 
+                                   BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, 
                                    null, 
                                    [root], 
                                    null, 

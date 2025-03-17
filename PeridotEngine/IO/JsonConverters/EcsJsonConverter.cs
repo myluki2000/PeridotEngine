@@ -87,12 +87,21 @@ namespace PeridotEngine.IO.JsonConverters
 
                     for (int i = 0; i < jComponents.Count; i++)
                     {
+                        Type componentType = componentTypes[i];
                         ComponentBase[] componentsOfType = jComponents[i].Children()
                             .Select(x =>
                             {
-                                object? component = serializer.Deserialize(x.CreateReader(), componentTypes[i]);
-                                component.GetType().GetProperty("Scene").SetValue(component, scene);
-                                return (ComponentBase)component;
+                                ComponentBase component = (ComponentBase?)Activator.CreateInstance(
+                                    componentType,
+                                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+                                    null,
+                                    [scene],
+                                    null)
+                                    ?? throw new Exception("Error while trying to instantiate Component of type "
+                                                           + componentType.FullName + " during JSON deserialization.");
+
+                                serializer.Populate(x.CreateReader(), component);
+                                return component;
                             })
                             .ToArray();
 

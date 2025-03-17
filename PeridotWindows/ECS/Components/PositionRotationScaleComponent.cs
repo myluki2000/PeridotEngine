@@ -12,12 +12,9 @@ namespace PeridotEngine.ECS.Components
 {
     public sealed partial class PositionRotationScaleComponent
     {
-        private ComponentControlBase? propertiesControl;
-
-        public override ComponentControlBase? GetPropertiesControl(Archetype.Entity entity)
+        protected override ComponentControlBase? CreatePropertiesControl(Archetype.Entity entity)
         {
-            propertiesControl ??= new PositionRotationScaleControl(entity);
-            return propertiesControl;
+            return new PositionRotationScaleControl(entity);
         }
     }
 }

@@ -10,6 +10,6 @@ namespace PeridotEngine.ECS.Components
 {
     public partial class SunLightComponent
     {
-        public override ComponentControlBase? GetPropertiesControl(Archetype.Entity entity) => null;
+        protected override ComponentControlBase? CreatePropertiesControl(Archetype.Entity entity) => null;
     }
 }

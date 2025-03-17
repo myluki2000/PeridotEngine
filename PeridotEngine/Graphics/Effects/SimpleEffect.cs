@@ -25,8 +25,6 @@ namespace PeridotEngine.Graphics.Effects
 
         private readonly EffectParameter? cameraPositionParam;
 
-        private TextureResources? textureResources;
-
         public SimpleEffect() : base(Globals.Content.Load<Effect>("Effects/SimpleEffect"))
         {
             textureParam = Parameters["Texture"];
@@ -48,18 +46,21 @@ namespace PeridotEngine.Graphics.Effects
 
         public TextureResources? TextureResources
         {
-            get => textureResources;
+            get;
             set
             {
-                if (textureResources != null)
-                    textureResources.TextureAtlasChanged -= TextureAtlasChanged;
-                
-                textureResources = value;
+                if (value == field)
+                    return;
 
-                if (textureResources != null)
+                if (field != null)
+                    field.TextureAtlasChanged -= TextureAtlasChanged;
+
+                field = value;
+
+                if (field != null)
                 {
-                    textureResources.TextureAtlasChanged += TextureAtlasChanged;
-                    TextureAtlasChanged(null, textureResources.GetAllTextures());
+                    field.TextureAtlasChanged += TextureAtlasChanged;
+                    TextureAtlasChanged(null, field.GetAllTextures());
                 }
             }
         }
@@ -80,7 +81,7 @@ namespace PeridotEngine.Graphics.Effects
 
         private void TextureAtlasChanged(object? sender, IEnumerable<TextureResources.ITextureInfo> textureInfos)
         {
-            textureParam?.SetValue(textureResources?.TextureAtlas);
+            textureParam?.SetValue(TextureResources?.TextureAtlas);
         }
 
         public override EffectProperties CreatePropertiesBase()

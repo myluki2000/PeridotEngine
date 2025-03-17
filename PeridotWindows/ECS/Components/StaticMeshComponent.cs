@@ -14,12 +14,9 @@ namespace PeridotEngine.ECS.Components
 {
     public partial class StaticMeshComponent
     {
-        private ComponentControlBase? propertiesControl;
-
-        public override ComponentControlBase? GetPropertiesControl(Archetype.Entity entity)
+        protected override ComponentControlBase? CreatePropertiesControl(Archetype.Entity entity)
         {
-            propertiesControl ??= new StaticMeshControl(entity);
-            return propertiesControl;
+            return new StaticMeshControl(entity);
         }
     }
 }

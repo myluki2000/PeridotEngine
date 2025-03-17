@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            titleBar = new Controls.CollapsibleTitleBar();
             gbParent = new GroupBox();
             cbParent = new ComboBox();
             gbScale = new GroupBox();
@@ -96,28 +95,13 @@
             ((System.ComponentModel.ISupportInitialize)nudPositionZ).BeginInit();
             SuspendLayout();
             // 
-            // titleBar
-            // 
-            titleBar.BackColor = Color.White;
-            titleBar.BorderStyle = BorderStyle.FixedSingle;
-            titleBar.Collapsed = false;
-            titleBar.Dock = DockStyle.Top;
-            titleBar.Location = new Point(0, 0);
-            titleBar.MaximumSize = new Size(9999, 28);
-            titleBar.MinimumSize = new Size(0, 28);
-            titleBar.Name = "titleBar";
-            titleBar.OptionsMenu = null;
-            titleBar.Size = new Size(552, 28);
-            titleBar.TabIndex = 2;
-            titleBar.Text = "Position Rotation Scale";
-            // 
             // gbParent
             // 
             gbParent.AutoSize = true;
             gbParent.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             gbParent.Controls.Add(cbParent);
             gbParent.Dock = DockStyle.Top;
-            gbParent.Location = new Point(0, 28);
+            gbParent.Location = new Point(0, 0);
             gbParent.Name = "gbParent";
             gbParent.Size = new Size(552, 67);
             gbParent.TabIndex = 1;
@@ -140,7 +124,7 @@
             gbScale.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             gbScale.Controls.Add(flpScale);
             gbScale.Dock = DockStyle.Top;
-            gbScale.Location = new Point(0, 235);
+            gbScale.Location = new Point(0, 207);
             gbScale.Name = "gbScale";
             gbScale.Size = new Size(552, 70);
             gbScale.TabIndex = 7;
@@ -256,7 +240,7 @@
             gbRotation.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             gbRotation.Controls.Add(flpRotation);
             gbRotation.Dock = DockStyle.Top;
-            gbRotation.Location = new Point(0, 165);
+            gbRotation.Location = new Point(0, 137);
             gbRotation.Name = "gbRotation";
             gbRotation.Size = new Size(552, 70);
             gbRotation.TabIndex = 6;
@@ -403,7 +387,7 @@
             gbPosition.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             gbPosition.Controls.Add(flpPosition);
             gbPosition.Dock = DockStyle.Top;
-            gbPosition.Location = new Point(0, 95);
+            gbPosition.Location = new Point(0, 67);
             gbPosition.Name = "gbPosition";
             gbPosition.Size = new Size(552, 70);
             gbPosition.TabIndex = 5;
@@ -523,9 +507,8 @@
             Controls.Add(gbRotation);
             Controls.Add(gbPosition);
             Controls.Add(gbParent);
-            Controls.Add(titleBar);
             Name = "PositionRotationScaleControl";
-            Size = new Size(552, 305);
+            Size = new Size(552, 280);
             Load += PositionRotationScaleControl_Load;
             ClientSizeChanged += PositionRotationScaleControl_ClientSizeChanged;
             gbParent.ResumeLayout(false);
@@ -576,7 +559,6 @@
         }
 
         #endregion
-        private Controls.CollapsibleTitleBar titleBar;
         private GroupBox gbParent;
         private ComboBox cbParent;
         private GroupBox gbScale;

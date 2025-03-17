@@ -12,6 +12,13 @@ namespace PeridotEngine.ECS.Components
 {
     public abstract partial class ComponentBase
     {
-        public abstract ComponentControlBase? GetPropertiesControl(Archetype.Entity entity);
+        private ComponentControlWrapper? propertiesControlWrapper;
+
+        protected abstract ComponentControlBase? CreatePropertiesControl(Archetype.Entity entity);
+        public ComponentControlWrapper GetPropertiesControlWrapper(Archetype.Entity entity)
+        {
+            propertiesControlWrapper ??= new ComponentControlWrapper(this, CreatePropertiesControl(entity));
+            return propertiesControlWrapper;
+        }
     }
 }

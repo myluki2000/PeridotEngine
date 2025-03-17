@@ -15,13 +15,13 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
     public partial class PositionRotationScaleControl : ComponentControlBase
     {
         private readonly PositionRotationScaleComponent component;
+        public override ComponentBase Component => component;
 
         public PositionRotationScaleControl(Archetype.Entity entity) : base(entity)
         {
             InitializeComponent();
 
             this.component = entity.GetComponent<PositionRotationScaleComponent>();
-            titleBar.Tag = component;
         }
 
         private void NudPosition_ValueChanged(object? sender, EventArgs eventArgs)
@@ -101,12 +101,6 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             component.ParentEntityId = (cbParent.SelectedItem as Archetype.Entity)?.Id;
         }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public override ContextMenuStrip? OptionsMenu
-        {
-            get => titleBar.OptionsMenu;
-            set => titleBar.OptionsMenu = value;
-        }
         private void ComponentOnValuesChanged(object? sender, ComponentBase _)
         {
             nudPositionX.ValueChanged -= NudPosition_ValueChanged;

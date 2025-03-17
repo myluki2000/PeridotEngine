@@ -45,8 +45,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Skydome.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\EcsJsonConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\EffectPropertiesJsonConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\MeshInfoJsonConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\SceneResourcesJsonConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\StaticMeshComponentJsonConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\FpsMeasurer.cs" />

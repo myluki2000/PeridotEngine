@@ -52,7 +52,7 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 Converters =
                 {
-                    new StaticMeshComponentJsonConverter(this),
+                    new MeshInfoJsonConverter(this),
                     new EffectPropertiesJsonConverter(this),
                     new EcsJsonConverter(this),
                     new SceneResourcesJsonConverter(this)
@@ -60,7 +60,7 @@ namespace PeridotEngine.Scenes.Scene3D
             });
 
             Resources = (SceneResources)root["Resources"].ToObject(typeof(SceneResources), serializer);
-            Camera = root["Camera"].ToObject<PerspectiveCamera>();
+            Camera = (PerspectiveCamera)root["Camera"].ToObject(typeof(PerspectiveCamera), serializer);
             Ecs = (Ecs)root["Ecs"].ToObject(typeof(Ecs), serializer);
         }
 
@@ -116,9 +116,10 @@ namespace PeridotEngine.Scenes.Scene3D
             {
                 Converters =
                 {
-                    new StaticMeshComponentJsonConverter(this),
+                    new MeshInfoJsonConverter(this),
                     new EffectPropertiesJsonConverter(this),
-                    new EcsJsonConverter(this)
+                    new EcsJsonConverter(this),
+                    new SceneResourcesJsonConverter(this)
                 }
             });
 

@@ -56,7 +56,7 @@ namespace PeridotEngine.ECS.Components
         /// Overflows back to 0 when it reaches uint.MaxValue.
         /// </summary>
         [JsonIgnore]
-        public uint MatrixVersion { get; private set; } = 0;
+        public ulong MatrixVersion { get; private set; } = 0;
 
         [JsonIgnore]
         public bool HasParent => ParentEntityId != null;
@@ -78,7 +78,7 @@ namespace PeridotEngine.ECS.Components
         }
 
         private PositionRotationScaleComponent? parentEntityPosRotScaleComponent;
-        private uint parentEntityMatrixVersion = 0;
+        private ulong parentEntityMatrixVersion = 0;
 
         [JsonIgnore]
         public Matrix Transformation

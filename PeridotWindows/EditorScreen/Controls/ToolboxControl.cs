@@ -1,5 +1,6 @@
 ﻿using PeridotEngine.Scenes.Scene3D;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PeridotEngine.ECS.Components;
 using PeridotEngine.IO.JsonConverters;
 using PeridotWindows.EditorScreen.Forms;
@@ -60,8 +61,9 @@ namespace PeridotWindows.EditorScreen.Controls
             if (ofd.ShowDialog() != DialogResult.OK) return;
 
             string json = File.ReadAllText(ofd.FileName);
+            JToken root = JToken.Parse(json);
 
-            Scene3D newScene = new(json);
+            Scene3D newScene = new(root);
             frmEditor.Editor = new EditorScreen(frmEditor, newScene);
         }
 

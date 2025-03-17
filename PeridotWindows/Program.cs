@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.EditorScreen.Forms;
 
@@ -18,18 +19,17 @@ namespace PeridotWindows
             
             if (args.Length > 0)
             {
-                form.Engine.OnInitialized += EngineOnOnInitialized;
-                
+                form.Engine.Initialized += EngineInitialized;
             }
             Application.Run(form);
         }
 
-        private static void EngineOnOnInitialized(object? sender, EventArgs e)
+        private static void EngineInitialized(object? sender, EventArgs e)
         {
-            Scene3D scene = new(File.ReadAllText(args[0]));
+            Scene3D scene = new(JToken.Parse(File.ReadAllText(args[0])));
             EditorScreen.EditorScreen editor = new(form, scene);
             form.Editor = editor;
-            form.Engine.OnInitialized -= EngineOnOnInitialized;
+            form.Engine.Initialized -= EngineInitialized;
         }
     }
 }

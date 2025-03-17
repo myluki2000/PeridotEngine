@@ -46,12 +46,8 @@ namespace PeridotWindows.EditorScreen.Controls
             if (sfd.ShowDialog() != DialogResult.OK) return;
 
             Scene3D scene = frmEditor.Editor.Scene;
-            string json = JsonConvert.SerializeObject(
-                scene,
-                new StaticMeshComponentJsonConverter(scene),
-                new EffectPropertiesJsonConverter(scene),
-                new EcsJsonConverter(scene));
-            File.WriteAllText(sfd.FileName, json);
+            
+            File.WriteAllText(sfd.FileName, scene.ToJson().ToString());
         }
 
         private void tsmiLoadScene_Click(object sender, EventArgs e)
@@ -63,7 +59,7 @@ namespace PeridotWindows.EditorScreen.Controls
             string json = File.ReadAllText(ofd.FileName);
             JToken root = JToken.Parse(json);
 
-            Scene3D newScene = new(root);
+            Scene3D newScene = Scene3D.FromJson(root);
             frmEditor.Editor = new EditorScreen(frmEditor, newScene);
         }
 

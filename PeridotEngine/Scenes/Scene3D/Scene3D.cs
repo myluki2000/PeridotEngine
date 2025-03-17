@@ -24,6 +24,7 @@ using PeridotWindows.ECS;
 using PeridotWindows.ECS.Components;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
+using System.Reflection;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -45,7 +46,7 @@ namespace PeridotEngine.Scenes.Scene3D
             Camera = new PerspectiveCamera() { AllowAutomaticAspectRatioAdjustment = true };
         }
 
-        public Scene3D(JToken root)
+        private Scene3D(JToken root)
         {
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings()
             {
@@ -84,6 +85,46 @@ namespace PeridotEngine.Scenes.Scene3D
         public override void Deinitialize()
         {
             
+        }
+
+        public static Scene3D FromJson(JToken root)
+        {
+            string typeString = root["type"]?.Value<string>() 
+                          ?? throw new Exception("Error while parsing scene json. Missing scene type.");
+
+            Type sceneType = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(ass => ass.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(Scene3D)) || t == typeof(Scene3D))
+                    .Where(t => typeString == t.FullName))
+                .First();
+
+            Scene3D instance = (Scene3D?)Activator.CreateInstance(
+                                   sceneType, 
+                                   BindingFlags.Instance | BindingFlags.NonPublic, 
+                                   null, 
+                                   [root], 
+                                   null, 
+                                   null)
+                ?? throw new Exception("Error while instantiating new scene.");
+
+            return instance;
+        }
+
+        public JToken ToJson()
+        {
+            JToken root = JToken.FromObject(this, new JsonSerializer()
+            {
+                Converters =
+                {
+                    new StaticMeshComponentJsonConverter(this),
+                    new EffectPropertiesJsonConverter(this),
+                    new EcsJsonConverter(this)
+                }
+            });
+
+            root["type"] = GetType().FullName;
+
+            return root;
         }
     }
 }

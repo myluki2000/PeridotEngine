@@ -26,7 +26,7 @@ namespace PeridotWindows
 
         private static void EngineInitialized(object? sender, EventArgs e)
         {
-            Scene3D scene = new(JToken.Parse(File.ReadAllText(args[0])));
+            Scene3D scene = Scene3D.FromJson(JToken.Parse(File.ReadAllText(args[0])));
             EditorScreen.EditorScreen editor = new(form, scene);
             form.Editor = editor;
             form.Engine.Initialized -= EngineInitialized;

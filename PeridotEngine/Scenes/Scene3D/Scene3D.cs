@@ -46,7 +46,7 @@ namespace PeridotEngine.Scenes.Scene3D
             Camera = new PerspectiveCamera() { AllowAutomaticAspectRatioAdjustment = true };
         }
 
-        private Scene3D(JToken root)
+        protected Scene3D(JToken root)
         {
             JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings()
             {

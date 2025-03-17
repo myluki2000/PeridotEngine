@@ -19,5 +19,11 @@ namespace PeridotEngine.ECS.Components
         {
             ValuesChanged?.Invoke(this, this);
         }
+
+        public static IEnumerable<Type> GetComponentTypes()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(ass => ass.GetTypes()
+                .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(ComponentBase))));
+        }
     }
 }

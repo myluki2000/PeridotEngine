@@ -70,7 +70,7 @@ namespace PeridotEngine.IO.JsonConverters
                 {
                     Type[] componentTypes = jArchetype["ComponentTypes"]!.Values<string>().Select(x =>
                     {
-                        Type? type = Assembly.GetExecutingAssembly().GetType(x!);
+                        Type? type = ComponentBase.GetComponentTypes().First(t => t.FullName == x);
 
                         if (type == null)
                             throw new Exception("Could not find component type with name " + x);

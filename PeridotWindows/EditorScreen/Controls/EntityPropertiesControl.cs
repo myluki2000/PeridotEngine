@@ -18,10 +18,7 @@ namespace PeridotWindows.EditorScreen.Controls
             InitializeComponent();
             this.frmEditor = frmEditor;
 
-            IEnumerable<Type> componentTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(ass => ass.GetTypes()
-                .Where(x => x.IsClass && !x.IsAbstract && x.IsSubclassOf(typeof(ComponentBase))));
-
-            foreach (Type componentType in componentTypes)
+            foreach (Type componentType in ComponentBase.GetComponentTypes())
             {
                 ToolStripItem item = cmsAddComponent.Items.Add(componentType.Name);
                 item.Tag = componentType;

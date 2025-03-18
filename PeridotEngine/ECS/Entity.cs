@@ -153,7 +153,7 @@ namespace PeridotWindows.ECS
                 Archetype oldArchetype = archetype;
                 archetype = newArchetype;
                 UpdateEntityIndex();
-                oldArchetype.RemoveEntityAtInternal(index);
+                oldArchetype.RemoveEntityAtInternal(oldIndex);
                 
                 Archetype.EntityListChanged?.Invoke();
             }

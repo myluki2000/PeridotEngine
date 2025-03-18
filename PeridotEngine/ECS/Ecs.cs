@@ -36,7 +36,7 @@ namespace PeridotWindows.ECS
 
         public Archetype Archetype(params Type[] componentTypes)
         {
-            componentTypes = componentTypes.OrderBy(x => x.GetHashCode()).ToArray();
+            componentTypes = componentTypes.OrderBy(x => x.FullName).ToArray();
 
             Archetype? archetype = Archetypes.FirstOrDefault(x => x.ComponentTypes.SequenceEqual(componentTypes));
 

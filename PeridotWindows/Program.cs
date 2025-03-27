@@ -14,6 +14,9 @@ namespace PeridotWindows
         [STAThread]
         static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             Program.args = args;
             form = new();
             

@@ -23,6 +23,8 @@ namespace PeridotWindows.Graphics.Camera
         private MouseState lastMouseState;
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             KeyboardState keyState = Keyboard.GetState();
             MouseState mouseState = Mouse.GetState();
 
@@ -65,7 +67,6 @@ namespace PeridotWindows.Graphics.Camera
             }
 
             lastMouseState = mouseState;
-            base.Update(gameTime);
         }
 
         public override string ToString()

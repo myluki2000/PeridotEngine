@@ -66,7 +66,12 @@ namespace PeridotEngine.Graphics.Cameras
         private float nearPlane = 0.1f;
         private float farPlane = 100f;
 
-        public virtual void Update(GameTime gameTime) { }
+        public virtual void Update(GameTime gameTime)
+        {
+            if (AllowAutomaticAspectRatioAdjustment)
+                AspectRatio = (float)Globals.GraphicsDevice.PresentationParameters.BackBufferWidth /
+                          Globals.GraphicsDevice.PresentationParameters.BackBufferHeight;
+        }
 
         public Matrix GetViewMatrix()
         {

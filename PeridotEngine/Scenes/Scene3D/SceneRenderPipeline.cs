@@ -8,7 +8,6 @@ using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Cameras;
 using PeridotEngine.Graphics.PostProcessing;
 using PeridotEngine.Misc;
-using static PeridotEngine.Graphics.Effects.SkydomeEffect;
 using Color = Microsoft.Xna.Framework.Color;
 using Point = Microsoft.Xna.Framework.Point;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -104,10 +103,6 @@ namespace PeridotEngine.Scenes.Scene3D
             GraphicsDevice gd = Globals.GraphicsDevice;
             gd.SamplerStates[0] = SamplerState.PointWrap;
 
-            if(scene.Camera.AllowAutomaticAspectRatioAdjustment)
-                scene.Camera.AspectRatio = (float)Globals.GraphicsDevice.PresentationParameters.BackBufferWidth /
-                                           Globals.GraphicsDevice.PresentationParameters.BackBufferHeight;
-
             scene.Resources.EffectPool.UpdateEffectCameraData(scene.Camera);
 
             // TODO: It's only necessary to re-render the shadow map if scene geometry changes
@@ -181,13 +176,11 @@ namespace PeridotEngine.Scenes.Scene3D
             }
 
             // final render to screen
-            var r = gd.GetRenderTargets();
             gd.SetRenderTarget(target);
             postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = false;
             postProcessingEffect.FogEnabled = false;
             postProcessingEffect.UpdateParameters(colorRtIn, null, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
-
         }
 
         public uint? GetObjectIdAtScreenPos(Point screenPos)

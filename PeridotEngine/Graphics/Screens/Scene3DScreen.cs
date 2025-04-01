@@ -13,7 +13,7 @@ namespace PeridotEngine.Graphics.Screens
     { 
         public Scene3D Scene { get; }
 
-        private SceneRenderPipeline? renderPipeline;
+        protected SceneRenderPipeline? RenderPipeline { get; set; }
 
         public Scene3DScreen(Scene3D scene)
         {
@@ -23,6 +23,7 @@ namespace PeridotEngine.Graphics.Screens
         public override void Initialize()
         {
            Scene.Initialize();
+           RenderPipeline ??= new SceneRenderPipeline(Scene);
         }
 
         public override void Update(GameTime gameTime)
@@ -32,24 +33,23 @@ namespace PeridotEngine.Graphics.Screens
 
         public override void Draw(GameTime gameTime)
         {
-            renderPipeline ??= new SceneRenderPipeline(Scene);
             RenderTargetBinding[]? rts = Globals.GraphicsDevice.GetRenderTargets();
-            renderPipeline.Render(rts.Length > 0 ? (RenderTarget2D)rts[0].RenderTarget : null);
+            RenderPipeline?.Render(rts.Length > 0 ? (RenderTarget2D)rts[0].RenderTarget : null);
         }
 
         public override void Deinitialize()
         {
-            renderPipeline?.Dispose();
-            renderPipeline = null;
+            RenderPipeline?.Dispose();
+            RenderPipeline = null;
             Scene.Deinitialize();
         }
 
         public uint? GetObjectIdAtScreenPos(Point screenPos)
         {
-            if (renderPipeline == null)
+            if (RenderPipeline == null)
                 throw new Exception("Can only get object at screen pos after render pipeline has been initialized!");
 
-            return renderPipeline?.GetObjectIdAtScreenPos(screenPos);
+            return RenderPipeline?.GetObjectIdAtScreenPos(screenPos);
         }
     }
 

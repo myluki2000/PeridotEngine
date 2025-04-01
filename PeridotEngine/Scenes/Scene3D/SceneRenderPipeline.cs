@@ -37,23 +37,21 @@ namespace PeridotEngine.Scenes.Scene3D
         /// </summary>
         public int PreferredMultiSampleCount
         {
-            get => preferredMultiSampleCount;
+            get;
             set
             {
-                preferredMultiSampleCount = value;
+                field = value;
                 // re-init render targets using the new sample count setting.
                 InitRts();
             }
-        }
+        } = 0;
 
         /// <summary>
         /// True during the process of the render pipeline refreshing/replacing rendertargets.
         /// </summary>
         public bool IsRefreshingRts { get; private set; }
 
-        private int preferredMultiSampleCount = 0;
-
-        private readonly Scene3D scene;
+        protected Scene3D Scene { get; }
 
         private readonly MeshRenderingSystem meshRenderingSystem;
         private readonly SunShadowMapSystem sunShadowMapSystem;
@@ -75,7 +73,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public SceneRenderPipeline(Scene3D scene)
         {
-            this.scene = scene;
+            Scene = scene;
 
             meshRenderingSystem = new MeshRenderingSystem(scene);
             sunShadowMapSystem = new SunShadowMapSystem(scene);
@@ -101,53 +99,37 @@ namespace PeridotEngine.Scenes.Scene3D
                 return;
 
             GraphicsDevice gd = Globals.GraphicsDevice;
+            
             gd.SamplerStates[0] = SamplerState.PointWrap;
 
-            scene.Resources.EffectPool.UpdateEffectCameraData(scene.Camera);
+            Scene.Resources.EffectPool.UpdateEffectCameraData(Scene.Camera);
 
             // TODO: It's only necessary to re-render the shadow map if scene geometry changes
             Texture2D? shadowMap = sunShadowMapSystem.GenerateShadowMap(meshRenderingSystem, out Vector3 lightPosition, out Matrix lightViewProj);
 
-            scene.Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
+            Scene.Resources.EffectPool.UpdateEffectShadows(shadowMap, lightPosition, lightViewProj);
 
             // TODO: Might need different blend states for the different render targets
             // see https://stackoverflow.com/questions/53565844/only-do-alpha-blending-on-certain-output-colors
             gd.BlendState = BlendState.Opaque;
 
-            // render scene meshes to color, normal and depth buffers
-            gd.SetRenderTargets(colorRt, depthRt, normalRt, objectPickingRt);
-            gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
-                float.MaxValue, 0);
+            RenderMeshes(gd);
 
-            meshRenderingSystem.RenderMeshes();
+            RenderSkydome(gd);
 
-            // render skydome
-            gd.SetVertexBuffer(scene.Skydome.VertexBuffer);
-            gd.Indices = scene.Skydome.IndexBuffer;
-
-            Matrix projection = scene.Camera.GetProjectionMatrix();
-
-            scene.Skydome.EffectProperties.Effect.World = Matrix.Identity;
-            scene.Skydome.EffectProperties.Effect.View = scene.Camera.GetRotationMatrix();
-            scene.Skydome.EffectProperties.Effect.Projection = projection;
-            scene.Skydome.EffectProperties.Effect.Apply();
-            foreach (EffectPass pass in scene.Skydome.EffectProperties.Technique.Passes)
-            {
-                pass.Apply();
-                gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, scene.Skydome.IndexBuffer.IndexCount / 3);
-            }
+            Matrix projection = Scene.Camera.GetProjectionMatrix();
 
             if (AmbientOcclusionEnabled)
             {
                 gd.SetRenderTarget(colorRtIn);
-                ssaoPostProcessingEffect.UpdateParameters(colorRt, depthRt, normalRt, projection, scene.Camera.NearPlane,
-                    scene.Camera.FarPlane);
+                ssaoPostProcessingEffect.UpdateParameters(colorRt, depthRt, normalRt, projection, Scene.Camera.NearPlane,
+                    Scene.Camera.FarPlane);
                 RenderTargetRenderer.RenderRenderTarget(ssaoPostProcessingEffect);
             }
 
             // combine
             gd.SetRenderTarget(colorRtOut);
-            postProcessingEffect.UpdateParameters(colorRt, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+            postProcessingEffect.UpdateParameters(colorRt, depthRt, null, projection, Scene.Camera.NearPlane, Scene.Camera.FarPlane);
             postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = AmbientOcclusionEnabled;
             postProcessingEffect.FogEnabled = FogEnabled;
             postProcessingEffect.AmbientOcclusionTexture = colorRtIn;
@@ -160,8 +142,8 @@ namespace PeridotEngine.Scenes.Scene3D
                 // depth of field horizontal blur pass
                 gd.SetRenderTarget(colorRtOut);
                 dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.HORIZONTAL;
-                dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane,
-                    scene.Camera.FarPlane);
+                dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, Scene.Camera.NearPlane,
+                    Scene.Camera.FarPlane);
                 RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
 
                 (colorRtIn, colorRtOut) = (colorRtOut, colorRtIn);
@@ -169,7 +151,7 @@ namespace PeridotEngine.Scenes.Scene3D
                 // depth of field vertical blur pass
                 gd.SetRenderTarget(colorRtOut);
                 dofPostProcessingEffect.BlurDirection = DepthOfFieldPostProcessingEffect.Direction.VERTICAL;
-                dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+                dofPostProcessingEffect.UpdateParameters(colorRtIn, depthRt, null, projection, Scene.Camera.NearPlane, Scene.Camera.FarPlane);
                 RenderTargetRenderer.RenderRenderTarget(dofPostProcessingEffect);
 
                 (colorRtIn, colorRtOut) = (colorRtOut, colorRtIn);
@@ -179,8 +161,37 @@ namespace PeridotEngine.Scenes.Scene3D
             gd.SetRenderTarget(target);
             postProcessingEffect.ScreenSpaceAmbientOcclusionEnabled = false;
             postProcessingEffect.FogEnabled = false;
-            postProcessingEffect.UpdateParameters(colorRtIn, null, null, projection, scene.Camera.NearPlane, scene.Camera.FarPlane);
+            postProcessingEffect.UpdateParameters(colorRtIn, null, null, projection, Scene.Camera.NearPlane, Scene.Camera.FarPlane);
             RenderTargetRenderer.RenderRenderTarget(postProcessingEffect);
+        }
+
+        protected virtual void RenderSkydome(GraphicsDevice gd)
+        {
+            // render skydome
+            gd.SetVertexBuffer(Scene.Skydome.VertexBuffer);
+            gd.Indices = Scene.Skydome.IndexBuffer;
+
+            Matrix projection = Scene.Camera.GetProjectionMatrix();
+
+            Scene.Skydome.EffectProperties.Effect.World = Matrix.Identity;
+            Scene.Skydome.EffectProperties.Effect.View = Scene.Camera.GetRotationMatrix();
+            Scene.Skydome.EffectProperties.Effect.Projection = projection;
+            Scene.Skydome.EffectProperties.Effect.Apply();
+            foreach (EffectPass pass in Scene.Skydome.EffectProperties.Technique.Passes)
+            {
+                pass.Apply();
+                gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, Scene.Skydome.IndexBuffer.IndexCount / 3);
+            }
+        }
+
+        protected virtual void RenderMeshes(GraphicsDevice gd)
+        {
+            // render scene meshes to color, normal and depth buffers
+            gd.SetRenderTargets(colorRt, depthRt, normalRt, objectPickingRt);
+            gd.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.White,
+                float.MaxValue, 0);
+
+            meshRenderingSystem.RenderMeshes();
         }
 
         public uint? GetObjectIdAtScreenPos(Point screenPos)
@@ -209,16 +220,16 @@ namespace PeridotEngine.Scenes.Scene3D
             // multisampling sample count must be the same on all render targets bound at the same time!
             colorRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
                 Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24,
-                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+                PreferredMultiSampleCount, RenderTargetUsage.DiscardContents);
             depthRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
                 Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
-                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+                PreferredMultiSampleCount, RenderTargetUsage.DiscardContents);
             normalRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
                 Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.HalfVector4, DepthFormat.Depth24,
-                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+                PreferredMultiSampleCount, RenderTargetUsage.DiscardContents);
             objectPickingRt = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
                 Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Single, DepthFormat.Depth24,
-                preferredMultiSampleCount, RenderTargetUsage.DiscardContents);
+                PreferredMultiSampleCount, RenderTargetUsage.DiscardContents);
 
             colorRtIn = new(Globals.GraphicsDevice, Globals.GraphicsDevice.PresentationParameters.BackBufferWidth,
                 Globals.GraphicsDevice.PresentationParameters.BackBufferHeight, false, SurfaceFormat.Color, DepthFormat.Depth24);
@@ -232,7 +243,7 @@ namespace PeridotEngine.Scenes.Scene3D
             Dispose();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             colorRtIn?.Dispose();
             colorRtOut?.Dispose();

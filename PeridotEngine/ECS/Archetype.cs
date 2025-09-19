@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using PeridotEngine.ECS.Components;
 using PeridotEngine.Misc;
-using PeridotWindows.ECS.Components;
 
 namespace PeridotWindows.ECS
 {
@@ -19,7 +18,7 @@ namespace PeridotWindows.ECS
 
         private readonly Ecs ecs;
 
-        public event Action? EntityListChanged;
+        public Event<EventArgs> EntityListChanged { get; } = new();
 
         public Archetype(Ecs ecs, Type[] componentTypes, List<uint> ids, List<string?> names, List<IList> components) : this(ecs, componentTypes)
         {
@@ -100,7 +99,7 @@ namespace PeridotWindows.ECS
                 }
             }
 
-            EntityListChanged?.Invoke();
+            EntityListChanged.Invoke(this, EventArgs.Empty);
         }
 
         public void CreateEntity(params ComponentBase[] entityComponents)
@@ -136,7 +135,7 @@ namespace PeridotWindows.ECS
 
             entities.Add(null);
 
-            EntityListChanged?.Invoke();
+            EntityListChanged.Invoke(this, EventArgs.Empty);
         }
 
         public IEnumerable<Entity> Entities()

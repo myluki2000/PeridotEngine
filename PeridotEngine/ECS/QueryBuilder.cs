@@ -43,7 +43,7 @@ namespace PeridotWindows.ECS
         }
     }
 
-    public abstract class Query : IDisposable
+    public abstract class Query
     {
         protected List<Archetype> MatchingArchetypes
         {
@@ -68,7 +68,7 @@ namespace PeridotWindows.ECS
             this.includeComponents = includeComponents;
             this.excludeComponents = excludeComponents;
 
-            ecs.ArchetypeListChanged += OnEcsOnArchetypeListChanged;
+            ecs.ArchetypeListChanged.AddWeakHandler(OnEcsOnArchetypeListChanged);
         }
 
         private void UpdateMatchingArchetypes()
@@ -99,10 +99,5 @@ namespace PeridotWindows.ECS
         }
 
         protected virtual void OnMatchingArchetypesUpdated() { }
-
-        public void Dispose()
-        {
-            ecs.ArchetypeListChanged -= OnEcsOnArchetypeListChanged;
-        }
     }
 }

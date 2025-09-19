@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics;
+using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.EditorScreen.Controls;
 
@@ -36,11 +37,11 @@ namespace PeridotWindows.EditorScreen.Forms
                     throw new Exception("Cannot set editor before engine is initialized!");
                 }
                 ScreenManager.CurrentScreen = editor;
-                EditorScreenChanged?.Invoke(this, new EditorScreenChangedEventArgs(oldEditor, editor));
+                EditorScreenChanged.Invoke(this, new EditorScreenChangedEventArgs(oldEditor, editor));
             }
         }
 
-        public event EventHandler<EditorScreenChangedEventArgs> EditorScreenChanged;
+        public Event<EditorScreenChangedEventArgs> EditorScreenChanged { get; } = new();
 
         private EditorScreen editor;
 
@@ -83,7 +84,7 @@ namespace PeridotWindows.EditorScreen.Forms
             pnlSceneContainer.Controls.Add(SceneControl);
 
             ScreenManager.CurrentScreen = editor;
-            EditorScreenChanged?.Invoke(this, new EditorScreenChangedEventArgs(null, editor));
+            EditorScreenChanged.Invoke(this, new EditorScreenChangedEventArgs(null, editor));
         }
 
         public EditorForm(EditorScreen editor) : this()

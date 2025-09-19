@@ -27,15 +27,9 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
             this.component = entity.GetComponent<StaticMeshComponent>();
 
-            component.Scene.Resources.MeshResources.MeshListChanged += MeshResourcesOnMeshListChanged;
-            EffectPool.RegisteredEffectTypesChanged += EffectPoolOnRegisteredEffectTypesChanged;
-            component.ValuesChanged += ComponentOnValuesChanged;
-            Disposed += (sender, e) =>
-            {
-                component.Scene.Resources.MeshResources.MeshListChanged -= MeshResourcesOnMeshListChanged;
-                EffectPool.RegisteredEffectTypesChanged -= EffectPoolOnRegisteredEffectTypesChanged;
-                component.ValuesChanged -= ComponentOnValuesChanged;
-            };
+            component.Scene.Resources.MeshResources.MeshListChanged.AddWeakHandler(MeshResourcesOnMeshListChanged);
+            EffectPool.RegisteredEffectTypesChanged.AddWeakHandler(EffectPoolOnRegisteredEffectTypesChanged);
+            component.ValuesChanged.AddWeakHandler(ComponentOnValuesChanged);
 
             EffectPoolOnRegisteredEffectTypesChanged(null, EventArgs.Empty);
             MeshResourcesOnMeshListChanged(null, []);
@@ -51,7 +45,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
         private void EffectPoolOnRegisteredEffectTypesChanged(object? sender, EventArgs e)
         {
-            component.ValuesChanged -= ComponentOnValuesChanged;
+            component.ValuesChanged.RemoveHandler(ComponentOnValuesChanged);
             cmbEffect.Items.Clear();
 
             foreach (Type effectType in EffectPool.GetRegisteredEffectTypes())
@@ -64,12 +58,12 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
                     PopulateEffectProperties();
                 }
             }
-            component.ValuesChanged += ComponentOnValuesChanged;
+            component.ValuesChanged.AddWeakHandler(ComponentOnValuesChanged);
         }
 
         private void MeshResourcesOnMeshListChanged(object? sender, IEnumerable<MeshResources.MeshInfo> _)
         {
-            component.ValuesChanged -= ComponentOnValuesChanged;
+            component.ValuesChanged.RemoveHandler(ComponentOnValuesChanged);
             cmbMesh.Items.Clear();
 
             foreach (MeshResources.MeshInfo meshInfo in component.Scene.Resources.MeshResources.GetAllMeshes())
@@ -78,7 +72,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
                 if (meshInfo == component.Mesh) cmbMesh.SelectedItem = meshInfo;
             }
-            component.ValuesChanged += ComponentOnValuesChanged;
+            component.ValuesChanged.AddWeakHandler(ComponentOnValuesChanged);
         }
 
         private void cmbMesh_SelectedIndexChanged(object sender, EventArgs e)

@@ -65,17 +65,16 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
 
             cbParent.Items.Clear();
             cbParent.Items.Add("<None>");
-            using (EntityQuery query = component.Scene.Ecs.Query().Has<PositionRotationScaleComponent>().OnEntity())
+            EntityQuery query = component.Scene.Ecs.Query().Has<PositionRotationScaleComponent>().OnEntity();
+            query.ForEach(entity =>
             {
-                query.ForEach(entity =>
-                    {
-                        // skip adding the entity to the combobox if it is the entity the component is a part of
-                        if (entity.Id == Entity.Id)
-                            return;
+                // skip adding the entity to the combobox if it is the entity the component is a part of
+                if (entity.Id == Entity.Id)
+                    return;
 
-                        cbParent.Items.Add(entity);
-                    });
-            }
+                cbParent.Items.Add(entity);
+            });
+            
 
             cbParent.SelectedIndexChanged += CbParent_SelectedIndexChanged;
 
@@ -170,8 +169,8 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
         {
             base.OnHandleCreated(e);
 
-            component.ValuesChanged += ComponentOnValuesChanged;
-            component.Scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
+            component.ValuesChanged.AddWeakHandler(ComponentOnValuesChanged);
+            component.Scene.Ecs.EntityListChanged.AddWeakHandler(EcsOnEntityListChanged);
         }
 
         private void EcsOnEntityListChanged(object? sender, Archetype e)
@@ -183,8 +182,8 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
         {
             base.OnHandleDestroyed(e);
 
-            component.ValuesChanged -= ComponentOnValuesChanged;
-            component.Scene.Ecs.EntityListChanged -= EcsOnEntityListChanged;
+            component.ValuesChanged.RemoveHandler(ComponentOnValuesChanged);
+            component.Scene.Ecs.EntityListChanged.RemoveHandler(EcsOnEntityListChanged);
         }
     }
 }

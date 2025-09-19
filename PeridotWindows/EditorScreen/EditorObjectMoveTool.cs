@@ -54,7 +54,7 @@ namespace PeridotWindows.EditorScreen
                 }
             };
 
-            nudStepSize.ValueChanged += NudStepSizeOnValueChanged;
+            nudStepSize.ValueChanged.AddWeakHandler(NudStepSizeOnValueChanged);
 
             propertiesToolstrip.Items.Add(nudStepSize);
         }

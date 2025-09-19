@@ -42,12 +42,12 @@ namespace PeridotEngine.ECS.Components
                     return;
 
                 if (field != null)
-                    field.ValuesChanged -= EffectPropertiesOnValuesChanged;
+                    field.ValuesChanged.RemoveHandler(EffectPropertiesOnValuesChanged);
 
                 field = value;
 
                 if (value != null)
-                    value.ValuesChanged += EffectPropertiesOnValuesChanged;
+                    value.ValuesChanged.AddWeakHandler(EffectPropertiesOnValuesChanged);
 
                 RaiseValuesChanged();
             }

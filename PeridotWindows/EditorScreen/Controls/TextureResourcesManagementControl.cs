@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using PeridotEngine;
+using PeridotEngine.Misc;
+using PeridotEngine.Scenes.Scene3D;
+using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Printing;
@@ -6,8 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PeridotEngine;
-using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotWindows.EditorScreen.Controls
 {
@@ -18,9 +19,9 @@ namespace PeridotWindows.EditorScreen.Controls
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TextureResources.ITextureInfo? SelectedItem { get; private set; }
 
-        public event EventHandler<TextureResources.ITextureInfo?>? SelectedItemChanged;
+        public Event<TextureResources.ITextureInfo?> SelectedItemChanged { get; } = new();
 
-        public event EventHandler<TextureResources.ITextureInfo>? ItemDoubleClicked;
+        public Event<TextureResources.ITextureInfo> ItemDoubleClicked { get; } = new();
 
         private Bitmap? textureAtlas;
 
@@ -92,7 +93,7 @@ namespace PeridotWindows.EditorScreen.Controls
         {
             base.OnHandleCreated(e);
 
-            scene.Resources.TextureResources.TextureAtlasChanged += OnTextureAtlasChanged;
+            scene.Resources.TextureResources.TextureAtlasChanged.AddWeakHandler(OnTextureAtlasChanged);
             OnTextureAtlasChanged(null, []);
         }
 
@@ -100,7 +101,7 @@ namespace PeridotWindows.EditorScreen.Controls
         {
             base.OnHandleDestroyed(e);
 
-            scene.Resources.TextureResources.TextureAtlasChanged -= OnTextureAtlasChanged;
+            scene.Resources.TextureResources.TextureAtlasChanged.RemoveHandler(OnTextureAtlasChanged);
         }
 
         private void tbImageSize_Scroll(object sender, EventArgs e)
@@ -168,7 +169,7 @@ namespace PeridotWindows.EditorScreen.Controls
                         return;
 
                     SelectedItem = textureInfo;
-                    SelectedItemChanged?.Invoke(this, textureInfo);
+                    SelectedItemChanged.Invoke(this, textureInfo);
                     pnlListView.Invalidate();
                     return;
                 }
@@ -179,7 +180,7 @@ namespace PeridotWindows.EditorScreen.Controls
             if (SelectedItem != null)
             {
                 SelectedItem = null;
-                SelectedItemChanged?.Invoke(this, null);
+                SelectedItemChanged.Invoke(this, null);
                 pnlListView.Invalidate();
             }
         }
@@ -235,7 +236,7 @@ namespace PeridotWindows.EditorScreen.Controls
             {
                 if (GetListViewItemRect(i).Contains(((MouseEventArgs)e).Location))
                 {
-                    ItemDoubleClicked?.Invoke(this, textureInfo);
+                    ItemDoubleClicked.Invoke(this, textureInfo);
                 }
 
                 i++;

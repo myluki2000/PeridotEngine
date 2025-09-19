@@ -33,26 +33,24 @@ namespace PeridotWindows.EditorScreen.Controls
 
             this.frmEditor = frmEditor;
 
-            frmEditor.EditorScreenChanged += (sender, args) =>
-            {
-                if (args.Old != null)
-                {
-                    args.Old.Scene.Resources.MeshResources.MeshListChanged -= OnMeshListChanged;
-                }
-
-                args.New.Scene.Resources.MeshResources.MeshListChanged += OnMeshListChanged;
-
-                textureResourcesControl?.Dispose();
-                textureResourcesControl = new TextureResourcesManagementControl(args.New.Scene)
-                {
-                    Dock = DockStyle.Fill,
-                };
-                tpTextures.Controls.Add(textureResourcesControl);
-
-                OnMeshListChanged(this, args.New.Scene.Resources.MeshResources.GetAllMeshes());
-            };
+            frmEditor.EditorScreenChanged.AddWeakHandler(OnEditorScreenChanged);
         }
 
+        private void OnEditorScreenChanged(object? sender, EditorScreenChangedEventArgs args)
+        {
+            args.Old?.Scene.Resources.MeshResources.MeshListChanged.RemoveHandler(OnMeshListChanged);
+
+            args.New.Scene.Resources.MeshResources.MeshListChanged.AddWeakHandler(OnMeshListChanged);
+
+            textureResourcesControl?.Dispose();
+            textureResourcesControl = new TextureResourcesManagementControl(args.New.Scene)
+            {
+                Dock = DockStyle.Fill,
+            };
+            tpTextures.Controls.Add(textureResourcesControl);
+
+            OnMeshListChanged(this, args.New.Scene.Resources.MeshResources.GetAllMeshes());
+        }
 
         private void OnMeshListChanged(object? sender, IEnumerable<MeshResources.MeshInfo> meshInfos)
         {

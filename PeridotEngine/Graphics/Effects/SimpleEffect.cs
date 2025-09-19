@@ -53,13 +53,13 @@ namespace PeridotEngine.Graphics.Effects
                     return;
 
                 if (field != null)
-                    field.TextureAtlasChanged -= TextureAtlasChanged;
+                    field.TextureAtlasChanged.RemoveHandler(TextureAtlasChanged);
 
                 field = value;
 
                 if (field != null)
                 {
-                    field.TextureAtlasChanged += TextureAtlasChanged;
+                    field.TextureAtlasChanged.AddWeakHandler(TextureAtlasChanged);
                     TextureAtlasChanged(null, field.GetAllTextures());
                 }
             }
@@ -119,7 +119,7 @@ namespace PeridotEngine.Graphics.Effects
                         return;
 
                     field = value;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             } = Color.White;
 
@@ -133,7 +133,7 @@ namespace PeridotEngine.Graphics.Effects
 
                     field = value;
                     Technique = null;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             } = true;
 
@@ -147,7 +147,7 @@ namespace PeridotEngine.Graphics.Effects
 
                     field = value;
                     Technique = null;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             }
 
@@ -161,7 +161,7 @@ namespace PeridotEngine.Graphics.Effects
 
                     field = value;
                     Technique = null;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             }
 
@@ -175,7 +175,7 @@ namespace PeridotEngine.Graphics.Effects
 
                     field = value;
                     Technique = null;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             } = true;
 
@@ -189,7 +189,7 @@ namespace PeridotEngine.Graphics.Effects
 
                     field = value;
                     Technique = null;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             } = false;
 
@@ -203,7 +203,7 @@ namespace PeridotEngine.Graphics.Effects
 
                     field = value;
                     Technique = null;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             } = true;
 
@@ -216,7 +216,7 @@ namespace PeridotEngine.Graphics.Effects
                         return;
 
                     field = value;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             }
 
@@ -229,7 +229,7 @@ namespace PeridotEngine.Graphics.Effects
                         return;
 
                     field = value;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             } = 1;
 
@@ -242,7 +242,7 @@ namespace PeridotEngine.Graphics.Effects
                         return;
 
                     field = value;
-                    ValuesChanged?.Invoke(this, this);
+                    ValuesChanged.Invoke(this, this);
                 }
             } = 1;
 
@@ -269,8 +269,6 @@ namespace PeridotEngine.Graphics.Effects
                     ChooseTechnique(mesh.GetVertexDeclaration());
                 }
             }
-
-            public override event EventHandler<EffectProperties>? ValuesChanged;
 
             private SimpleEffect SimpleEffect => (SimpleEffect)Effect;
 

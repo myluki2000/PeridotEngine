@@ -34,13 +34,12 @@ namespace PeridotWindows.EditorScreen
                 {
                     selectedEntity = value;
                     (RenderPipeline as EditorSceneRenderPipeline)!.SelectedEntity = value;
-                    SelectedEntityChanged?.Invoke(this, selectedEntity);
+                    SelectedEntityChanged.Invoke(this, selectedEntity);
                     frmEditor.EntityPropertiesPanel.Entity = value;
                 }
             }
         }
-
-        public event EventHandler<Archetype.Entity?>? SelectedEntityChanged;
+        public Event<Archetype.Entity?> SelectedEntityChanged { get; } = new();
 
         private Rectangle windowLastBounds;
 

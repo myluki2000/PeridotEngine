@@ -24,7 +24,7 @@ namespace PeridotWindows.EditorScreen.Forms
 
             textureResourcesControl = new(scene);
             textureResourcesControl.Dock = DockStyle.Fill;
-            textureResourcesControl.ItemDoubleClicked += TextureResourcesControlOnItemDoubleClicked;
+            textureResourcesControl.ItemDoubleClicked.AddWeakHandler(TextureResourcesControlOnItemDoubleClicked);
             pnlList.Controls.Add(textureResourcesControl);
         }
 

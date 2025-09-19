@@ -155,7 +155,7 @@ namespace PeridotWindows.ECS
                 UpdateEntityIndex();
                 oldArchetype.RemoveEntityAtInternal(oldIndex);
                 
-                Archetype.EntityListChanged?.Invoke();
+                Archetype.EntityListChanged.Invoke(this, EventArgs.Empty);
             }
 
             public override string ToString()

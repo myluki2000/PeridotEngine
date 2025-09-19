@@ -250,7 +250,6 @@ namespace PeridotEngine.Scenes.Scene3D
             depthRt?.Dispose();
             normalRt?.Dispose();
             objectPickingRt?.Dispose();
-            sunShadowMapSystem?.Dispose();
         }
     }
 }

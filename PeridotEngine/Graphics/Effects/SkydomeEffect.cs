@@ -27,8 +27,6 @@ namespace PeridotEngine.Graphics.Effects
 
         public partial class SkydomeEffectProperties : EffectProperties
         {
-            public override event EventHandler<EffectProperties>? ValuesChanged;
-
             public SkydomeEffectProperties(EffectBase effect) : base(effect)
             {
                 Technique = Effect.Techniques[0];

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using PeridotEngine.Graphics;
 using PeridotEngine.Graphics.Geometry;
+using PeridotEngine.Misc;
 using static PeridotEngine.Scenes.Scene3D.MeshResources;
 using Color = Microsoft.Xna.Framework.Color;
 using ModelMesh = PeridotEngine.Graphics.Geometry.ModelMesh;
@@ -14,7 +15,7 @@ namespace PeridotEngine.Scenes.Scene3D
 {
     public class MeshResources
     {
-        public event EventHandler<IEnumerable<MeshInfo>>? MeshListChanged;
+        public Event<IEnumerable<MeshInfo>> MeshListChanged { get; } = new();
 
         private readonly List<MeshInfo> defaultMeshes = new();
         [JsonProperty]
@@ -74,13 +75,13 @@ namespace PeridotEngine.Scenes.Scene3D
         private void AddCustomMesh(MeshInfo mesh)
         {
             customMeshes.Add(mesh);
-            MeshListChanged?.Invoke(this, GetAllMeshes());
+            MeshListChanged.Invoke(this, GetAllMeshes());
         }
 
         private void AddDefaultMesh(MeshInfo mesh)
         {
             defaultMeshes.Add(mesh);
-            MeshListChanged?.Invoke(this, GetAllMeshes());
+            MeshListChanged.Invoke(this, GetAllMeshes());
         }
 
         public class MeshInfo

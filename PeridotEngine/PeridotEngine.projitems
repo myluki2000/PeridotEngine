@@ -48,6 +48,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\MeshInfoJsonConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IO\JsonConverters\SceneResourcesJsonConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Misc\Event.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\ExtensionMethods.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\FpsMeasurer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Misc\UfxHelper.cs" />

@@ -12,7 +12,7 @@ using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotWindows.ECS.Systems
 {
-    public class EditorLightVisualizationRenderingSystem(Scene3D scene) : IDisposable
+    public class EditorLightVisualizationRenderingSystem(Scene3D scene)
     {
         private readonly ComponentQuery<PositionRotationScaleComponent> sunlightQuery = scene.Ecs.Query()
             .Has<SunLightComponent>()
@@ -61,11 +61,6 @@ namespace PeridotWindows.ECS.Systems
                         gd.DrawUserPrimitives(PrimitiveType.LineList, verts, 0, 1);
                     }
                 });
-        }
-
-        public void Dispose()
-        {
-            sunlightQuery.Dispose();
         }
     }
 }

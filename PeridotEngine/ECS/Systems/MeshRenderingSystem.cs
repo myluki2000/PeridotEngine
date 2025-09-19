@@ -10,7 +10,7 @@ using PeridotWindows.ECS.Components;
 
 namespace PeridotEngine.ECS.Systems
 {
-    public class MeshRenderingSystem(Scene3D scene) : IDisposable
+    public class MeshRenderingSystem(Scene3D scene)
     {
         public readonly ComponentQuery<StaticMeshComponent, PositionRotationScaleComponent> Meshes = scene.Ecs.Query()
             .Has<PositionRotationScaleComponent>()
@@ -81,17 +81,6 @@ namespace PeridotEngine.ECS.Systems
                 pass.Apply();
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshC.Mesh.Mesh.IndexBuffer.IndexCount / 3);
             }
-        }
-
-        ~MeshRenderingSystem()
-        {
-            Dispose();
-        }
-
-        public void Dispose()
-        {
-            Meshes.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

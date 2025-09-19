@@ -22,7 +22,7 @@ namespace PeridotWindows
             
             if (args.Length > 0)
             {
-                form.Engine.Initialized += EngineInitialized;
+                form.Engine.Initialized.AddWeakHandler(EngineInitialized);
             }
             Application.Run(form);
         }
@@ -32,7 +32,7 @@ namespace PeridotWindows
             Scene3D scene = Scene3D.FromJson(JToken.Parse(File.ReadAllText(args[0])));
             EditorScreen.EditorScreen editor = new(form, scene);
             form.Editor = editor;
-            form.Engine.Initialized -= EngineInitialized;
+            form.Engine.Initialized.RemoveHandler(EngineInitialized);
         }
     }
 }

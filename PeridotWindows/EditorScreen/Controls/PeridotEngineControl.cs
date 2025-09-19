@@ -21,8 +21,9 @@ namespace PeridotWindows.EditorScreen.Controls
 
         private readonly FpsMeasurer fpsMeasurer = new();
 
-        public event EventHandler<double>? OnFpsMeasurement;
-        public event EventHandler? Initialized;
+        public Event<double> OnFpsMeasurement { get; } = new();
+
+        public Event<EventArgs> Initialized { get; } = new();
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool IsInitialized { get; private set; } = false;
@@ -37,7 +38,7 @@ namespace PeridotWindows.EditorScreen.Controls
             Editor.RenderTargetsRefreshed += () => Globals.BackBufferSizeChanged?.Invoke(this, EventArgs.Empty);
 
             IsInitialized = true;
-            Initialized?.Invoke(this, EventArgs.Empty);
+            Initialized.Invoke(this, EventArgs.Empty);
         }
 
         protected override void Update(GameTime gameTime)
@@ -51,7 +52,7 @@ namespace PeridotWindows.EditorScreen.Controls
             Main!.Draw(Editor.GameTime);
             fpsMeasurer.StopFrameTimeMeasure();
             
-            OnFpsMeasurement?.Invoke(this, fpsMeasurer.GetAverageFrameTime());
+            OnFpsMeasurement.Invoke(this, fpsMeasurer.GetAverageFrameTime());
         }
     }
 }

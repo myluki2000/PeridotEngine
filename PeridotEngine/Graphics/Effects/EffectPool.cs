@@ -4,14 +4,15 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PeridotEngine.Graphics.Cameras;
+using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotEngine.Graphics.Effects
 {
     public class EffectPool
     {
-        public event EventHandler<EffectBase>? EffectInstantiated; 
-        public static event EventHandler? RegisteredEffectTypesChanged;
+        public Event<EffectBase> EffectInstantiated { get; } = new();
+        public static Event<EventArgs> RegisteredEffectTypesChanged { get; } = new();
 
         public readonly Dictionary<Type, WeakReference<EffectBase>> Effects = new();
 
@@ -32,7 +33,7 @@ namespace PeridotEngine.Graphics.Effects
         public static void RegisterEffectType<T>()
         {
             effectTypes.Add(typeof(T));
-            RegisteredEffectTypesChanged?.Invoke(null, EventArgs.Empty);
+            RegisteredEffectTypesChanged.Invoke(null, EventArgs.Empty);
         }
 
         public static IEnumerable<Type> GetRegisteredEffectTypes()

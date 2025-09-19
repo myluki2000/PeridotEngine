@@ -15,9 +15,7 @@ namespace PeridotWindows.Graphics.Effects.PropertiesControls
             InitializeComponent();
 
             this.effectProperties = effectProperties;
-            this.effectProperties.ValuesChanged += EffectPropertiesOnValuesChanged;
-            this.Disposed += (sender, args) => effectProperties.ValuesChanged -= EffectPropertiesOnValuesChanged;
-
+            this.effectProperties.ValuesChanged.AddWeakHandler(EffectPropertiesOnValuesChanged);
             Populate();
         }
 

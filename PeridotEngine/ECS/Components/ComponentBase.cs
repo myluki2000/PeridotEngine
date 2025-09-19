@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PeridotEngine.Misc;
 using PeridotEngine.Scenes.Scene3D;
 
 namespace PeridotEngine.ECS.Components
@@ -8,7 +9,7 @@ namespace PeridotEngine.ECS.Components
         [JsonIgnore]
         public Scene3D Scene { get; protected set; }
 
-        public event EventHandler<ComponentBase>? ValuesChanged;
+        public Event<ComponentBase> ValuesChanged { get; } = new();
 
         protected ComponentBase(Scene3D scene)
         {
@@ -17,9 +18,8 @@ namespace PeridotEngine.ECS.Components
 
         protected void RaiseValuesChanged()
         {
-            ValuesChanged?.Invoke(this, this);
+            ValuesChanged.Invoke(this, this);
         }
-
         public static IEnumerable<Type> GetComponentTypes()
         {
             return AppDomain.CurrentDomain.GetAssemblies().SelectMany(ass => ass.GetTypes()

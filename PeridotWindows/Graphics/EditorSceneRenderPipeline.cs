@@ -36,7 +36,6 @@ namespace PeridotWindows.Graphics
         public override void Dispose()
         {
             base.Dispose();
-            lightVisRenderingSystem.Dispose();
         }
 
         /// <summary>

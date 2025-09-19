@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using PeridotEngine.Misc;
 using RectangleF = SharpDX.RectangleF;
 
 namespace PeridotEngine.Scenes.Scene3D
@@ -15,7 +16,7 @@ namespace PeridotEngine.Scenes.Scene3D
         [JsonIgnore]
         private RectangleF missingTextureBounds;
 
-        public event EventHandler<IEnumerable<ITextureInfo>>? TextureAtlasChanged;
+        public Event<IEnumerable<ITextureInfo>> TextureAtlasChanged { get; } = new();
 
         public RectangleF GetTextureBoundsInAtlas(int textureId)
         {
@@ -284,7 +285,7 @@ namespace PeridotEngine.Scenes.Scene3D
             }
 
 
-            TextureAtlasChanged?.Invoke(this, GetAllTextures());
+            TextureAtlasChanged.Invoke(this, GetAllTextures());
         }
 
         public interface ITextureInfo

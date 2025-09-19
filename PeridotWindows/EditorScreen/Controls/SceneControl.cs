@@ -24,19 +24,21 @@ namespace PeridotWindows.EditorScreen.Controls
 
             this.frmEditor = frmEditor;
 
-            frmEditor.EditorScreenChanged += (sender, args) =>
+            frmEditor.EditorScreenChanged.AddWeakHandler(OnEditorScreenChanged);
+        }
+
+        private void OnEditorScreenChanged(object? sender, EditorScreenChangedEventArgs args)
+        {
+            if (args.Old != null)
             {
-                if (args.Old != null)
-                {
-                    args.Old.Scene.Ecs.EntityListChanged -= EcsOnEntityListChanged;
-                    args.Old.SelectedEntityChanged -= ScreenOnSelectedEntityChanged;
-                }
+                args.Old.Scene.Ecs.EntityListChanged.RemoveHandler(EcsOnEntityListChanged);
+                args.Old.SelectedEntityChanged.RemoveHandler(ScreenOnSelectedEntityChanged);
+            }
 
-                args.New.Scene.Ecs.EntityListChanged += EcsOnEntityListChanged;
-                args.New.SelectedEntityChanged += ScreenOnSelectedEntityChanged;
+            args.New.Scene.Ecs.EntityListChanged.AddWeakHandler(EcsOnEntityListChanged);
+            args.New.SelectedEntityChanged.AddWeakHandler(ScreenOnSelectedEntityChanged);
 
-                Populate();
-            };
+            Populate();
         }
 
         private void ScreenOnSelectedEntityChanged(object? sender, Archetype.Entity? entity)
@@ -72,7 +74,7 @@ namespace PeridotWindows.EditorScreen.Controls
         public void Populate()
         {
             List<ListViewItem> items = new();
-            using EntityQuery query = frmEditor.Editor.Scene.Ecs.Query().OnEntity();
+            EntityQuery query = frmEditor.Editor.Scene.Ecs.Query().OnEntity();
             query.ForEach(entity =>
             {
                 ListViewItem item = new(entity.ToString())

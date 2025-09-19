@@ -13,7 +13,7 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace PeridotEngine.ECS.Systems
 {
-    public class SunShadowMapSystem : IDisposable
+    public class SunShadowMapSystem
     {
         private readonly Scene3D scene;
 
@@ -83,17 +83,6 @@ namespace PeridotEngine.ECS.Systems
             // direction of the light's ray direction, calculated from the world origin (0, 0, 0)
             lightPosition = camera.GetLookDirection() * -1000000;
             return rt;
-        }
-
-        ~SunShadowMapSystem()
-        {
-            Dispose();
-        }
-
-        public void Dispose()
-        {
-            sunLights.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

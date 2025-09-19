@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.Design;
+using PeridotEngine.Misc;
 
 namespace PeridotWindows.Controls
 {
@@ -28,13 +29,13 @@ namespace PeridotWindows.Controls
             ((NumericUpDown)control).ValueChanged -= OnValueChanged;
         }
 
-        public event EventHandler? ValueChanged;
+        public Event<EventArgs> ValueChanged { get; } = new();
 
         public NumericUpDown NumericUpDownControl => (Control as NumericUpDown)!;
 
         public void OnValueChanged(object sender, EventArgs e)
         {
-            ValueChanged?.Invoke(this, e);
+            ValueChanged.Invoke(this, e);
         }
     }
 }

@@ -60,7 +60,7 @@ namespace PeridotEngine.Misc
             if (handler.Target == null)
             {
                 throw new ArgumentException(
-                    "Cannot use non-instance methods as weak handlers, as these would be disposed instantly or never!");
+                    "Cannot use a delegate without a target as weak handler, as it would be disposed instantly or never!");
             }
 
             lock (syncRoot)

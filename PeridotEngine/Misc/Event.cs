@@ -28,21 +28,16 @@ namespace PeridotEngine.Misc
                 handler(sender, args);
 
 
-            const int MAX_DELETIONS = 5;
-            WeakHandler[] markedForDeletion = new WeakHandler[MAX_DELETIONS];
-            int countToDelete = 0;
+            List<WeakHandler> markedForDeletion = new(10);
             foreach (WeakHandler handler in weak)
             {
                 if (handler.Target.IsAlive)
                 {
-                    handler.Handler(handler.Target.Target, sender, args);
+                    handler.Handler(handler.Target.Target!, sender, args);
                 }
                 else
                 {
-                    if (countToDelete >= MAX_DELETIONS) continue;
-
-                    markedForDeletion[countToDelete] = handler;
-                    countToDelete++;
+                    markedForDeletion.Add(handler);
                 }
             }
 
@@ -62,6 +57,12 @@ namespace PeridotEngine.Misc
 
         public void AddWeakHandler(EventHandler<TEventArgs> handler)
         {
+            if (handler.Target == null)
+            {
+                throw new ArgumentException(
+                    "Cannot use non-instance methods as weak handlers, as these would be disposed instantly or never!");
+            }
+
             lock (syncRoot)
             {
                 weakHandlers.Add(new WeakHandler(handler));

@@ -78,6 +78,8 @@ namespace PeridotEngine.Misc
             }
         }
 
+        public bool HasAttachedHandlers => handlers.Count > 0 || weakHandlers.Count > 0;
+
         private class WeakHandler
         {
             public WeakHandler(EventHandler<TEventArgs> origHandler)

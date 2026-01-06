@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Security.AccessControl;
+using PeridotEngine.ECS;
 using PeridotEngine.ECS.Components;
+using PeridotEngine.Misc;
 
 namespace PeridotWindows.ECS
 {
@@ -62,6 +64,8 @@ namespace PeridotWindows.ECS
         private readonly List<Type> includeComponents;
         private readonly List<Type> excludeComponents;
 
+        public Event<QueryEntityListChangedEventArgs> EntityListChanged { get; } = new();
+
         protected Query(Ecs ecs, List<Type> includeComponents, List<Type> excludeComponents)
         {
             this.ecs = ecs;
@@ -69,6 +73,7 @@ namespace PeridotWindows.ECS
             this.excludeComponents = excludeComponents;
 
             ecs.ArchetypeListChanged.AddWeakHandler(OnEcsOnArchetypeListChanged);
+            ecs.EntityListChanged.AddWeakHandler(OnEcsEntityListChanged);
         }
 
         private void UpdateMatchingArchetypes()
@@ -98,6 +103,50 @@ namespace PeridotWindows.ECS
             ArchetypesOutdated = true;
         }
 
+        private void OnEcsEntityListChanged(object? o, EntityListChangedEventArgs args)
+        {
+            if (EntityListChanged.HasAttachedHandlers)
+            {
+                Archetype? old = args.OldArchetype;
+                Archetype? now = args.NewArchetype;
+
+                if (now != null && MatchingArchetypes.Contains(now)
+                                && (old == null || !MatchingArchetypes.Contains(old)))
+                {
+                    // Entity added to a matching archetype
+                    EntityListChanged.Invoke(this, 
+                        new QueryEntityListChangedEventArgs(QueryEntityListChangedEventArgs.ChangeOperation.Added, args.EntityId));
+                }
+                else if ((now == null || !MatchingArchetypes.Contains(now))
+                         && (old != null && MatchingArchetypes.Contains(old)))
+                {
+                    // Entity removed from a matching archetype
+                    EntityListChanged.Invoke(this, 
+                        new QueryEntityListChangedEventArgs(QueryEntityListChangedEventArgs.ChangeOperation.Removed, args.EntityId));
+                }
+                else if ((now != null && MatchingArchetypes.Contains(now))
+                         && (old != null && MatchingArchetypes.Contains(old)))
+                {
+                    // Entity changed components but remained in a matching archetype
+                    EntityListChanged.Invoke(this, 
+                        new QueryEntityListChangedEventArgs(QueryEntityListChangedEventArgs.ChangeOperation.ComponentsChanged, args.EntityId));
+                }
+            }
+        }
+
         protected virtual void OnMatchingArchetypesUpdated() { }
+    }
+
+    public class QueryEntityListChangedEventArgs(QueryEntityListChangedEventArgs.ChangeOperation operation, uint entityId)
+    {
+        public ChangeOperation Operation { get; } = operation;
+        public uint EntityId { get; } = entityId;
+
+        public enum ChangeOperation
+        {
+            Added,
+            Removed,
+            ComponentsChanged,
+        }
     }
 }

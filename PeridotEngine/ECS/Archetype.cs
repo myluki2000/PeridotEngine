@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using PeridotEngine.ECS;
 using PeridotEngine.ECS.Components;
 using PeridotEngine.Misc;
 
@@ -18,7 +19,7 @@ namespace PeridotWindows.ECS
 
         private readonly Ecs ecs;
 
-        public Event<EventArgs> EntityListChanged { get; } = new();
+        public Event<EntityListChangedEventArgs> EntityListChanged { get; } = new();
 
         public Archetype(Ecs ecs, Type[] componentTypes, List<uint> ids, List<string?> names, List<IList> components) : this(ecs, componentTypes)
         {
@@ -80,8 +81,10 @@ namespace PeridotWindows.ECS
 
         }
 
-        private void RemoveEntityAtInternal(int index)
+        private void RemoveEntityAtInternal(int index, bool suppressEvent = false)
         {
+            uint entityId = Ids[index];
+
             Ids.RemoveAt(index);
             Names.RemoveAt(index);
             entities.RemoveAt(index);
@@ -99,7 +102,8 @@ namespace PeridotWindows.ECS
                 }
             }
 
-            EntityListChanged.Invoke(this, EventArgs.Empty);
+            if(!suppressEvent)
+                EntityListChanged.Invoke(this, new EntityListChangedEventArgs(entityId, this, null));
         }
 
         public void CreateEntity(params ComponentBase[] entityComponents)
@@ -135,7 +139,7 @@ namespace PeridotWindows.ECS
 
             entities.Add(null);
 
-            EntityListChanged.Invoke(this, EventArgs.Empty);
+            EntityListChanged.Invoke(this, new EntityListChangedEventArgs(id, null, this));
         }
 
         public IEnumerable<Entity> Entities()

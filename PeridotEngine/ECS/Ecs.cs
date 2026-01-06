@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PeridotEngine.ECS;
 using PeridotEngine.Misc;
 
 namespace PeridotWindows.ECS
@@ -9,7 +10,7 @@ namespace PeridotWindows.ECS
 
         public Event<IEnumerable<Archetype>> ArchetypeListChanged { get; } = new();
 
-        public Event<Archetype> EntityListChanged { get; } = new();
+        public Event<EntityListChangedEventArgs> EntityListChanged { get; } = new();
 
         [JsonIgnore]
         public uint LargestId { get; set; } = 0;
@@ -28,7 +29,7 @@ namespace PeridotWindows.ECS
             foreach (Archetype archetype in Archetypes)
             {
                 // strong event handler because the archetype is owned by this Ecs instance
-                archetype.EntityListChanged.AddHandler((sender, args) => EntityListChanged.Invoke(this, archetype));
+                archetype.EntityListChanged.AddHandler((sender, args) => EntityListChanged.Invoke(this, args));
 
                 uint archetypeLargestId = archetype.Ids
                     .DefaultIfEmpty<uint>(0)
@@ -48,7 +49,7 @@ namespace PeridotWindows.ECS
                 archetype = new Archetype(this, componentTypes);
 
                 // strong event handler because the archetype is owned by this Ecs instance
-                archetype.EntityListChanged.AddHandler((sender, args) => EntityListChanged.Invoke(this, archetype));
+                archetype.EntityListChanged.AddHandler((sender, args) => EntityListChanged.Invoke(this, args));
                 Archetypes.Add(archetype);
                 ArchetypeListChanged.Invoke(this, Archetypes);
             }

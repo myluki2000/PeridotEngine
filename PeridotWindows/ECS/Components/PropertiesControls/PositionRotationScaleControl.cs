@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Xna.Framework;
+using PeridotEngine.ECS;
 using PeridotEngine.ECS.Components;
 
 namespace PeridotWindows.ECS.Components.PropertiesControls
@@ -173,7 +174,7 @@ namespace PeridotWindows.ECS.Components.PropertiesControls
             component.Scene.Ecs.EntityListChanged.AddWeakHandler(EcsOnEntityListChanged);
         }
 
-        private void EcsOnEntityListChanged(object? sender, Archetype e)
+        private void EcsOnEntityListChanged(object? sender, EntityListChangedEventArgs e)
         {
             PopulateCbParent();
         }

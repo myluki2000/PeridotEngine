@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PeridotEngine.ECS;
 using PeridotEngine.Graphics.Screens;
 using PeridotEngine.Scenes.Scene3D;
 using PeridotWindows.ECS;
@@ -61,7 +62,7 @@ namespace PeridotWindows.EditorScreen.Controls
             lvScene.SelectedIndexChanged += lvScene_SelectedIndexChanged;
         }
 
-        private void EcsOnEntityListChanged(object? sender, Archetype e)
+        private void EcsOnEntityListChanged(object? sender, EntityListChangedEventArgs e)
         {
             // TODO: This check should be in EditorScreen class
             if (frmEditor.Editor.SelectedEntity != null && frmEditor.Editor.SelectedEntity.IsDeleted)

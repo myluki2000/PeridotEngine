@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using PeridotEngine.ECS;
 using PeridotEngine.ECS.Components;
 using static PeridotWindows.ECS.Archetype;
 
@@ -153,9 +154,11 @@ namespace PeridotWindows.ECS
                 Archetype oldArchetype = archetype;
                 archetype = newArchetype;
                 UpdateEntityIndex();
-                oldArchetype.RemoveEntityAtInternal(oldIndex);
+
+                // suppress the entity remove event as we're just moving the entity and will raise a modified event instead
+                oldArchetype.RemoveEntityAtInternal(oldIndex, true);
                 
-                Archetype.EntityListChanged.Invoke(this, EventArgs.Empty);
+                Archetype.ecs.EntityListChanged.Invoke(this, new EntityListChangedEventArgs(Id, oldArchetype, newArchetype));
             }
 
             public override string ToString()

@@ -10,6 +10,7 @@ using PeridotWindows.ECS;
 using Color = Microsoft.Xna.Framework.Color;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
 using System.Reflection;
+using PeridotEngine.ECS.Systems;
 
 namespace PeridotEngine.Scenes.Scene3D
 {
@@ -23,6 +24,7 @@ namespace PeridotEngine.Scenes.Scene3D
         [JsonIgnore]
         public Skydome Skydome { get; private set; }
 
+        private PhysicsSystem? _physicsSystem;
 
         public Scene3D()
         {
@@ -52,6 +54,7 @@ namespace PeridotEngine.Scenes.Scene3D
         public override void Initialize()
         {
             Skydome = new(Resources.EffectPool.Effect<SkydomeEffect>().CreateProperties());
+            _physicsSystem = new PhysicsSystem(this);
         }
 
         private KeyboardState lastKeyboardState;
@@ -59,9 +62,9 @@ namespace PeridotEngine.Scenes.Scene3D
         {
             Camera.Update(gameTime);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.G) && lastKeyboardState.IsKeyUp(Keys.G))
+            if (Keyboard.GetState().IsKeyDown(Keys.F))
             {
-                
+                _physicsSystem!.Update(gameTime);
             }
 
             lastKeyboardState = Keyboard.GetState();
@@ -69,7 +72,7 @@ namespace PeridotEngine.Scenes.Scene3D
 
         public override void Deinitialize()
         {
-            
+            _physicsSystem?.Dispose();
         }
 
         public static Scene3D FromJson(JToken root)

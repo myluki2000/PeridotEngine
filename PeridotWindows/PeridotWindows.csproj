@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+<PackageReference Include="JoltPhysicsSharp" Version="2.19.5" />
 <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.*" />
 <PackageReference Include="MonoGame.Forms.DX" Version="3.2.1" />
 <PackageReference Include="Newtonsoft.JSON" Version="13.0.1" />

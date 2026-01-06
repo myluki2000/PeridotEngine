@@ -11,13 +11,18 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Archetype.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\ComponentBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\DynamicPhysicsPropComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\PhysicsSystemComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticMeshComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\PositionRotationScaleComponent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\StaticPhysicsPropComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Components\SunLightComponent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Ecs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Entity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\EntityListChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\QueryBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\MeshRenderingSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\PhysicsSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ECS\Systems\SunShadowMapSystem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Globals.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Graphics\Cameras\Camera.cs" />

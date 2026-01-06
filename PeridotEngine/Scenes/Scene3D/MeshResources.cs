@@ -67,7 +67,7 @@ namespace PeridotEngine.Scenes.Scene3D
         public void LoadModel(MeshInfo meshInfo)
         {
             Model model = Globals.Content.Load<Model>(meshInfo.FilePath);
-
+            
             meshInfo.Mesh = new ModelMesh(model.Meshes[0].MeshParts[0].VertexBuffer,
                 model.Meshes[0].MeshParts[0].IndexBuffer);
         } 

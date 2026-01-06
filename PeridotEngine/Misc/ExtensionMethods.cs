@@ -47,12 +47,26 @@ namespace PeridotEngine.Misc
 
         public static Vector2 ToXnaVector2(this SharpDX.Vector2 value)
         {
+            // TODO: Can probably be optimized with unsafe code
             return new Vector2(value.X, value.Y);
         }
 
         public static Vector2 ToXnaVector2(this SharpDX.Size2F value)
         {
+            // TODO: Can probably be optimized with unsafe code
             return new Vector2(value.Width, value.Height);
+        }
+
+        public static System.Numerics.Vector3 ToNumericsVector3(this Vector3 value)
+        {
+            // TODO: Can probably be optimized with unsafe code
+            return new System.Numerics.Vector3(value.X, value.Y, value.Z);
+        }
+
+        public static Vector3 ToXnaVector3(this System.Numerics.Vector3 value)
+        {
+            // TODO: Can probably be optimized with unsafe code
+            return new Vector3(value.X, value.Y, value.Z);
         }
 
         public static Point BackBufferSize(this PresentationParameters pp)
